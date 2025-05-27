@@ -33,7 +33,7 @@ const HeroBlock = ({ block }: { block: THeroBlock }) => {
             className="object-cover brightness-[.6]"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 to-transparent" />
-          <div className="text-white z-10 space-y-4 px-8 flex flex-col items-start gap-5">
+          <div className="text-white z-10 space-y-4 px-8 flex flex-col justify-center items-center gap-5">
             <Body className="hero-body">{slide.sliders_id.body}</Body>
             {slide.sliders_id.button && (
               <Link

@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const categories = await directus.request(
       readItems("categories", {
-        fields: ["name", "slug"],
+        fields: ["name", "slug", "image"],
       })
     );
     return NextResponse.json(categories);

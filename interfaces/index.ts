@@ -98,3 +98,19 @@ export type TPageBlock = {
   date_updated: string;
   blocks: TBlock[];
 };
+
+export type TSettings = {
+  menu: TMenu[];
+};
+
+export type TMenu = {
+  label: string;
+  link: string;
+  sub_menu?: TSubMenu[] | null;
+};
+
+export type TSubMenu = {
+  label: string;
+  link: string;
+  categories?: boolean;
+};
