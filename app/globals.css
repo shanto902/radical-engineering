@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .hero-body > h1 {
+    @apply text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg;
+  }
+  .hero-body > h2 {
+    @apply text-3xl md:text-5xl font-extrabold mb-4 drop-shadow-lg;
+  }
+  .hero-body > h3 {
+    @apply text-2xl md:text-4xl font-extrabold mb-4 drop-shadow-lg;
+  }
+
+  .hero-body > p {
+    @apply text-xl;
+  }
+  .hero-body > div {
+    @apply text-xl;
+  }
+
+  .body > h1 {
+    @apply text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg;
+  }
+  .body > h2 {
+    @apply text-3xl font-semibold mb-4;
+  }
+  .body > h3 {
+    @apply text-lg font-semibold mb-4;
+  }
+
+  .body > p {
+    @apply text-base;
+  }
+}

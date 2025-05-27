@@ -28,8 +28,8 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-white shadow-md fixed w-full mb-20 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+    <nav className="bg-white shadow-md fixed top-0 w-full  z-50 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex w-full justify-between items-center">
         {/* Logo */}
         <Link
           href="/"
