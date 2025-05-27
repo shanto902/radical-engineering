@@ -2,15 +2,17 @@
 
 import ProductCard from "../cards/ProductCard";
 import { TFeaturedProductsBlock } from "@/interfaces";
+import PaddingContainer from "../common/PaddingContainer";
 
 const FeaturedProductsBlock = ({
   block,
 }: {
   block: TFeaturedProductsBlock;
 }) => {
+  console.log(block);
   return (
     <section className="py-10 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+      <PaddingContainer>
         <h2 className="text-2xl md:text-3xl font-bold mb-8">
           {block.item.header_text || "Featured Products"}
         </h2>
@@ -22,7 +24,7 @@ const FeaturedProductsBlock = ({
             />
           ))}
         </div>
-      </div>
+      </PaddingContainer>
     </section>
   );
 };

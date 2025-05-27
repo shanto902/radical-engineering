@@ -1,37 +1,28 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Range, getTrackBackground } from "react-range";
-import { TProduct } from "@/interfaces";
+import { TCategory, TProduct } from "@/interfaces";
 import ProductCard from "@/components/cards/ProductCard";
+import PaddingContainer from "@/components/common/PaddingContainer";
 
 const STEP = 100;
 const MIN = 0;
 const MAX = 25000;
 
-export default function ShopPage({ products }: { products: TProduct[] }) {
+export default function ShopPage({
+  products,
+  categories,
+}: {
+  products: TProduct[];
+  categories: TCategory[];
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const [values, setValues] = useState([0, 25000]);
-  const [categories, setCategories] = useState<
-    { name: string; slug: string }[]
-  >([]);
 
   // Extract slug from pathname like /categories/ips-ups-battery
   const categorySlug = pathname?.split("/")[2] || null;
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch("/api/categories");
-        const data = await res.json();
-        setCategories(data);
-      } catch (error) {
-        console.error("Failed to load categories:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   const filteredProducts = products.filter((p) => {
     const [minPrice, maxPrice] = values;
@@ -43,7 +34,7 @@ export default function ShopPage({ products }: { products: TProduct[] }) {
   });
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-20">
+    <PaddingContainer className="py-20">
       {/* Category Tabs */}
       <div className="flex gap-4 mb-6 flex-wrap font-bold">
         <button
@@ -73,7 +64,7 @@ export default function ShopPage({ products }: { products: TProduct[] }) {
       {/* Filters & Product List */}
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
         {/* Sidebar */}
-        <aside>
+        <aside className=" px-4">
           <h2 className="text-xl font-semibold mb-4">Filter by</h2>
 
           <div className="mb-8">
@@ -135,6 +126,6 @@ export default function ShopPage({ products }: { products: TProduct[] }) {
           )}
         </main>
       </div>
-    </section>
+    </PaddingContainer>
   );
 }

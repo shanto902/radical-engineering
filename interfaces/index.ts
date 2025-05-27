@@ -44,7 +44,7 @@ export type TFeaturedProductsBlock = {
   };
 };
 
-type TCategory = {
+export type TCategory = {
   id: string;
   name: string;
   date_created: string;
@@ -65,7 +65,11 @@ export type TProduct = {
   slug: string;
   price: number;
   discounted_price?: number | null;
-  image_gallery: string[];
+  image_gallery: {
+    id: string;
+    products_id: string;
+    directus_files_id: string;
+  }[];
 };
 
 type TSlider = {

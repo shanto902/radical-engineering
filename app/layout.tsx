@@ -8,6 +8,8 @@ import { readSingleton } from "@directus/sdk";
 import directus from "@/lib/directus";
 import { TSettings } from "@/interfaces";
 
+import ReduxProvider from "@/components/ReduxProvider";
+
 const lato = Lato({
   variable: "--font-lato",
   subsets: ["latin"],
@@ -31,9 +33,11 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${lato.variable} antialiased`}>
-        <Navbar settings={settings} />
-        {children}
-        <Footer />
+        <ReduxProvider>
+          <Navbar settings={settings} />
+          {children}
+          <Footer />
+        </ReduxProvider>
       </body>
     </html>
   );

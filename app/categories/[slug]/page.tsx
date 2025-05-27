@@ -1,5 +1,5 @@
 import ShopPage from "@/components/pages/shop/ShopPage";
-import { fetchProducts } from "@/helper/fetchFromDirectus";
+import { fetchCategories, fetchProducts } from "@/helper/fetchFromDirectus";
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
 import React from "react";
@@ -30,9 +30,10 @@ export const generateStaticParams = async () => {
 const page = async ({ params }: PageProps) => {
   const { slug } = await params;
   const products = await fetchProducts(slug);
+  const categories = await fetchCategories();
   return (
     <div>
-      <ShopPage products={products} />
+      <ShopPage products={products} categories={categories} />
     </div>
   );
 };

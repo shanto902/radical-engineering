@@ -1,6 +1,7 @@
-import { TPageBlock, TProduct } from "@/interfaces";
+import { TCategory, TPageBlock, TProduct } from "@/interfaces";
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
+import { cache } from "react";
 
 export const fetchPage = async (
   permalink: string
@@ -27,7 +28,11 @@ export const fetchPage = async (
                     "categories.categories_id.*",
                   ],
                   block_banners: ["*", "banners.banners_id.*"],
-                  block_featured_products: ["*", "products.products_id.*"],
+                  block_featured_products: [
+                    "*",
+                    "products.products_id.*",
+                    "products.products_id.category.*",
+                  ],
                 },
               },
             ],
@@ -85,58 +90,37 @@ export const fetchProducts = async (
   }
 };
 
-// export const fetchCategories = async (): Promise<TCategory[]> => {
-//   try {
-//     const result = await directus.request(
-//       readItems("categories", {
-//         fields: ["*"],
-//       })
-//     );
-//     return result as TCategory[];
-//   } catch (error) {
-//     console.error("Error fetch locations", error);
-//     throw new Error("Failed to fetch all locations");
-//   }
-// };
+export const fetchCategories = async (): Promise<TCategory[]> => {
+  try {
+    const result = await directus.request(
+      readItems("categories", {
+        fields: ["*", "image.*", "slug"],
+      })
+    );
+    return result as TCategory[];
+  } catch (error) {
+    console.error("Error fetch locations", error);
+    throw new Error("Failed to fetch all locations");
+  }
+};
 
-// export const fetchLocation = async (slug: string): Promise<TLocation> => {
-//   try {
-//     const result = await directus.request(
-//       readItems("locations", {
-//         filter: {
-//           slug: { _eq: slug },
-//         },
-//         fields: ["*"],
-//       })
-//     );
-//     return result[0] as TLocation;
-//   } catch (error) {
-//     console.error("Error fetch location", error);
-//     throw new Error("Failed to fetch all location");
-//   }
-// };
+export const fetchProductData = cache(
+  async (slug: string): Promise<TProduct> => {
+    try {
+      const results = await directus.request(
+        readItems("products", {
+          filter: {
+            slug,
+          },
+          sort: ["sort"],
+          fields: ["*", "category.name", "image_gallery.*"],
+        })
+      );
 
-// export const getProductData = cache(async (id: string): Promise<TProduct> => {
-//   try {
-//     const results = await directus.request(
-//       readItems("products", {
-//         filter: {
-//           id,
-//         },
-//         sort: ["sort"],
-//         fields: [
-//           "*",
-//           "category.name",
-//           "category.id",
-//           "textures.*",
-//           "textures.directus_files_id.*",
-//         ],
-//       })
-//     );
-
-//     return results[0] as TProduct;
-//   } catch (error) {
-//     console.error("Error fetching product data:", error);
-//     throw new Error("Error fetching product ");
-//   }
-// });
+      return results[0] as TProduct;
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+      throw new Error("Error fetching product ");
+    }
+  }
+);

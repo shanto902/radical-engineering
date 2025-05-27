@@ -4,6 +4,7 @@
 import { TFeaturedCategoriesBlock } from "@/interfaces";
 import Image from "next/image";
 import Link from "next/link";
+import PaddingContainer from "../common/PaddingContainer";
 
 const FeaturedCategoriesBlock = ({
   block,
@@ -12,7 +13,7 @@ const FeaturedCategoriesBlock = ({
 }) => {
   return (
     <section className="py-12 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+      <PaddingContainer>
         <h2 className="text-2xl md:text-3xl font-bold mb-8">
           {block.item.header_text || "Featured Categories"}
         </h2>
@@ -38,7 +39,7 @@ const FeaturedCategoriesBlock = ({
             </Link>
           ))}
         </div>
-      </div>
+      </PaddingContainer>
     </section>
   );
 };
