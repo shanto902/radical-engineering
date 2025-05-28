@@ -1,10 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import InnerImageZoom from "react-inner-image-zoom";
+import Link from "next/link";
 
 import "react-inner-image-zoom/lib/styles.min.css";
+
 import {
   Facebook,
   Twitter,
@@ -15,19 +19,28 @@ import {
   XCircle,
   Clock,
 } from "lucide-react";
-import Link from "next/link";
+
+import { AppDispatch, RootState } from "@/store";
+import { addToCart } from "@/store/cartSlice";
+import { toggleWishlist } from "@/store/wishlistSlice";
 import { TProduct } from "@/interfaces";
 import PaddingContainer from "@/components/common/PaddingContainer";
 
 export default function ProductPage({ product }: { product: TProduct }) {
-  // Combine main image and gallery
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+
+  const wishlist = useSelector((state: RootState) => state.wishlist.items);
+  const isWishlisted = wishlist.some((item) => item.id === product.id);
+
+  const [selectedImage, setSelectedImage] = useState(product.image);
+  const [hasMounted, setHasMounted] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+
   const images = [
     product.image,
     ...(product.image_gallery?.map((img) => img.directus_files_id) || []),
   ];
-
-  const [selectedImage, setSelectedImage] = useState(images[0]);
-  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
     setHasMounted(true);
@@ -36,14 +49,30 @@ export default function ProductPage({ product }: { product: TProduct }) {
   const getImageUrl = (id: string) =>
     `${process.env.NEXT_PUBLIC_ASSETS_URL}${id}`;
 
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.discounted_price || product.price,
+        image: product.image,
+        quantity,
+      })
+    );
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart();
+    router.push("/checkout");
+  };
+
   return (
-    <PaddingContainer className=" py-20 grid grid-cols-1 md:grid-cols-3 gap-10">
-      {/* Left Image Panel */}
+    <PaddingContainer className="py-20 grid grid-cols-1 md:grid-cols-3 gap-10">
+      {/* Image Panel */}
       <div>
-        {/* Zoomable Image */}
-        <div className="relative border mx-auto  rounded-xl mb-4 bg-white overflow-hidden">
+        <div className="relative border mx-auto rounded-xl mb-4 bg-white overflow-hidden">
           {hasMounted && (
-            <div key={selectedImage} className="w-full ">
+            <div key={selectedImage}>
               <InnerImageZoom
                 key={selectedImage}
                 height={500}
@@ -52,11 +81,10 @@ export default function ProductPage({ product }: { product: TProduct }) {
                 zoomSrc={getImageUrl(selectedImage)}
                 zoomType="hover"
                 zoomPreload
-                className="rounded-xl bg-contain  w-full bg-white"
+                className="rounded-xl bg-contain bg-white"
               />
             </div>
           )}
-
           <span className="absolute top-4 right-4 bg-primary text-white px-2 py-1 rounded text-xs font-semibold z-10">
             {product.discounted_price
               ? `-${Math.round(
@@ -67,7 +95,6 @@ export default function ProductPage({ product }: { product: TProduct }) {
           </span>
         </div>
 
-        {/* Thumbnails */}
         <div className="flex gap-3 overflow-x-auto p-1">
           {images.map((imgId, idx) => (
             <button
@@ -89,7 +116,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
         </div>
       </div>
 
-      {/* Right Info Panel */}
+      {/* Info Panel */}
       <div className="bg-white rounded-xl p-6 shadow-sm border col-span-2">
         <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
 
@@ -100,50 +127,64 @@ export default function ProductPage({ product }: { product: TProduct }) {
           <span className="text-green-600 text-2xl font-bold">
             {product.discounted_price}৳
           </span>
-
           <p className="text-sm font-semibold mb-1">
             {product.status === "in-stock" && (
               <span className="text-green-600 flex items-center gap-1">
-                <CheckCircle size={16} />
-                In Stock
+                <CheckCircle size={16} /> In Stock
               </span>
             )}
             {product.status === "out-of-stock" && (
               <span className="text-red-500 flex items-center gap-1">
-                <XCircle size={16} />
-                Out of Stock
+                <XCircle size={16} /> Out of Stock
               </span>
             )}
             {product.status === "pre-order" && (
               <span className="text-yellow-500 flex items-center gap-1">
-                <Clock size={16} />
-                Pre Order
+                <Clock size={16} /> Pre Order
               </span>
             )}
           </p>
         </div>
 
-        <ul className="text-sm text-gray-700 mb-6 space-y-1 list-disc list-inside">
-          <li>Back up Battery</li>
-          <li>Volt: 12 Volt</li>
-          <li>Amp: 7.5 Amp</li>
-          <li>Good Quality</li>
-        </ul>
+        <div className="mb-4">
+          <label className="text-sm font-medium text-gray-700 mr-2">
+            Quantity:
+          </label>
+          <input
+            type="number"
+            min={1}
+            value={quantity}
+            onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
+            className="border border-gray-300 w-20 py-1 px-2 rounded-md text-sm"
+          />
+        </div>
 
         <div className="flex gap-4 mb-6">
-          <button className="flex-1 bg-primary text-white hover:bg-yellow-300 hover:text-black transition font-semibold py-2 rounded-xl">
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 bg-primary text-white hover:bg-yellow-300 hover:text-black transition font-semibold py-2 rounded-xl"
+          >
             Add to Cart
           </button>
-          <button className="flex-1 border border-primary text-primary hover:bg-primary hover:text-white transition font-semibold py-2 rounded-xl">
+          <button
+            onClick={handleBuyNow}
+            className="flex-1 border border-primary text-primary hover:bg-primary hover:text-white transition font-semibold py-2 rounded-xl"
+          >
             Buy Now
           </button>
         </div>
 
         <div className="flex items-center justify-between mb-2 text-sm text-gray-600">
-          <button className="flex items-center gap-2 hover:text-primary font-medium">
-            <Heart className="w-4 h-4" />
-            Add to wishlist
+          <button
+            className={`flex items-center gap-2 font-medium transition ${
+              isWishlisted ? "text-red-500" : "hover:text-primary"
+            }`}
+            onClick={() => dispatch(toggleWishlist(product))}
+          >
+            <Heart className="w-4 h-4" fill={isWishlisted ? "red" : "none"} />
+            {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
           </button>
+
           <div className="flex gap-3">
             <Link href="#" className="hover:text-blue-500">
               <Facebook size={16} />

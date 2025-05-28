@@ -6,7 +6,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import Image from "next/image";
+
 import { TMenu, TSettings } from "@/interfaces";
+
+import CartPopup from "./header/CartPopup";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const dummySuggestions = [
   "Solar Panel 500W",
@@ -24,6 +29,8 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   const [hoveringMenu, setHoveringMenu] = useState(false);
   const [query, setQuery] = useState("");
   const pathname = usePathname();
+
+  const cartItems = useSelector((state: RootState) => state.cart.items);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -137,15 +144,23 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                 onMouseEnter={() => setHoveringMenu(true)}
                 onMouseLeave={() => setHoveringMenu(false)}
               >
-                <button className="flex items-center text-sm group font-medium text-gray-700 hover:text-primary transition">
+                <Link
+                  href={navItem.link}
+                  className={clsx(
+                    "flex items-center text-sm group font-medium text-gray-700 hover:text-primary transition",
+                    pathname.startsWith(navItem.link || "")
+                      ? "text-primary font-semibold"
+                      : "text-gray-600 font-medium"
+                  )}
+                >
                   {navItem.label}
                   <ChevronDown
                     size={16}
                     className={`ml-1 ${
                       hoveringMenu && "rotate-180"
-                    }  transition-all duration-200`}
+                    } transition-all duration-200`}
                   />
-                </button>
+                </Link>
 
                 <div
                   className={clsx(
@@ -159,7 +174,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                     {renderSubMenuItems(navItem)}
                   </div>
                   <Link
-                    className="flex justify-center pb-2 pt-1 hover:bg-primary/20  text-sm border-t-2 w-full"
+                    className="flex justify-center pb-2 pt-1 hover:bg-primary/20 text-sm border-t-2 w-full"
                     href={"/categories"}
                   >
                     View All Products
@@ -171,8 +186,8 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                 key={i}
                 href={navItem.link || "#"}
                 className={clsx(
-                  "text-sm  hover:text-primary hover:underline transition-all duration-200 underline-offset-4",
-                  pathname === navItem.link
+                  "text-sm hover:text-primary hover:underline transition-all duration-200 underline-offset-4",
+                  pathname.startsWith(navItem.link || "")
                     ? "text-primary font-semibold"
                     : "text-gray-600 font-medium"
                 )}
@@ -182,13 +197,32 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
             )
           )}
 
-          {/* Cart Button */}
+          {/* ❤️ Wishlist Icon */}
           <Link
-            href="/cart"
-            className="ml-3 px-4 py-2 bg-primary hover:bg-yellow-400 hover:text-black transition text-white rounded-full text-sm font-semibold shadow"
+            href="/wishlist"
+            title="Wishlist"
+            className="text-gray-600 hover:text-primary transition"
           >
-            View Cart
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z"
+              />
+            </svg>
           </Link>
+
+          {/* 🛒 Cart Button with Popup */}
+
+          {/* Hover Popup */}
+          <CartPopup />
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -288,6 +322,12 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
             onClick={() => setIsOpen(false)}
             className="block text-center mt-3 bg-primary text-white py-2 rounded-full font-semibold hover:shadow-lg transition"
           >
+            {/* Badge */}
+            {cartItems.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
+                {cartItems.length}
+              </span>
+            )}
             View Cart
           </Link>
         </div>

@@ -9,23 +9,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { addToCart } from "@/store/cartSlice";
 import { addToWishlist, removeFromWishlist } from "@/store/wishlistSlice";
+import { useHasMounted } from "@/hooks/useHasMounted";
+import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
+  const hasMounted = useHasMounted();
   const dispatch = useDispatch<AppDispatch>();
   const wishlist = useSelector((state: RootState) => state.wishlist.items);
-
   const isInWishlist = wishlist.some((item) => item.id === product.id);
-
+  const router = useRouter();
   const handleCart = () => {
     dispatch(
       addToCart({
         id: product.id,
-        title: product.name,
+        name: product.name,
         price: product.discounted_price || product.price,
         quantity: 1,
         image: product.image,
       })
     );
+  };
+  const handleBuyNow = () => {
+    handleCart();
+    router.push("/checkout");
   };
 
   const toggleWishlist = () => {
@@ -35,7 +41,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
       dispatch(
         addToWishlist({
           id: product.id,
-          title: product.name,
+          name: product.name,
           price: product.discounted_price || product.price,
           image: product.image,
         })
@@ -43,6 +49,27 @@ const ProductCard = ({ product }: { product: TProduct }) => {
     }
   };
 
+  // ─────────────────────────────
+  // 🔁 Skeleton for Hydration Safety
+  if (!hasMounted) {
+    return (
+      <div className="bg-white border rounded-xl shadow overflow-hidden animate-pulse">
+        <div className="w-full h-60 bg-gray-200" />
+        <div className="p-4 space-y-2">
+          <div className="h-4 bg-gray-200 rounded w-3/4" />
+          <div className="h-3 bg-gray-200 rounded w-1/2" />
+          <div className="h-3 bg-gray-200 rounded w-1/3" />
+          <div className="h-5 bg-gray-300 rounded w-1/2 mt-2" />
+          <div className="flex gap-2 mt-4">
+            <div className="h-9 bg-gray-300 rounded-lg w-1/2" />
+            <div className="h-9 bg-gray-300 rounded-lg w-1/2" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ─────────────────────────────
   return (
     <div
       key={product.id}
@@ -124,7 +151,10 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           >
             Add To Cart
           </button>
-          <button className="w-full bg-green-800 hover:bg-yellow-400 text-white hover:text-black text-sm py-2 rounded-lg font-semibold transition">
+          <button
+            onClick={handleBuyNow}
+            className="w-full bg-green-800 hover:bg-yellow-400 text-white hover:text-black text-sm py-2 rounded-lg font-semibold transition"
+          >
             Buy Now
           </button>
         </div>

@@ -2,12 +2,14 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
-import { removeFromCart, updateQuantity, clearCart } from "@/store/cartSlice";
-import Image from "next/image";
+import { updateQuantity, clearCart } from "@/store/cartSlice";
 import Link from "next/link";
-import { Trash } from "lucide-react";
+import CartCard from "@/components/cards/CartCard";
+import { useHasMounted } from "@/hooks/useHasMounted";
+import { ShoppingCart, X } from "lucide-react";
 
 const CartPage = () => {
+  const hasMounted = useHasMounted();
   const dispatch = useDispatch<AppDispatch>();
   const { items } = useSelector((state: RootState) => state.cart);
 
@@ -23,71 +25,58 @@ const CartPage = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
+    <div className="max-w-7xl min-h-[60vh] mx-auto px-4 mt-16 py-12">
+      <h1 className="text-3xl uppercase font-bold mb-12 text-center flex items-center justify-center gap-2">
+        {" "}
+        <span>
+          <ShoppingCart className="size-10 text-primary" />
+        </span>{" "}
+        Your Shopping Cart
+      </h1>
 
-      {items.length === 0 ? (
-        <p className="text-gray-500">Your cart is empty.</p>
+      {/* Show skeletons during SSR hydration */}
+      {!hasMounted ? (
+        <div className="space-y-8">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <CartCard key={i} />
+          ))}
+        </div>
+      ) : items.length === 0 ? (
+        <div className="text-center text-gray-500 text-lg">
+          Your cart is currently empty.
+        </div>
       ) : (
         <>
-          <div className="space-y-6">
+          <div className="space-y-8">
             {items.map((item) => (
-              <div
+              <CartCard
+                cart={item}
+                handleQuantityChange={handleQuantityChange}
                 key={item.id}
-                className="flex flex-col md:flex-row items-center gap-6 border-b pb-6"
-              >
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
-                  alt={item.title}
-                  width={100}
-                  height={100}
-                  className="rounded object-cover"
-                />
-                <div className="flex-1 w-full">
-                  <h2 className="text-lg font-semibold">{item.title}</h2>
-                  <p className="text-sm text-gray-600">
-                    Price: {item.price.toLocaleString()}৳
-                  </p>
-                  <div className="mt-3 flex items-center gap-3">
-                    <label className="text-sm">Qty:</label>
-                    <input
-                      type="number"
-                      className="w-16 border rounded px-2 py-1"
-                      value={item.quantity}
-                      min={1}
-                      onChange={(e) =>
-                        handleQuantityChange(item.id, parseInt(e.target.value))
-                      }
-                    />
-                  </div>
-                </div>
-                <button
-                  onClick={() => dispatch(removeFromCart(item.id))}
-                  className="text-red-600 hover:text-red-800"
-                  title="Remove"
-                >
-                  <Trash className="w-5 h-5" />
-                </button>
-              </div>
+              />
             ))}
           </div>
 
-          <div className="mt-10 border-t pt-6 flex justify-between items-center">
+          <div className="mt-12  pt-8 grid md:grid-cols-2 gap-8 items-start">
+            {/* Left: Clear Cart */}
             <div>
               <button
                 onClick={() => dispatch(clearCart())}
-                className="text-sm text-red-500 hover:underline"
+                className="text-base flex items-center gap-2 font-bold text-red-600 hover:border-red-600 hover:text-red-800 px-1 transition border-b pb-2"
               >
-                Clear Cart
+                <X /> Clear Cart
               </button>
             </div>
-            <div className="text-right">
-              <p className="text-xl font-semibold mb-2">
-                Total: {total.toLocaleString()}৳
-              </p>
+
+            {/* Right: Total + Checkout */}
+            <div className="bg-gray-50 border rounded-xl p-6 space-y-4 shadow-sm">
+              <div className="flex justify-between text-lg font-medium">
+                <span>Total:</span>
+                <span>৳ {total.toLocaleString()}</span>
+              </div>
               <Link
                 href="/checkout"
-                className="bg-green-700 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-medium transition"
+                className="block text-center bg-primary text-white py-3 px-6 rounded-lg hover:bg-yellow-500 hover:text-black font-semibold transition"
               >
                 Proceed to Checkout
               </Link>
