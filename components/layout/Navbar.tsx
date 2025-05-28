@@ -10,16 +10,9 @@ import Image from "next/image";
 import { TMenu, TSettings } from "@/interfaces";
 
 import CartPopup from "./header/CartPopup";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-
-const dummySuggestions = [
-  "Solar Panel 500W",
-  "Lithium Battery",
-  "Inverter 1000VA",
-  "Street Light LED",
-  "Solar Charger",
-];
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store";
+import { fetchProducts } from "@/store/productSlice";
 
 const Navbar = ({ settings }: { settings: TSettings }) => {
   const [categories, setCategories] = useState<
@@ -44,9 +37,17 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
     };
     fetchCategories();
   }, []);
+  const dispatch = useDispatch<AppDispatch>(); // ✅ Typed dispatch
 
-  const filteredSuggestions = dummySuggestions.filter((item) =>
-    item.toLowerCase().includes(query.toLowerCase())
+  useEffect(() => {
+    dispatch(fetchProducts()); // ✅ No more TS error
+  }, []);
+
+  const products = useSelector((state: RootState) => state.products.items);
+  console.log("Products in Redux:", products);
+
+  const filteredSuggestions = products.filter((item) =>
+    item.name.toLowerCase().includes(query.toLowerCase())
   );
 
   const renderSubMenuItems = (navItem: TMenu) => {
@@ -117,13 +118,21 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
             <div className="absolute top-full left-0 right-0 bg-white border mt-1 rounded-lg shadow z-10">
               {filteredSuggestions.length > 0 ? (
                 filteredSuggestions.map((item, idx) => (
-                  <div
+                  <Link
                     key={idx}
-                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => setQuery(item)}
+                    href={`/categories/${item.category.slug}/${item.slug}`}
+                    className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-primary/20 hover:text-primary m-1 rounded-md cursor-pointer"
+                    onClick={() => setQuery("")}
                   >
-                    {item}
-                  </div>
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
+                      alt={item.name}
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 object-cover rounded"
+                    />
+                    <span>{item.name}</span>
+                  </Link>
                 ))
               ) : (
                 <div className="px-4 py-2 text-sm text-gray-400">
@@ -251,17 +260,25 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
             {query && (
               <div className="absolute top-full left-0 right-0 bg-white border mt-1 rounded-lg shadow z-10">
                 {filteredSuggestions.length > 0 ? (
-                  filteredSuggestions.map((s, idx) => (
-                    <div
+                  filteredSuggestions.map((item, idx) => (
+                    <Link
                       key={idx}
-                      className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                      href={`/categories/${item.category.slug}/${item.slug}`}
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                       onClick={() => {
-                        setQuery(s);
+                        setQuery("");
                         setIsOpen(false);
                       }}
                     >
-                      {s}
-                    </div>
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
+                        alt={item.name}
+                        width={40}
+                        height={40}
+                        className="w-10 h-10 object-cover rounded"
+                      />
+                      <span>{item.name}</span>
+                    </Link>
                   ))
                 ) : (
                   <div className="px-4 py-2 text-sm text-gray-400">

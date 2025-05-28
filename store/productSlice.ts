@@ -1,57 +1,44 @@
+// store/productSlice.ts
 import { TProduct } from "@/interfaces";
-import directus from "@/lib/directus";
-import { readItems } from "@directus/sdk";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-// ─── Async Thunk ──────────────────────────────────────────────
-export const fetchProducts = createAsyncThunk(
-  "products/fetchProducts",
-  async ({ categorySlug }: { categorySlug?: string }, thunkAPI) => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const options: any = {
-        fields: ["*", "category.*"],
-      };
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-      if (categorySlug) {
-        options.filter = {
-          category: {
-            slug: {
-              _eq: categorySlug,
-            },
-          },
-        };
-      }
-
-      const result = await directus.request(readItems("products", options));
-      return result as TProduct[];
-    } catch (error) {
-      console.error("Error fetching products", error);
-      return thunkAPI.rejectWithValue("Failed to fetch products");
-    }
+// ─── Async Thunk: Fetch All Products ─────────────────────────────
+export const fetchProducts = createAsyncThunk<
+  TProduct[],
+  void,
+  { rejectValue: string }
+>("products/fetchProducts", async (_, thunkAPI) => {
+  try {
+    const response = await fetch("/api/products");
+    const data = await response.json();
+    return data as TProduct[];
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return thunkAPI.rejectWithValue("Failed to fetch products");
   }
-);
+});
 
-// ─── Initial State ─────────────────────────────────────────────
+// ─── State Types ─────────────────────────────────────────────────
 interface ProductState {
-  products: TProduct[];
+  items: TProduct[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: ProductState = {
-  products: [],
+  items: [],
   loading: false,
   error: null,
 };
 
-// ─── Product Slice ─────────────────────────────────────────────
+// ─── Product Slice ───────────────────────────────────────────────
 const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
     clearProducts: (state) => {
-      state.products = [];
+      state.items = [];
     },
   },
   extraReducers: (builder) => {
@@ -60,16 +47,20 @@ const productSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.products = action.payload;
-        state.loading = false;
-      })
+      .addCase(
+        fetchProducts.fulfilled,
+        (state, action: PayloadAction<TProduct[]>) => {
+          state.items = action.payload;
+          state.loading = false;
+        }
+      )
       .addCase(fetchProducts.rejected, (state, action) => {
-        state.error = action.payload as string;
+        state.error = action.payload || "Unknown error";
         state.loading = false;
       });
   },
 });
 
+// ─── Exports ─────────────────────────────────────────────────────
 export const { clearProducts } = productSlice.actions;
 export default productSlice.reducer;
