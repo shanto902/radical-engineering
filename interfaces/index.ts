@@ -61,6 +61,11 @@ export type TProduct = {
   date_updated: null | string;
   image: string;
   short_description: string;
+  description?: string;
+  features?: {
+    label: string;
+    value: string;
+  }[];
   category: TCategory;
   slug: string;
   price: number;
@@ -70,6 +75,7 @@ export type TProduct = {
     products_id: string;
     directus_files_id: string;
   }[];
+  datasheet?: string | null;
 };
 
 type TSlider = {

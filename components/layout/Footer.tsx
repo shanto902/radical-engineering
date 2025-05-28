@@ -7,7 +7,9 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Logo & Tagline */}
         <div>
-          <h2 className="text-2xl font-bold text-white">Radical Engineering</h2>
+          <h2 className="text-2xl font-bold text-white uppercase">
+            Radical Engineering
+          </h2>
           <p className="mt-3 text-sm text-gray-300">
             Powering your home with trusted solar and battery solutions.
           </p>
@@ -45,10 +47,10 @@ export default function Footer() {
           <h3 className="text-lg font-semibold mb-3">Contact</h3>
           <ul className="space-y-2 text-sm text-gray-300">
             <li className="flex items-center gap-2">
-              <Phone className="w-4 h-4" /> +880 1749-426789
+              <Phone className="w-4 h-4" /> +880 1911-922109
             </li>
             <li className="flex items-center gap-2">
-              <Mail className="w-4 h-4" /> support@ipsbazarbd.com
+              <Mail className="w-4 h-4" /> support@radicalengineering.com
             </li>
             <li className="flex items-center gap-2">
               <MapPin className="w-4 h-4" /> Dhaka, Bangladesh
@@ -74,7 +76,7 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-white/10 mt-10 pt-4 text-center text-sm text-gray-400">
-        © {new Date().getFullYear()} IPS BAZAR. All rights reserved.
+        © {new Date().getFullYear()} Radical Engineering. All rights reserved.
       </div>
     </footer>
   );

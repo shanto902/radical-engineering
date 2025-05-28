@@ -24,13 +24,55 @@
     @apply text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg;
   }
   .body > h2 {
-    @apply text-3xl font-semibold mb-4;
+    @apply text-3xl font-semibold mb-2;
   }
   .body > h3 {
-    @apply text-lg font-semibold mb-4;
+    @apply text-lg font-semibold mb-2;
   }
 
   .body > p {
     @apply text-base;
   }
+
+  .rich-text h2 {
+    @apply text-3xl font-semibold  mb-3;
+  }
+
+  .rich-text colgroup {
+    @apply md:table-column-group flex border;
+  }
+
+  .rich-text tbody {
+    @apply md:table-header-group flex flex-col;
+  }
+
+  .rich-text tr {
+    @apply md:table-row flex flex-col gap-4;
+  }
+
+  .rich-text ol {
+    @apply list-decimal;
+  }
+
+  .rich-text h3 {
+    @apply text-2xl font-semibold  mb-3;
+  }
+  .rich-text p {
+    @apply leading-normal  mb-3;
+  }
+
+  .rich-text td {
+    @apply p-2 border border-black;
+  }
+}
+
+/* Hide number input spinners in all browsers */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
 }

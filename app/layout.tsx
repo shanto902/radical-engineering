@@ -32,10 +32,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${lato.variable} antialiased`}>
+      <body className={`${lato.variable} antialiased `}>
         <ReduxProvider>
           <Navbar settings={settings} />
-          {children}
+          <main className="min-h-[80vh]">{children}</main>
           <Footer />
         </ReduxProvider>
       </body>

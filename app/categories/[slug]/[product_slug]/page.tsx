@@ -37,7 +37,6 @@ const page = async ({ params }: PageProps) => {
   }
   return (
     <div>
-      {" "}
       <ProductPage product={product} />
     </div>
   );
