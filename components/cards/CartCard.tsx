@@ -60,21 +60,31 @@ const CartCard = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <label className="text-sm font-medium">Qty:</label>
-        <input
-          type="number"
-          className="w-16 border rounded px-2 py-1"
-          value={cart.quantity}
-          min={1}
-          onChange={(e) =>
-            handleQuantityChange?.(cart.id, parseInt(e.target.value))
-          }
-        />
+        <div className="flex items-center border rounded overflow-hidden">
+          <button
+            onClick={() =>
+              handleQuantityChange?.(cart.id, Math.max(1, cart.quantity - 1))
+            }
+            className="px-2 py-1 text-sm font-bold hover:bg-yellow-400 hover:text-black text-white bg-primary"
+            aria-label="Decrease quantity"
+          >
+            −
+          </button>
+          <span className="px-4 py-1 text-sm">{cart.quantity}</span>
+          <button
+            onClick={() => handleQuantityChange?.(cart.id, cart.quantity + 1)}
+            className="px-2 py-1 text-sm font-bold hover:bg-yellow-400 hover:text-black text-white bg-primary"
+            aria-label="Increase quantity"
+          >
+            +
+          </button>
+        </div>
       </div>
 
       <div className="text-right font-semibold text-gray-800 hidden sm:block w-24">
-        ৳ {(cart.price * cart.quantity).toLocaleString()}
+        BDT {(cart.price * cart.quantity).toLocaleString()}
       </div>
 
       <button

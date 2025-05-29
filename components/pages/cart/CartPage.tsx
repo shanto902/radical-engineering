@@ -6,7 +6,7 @@ import { updateQuantity, clearCart } from "@/store/cartSlice";
 import Link from "next/link";
 import CartCard from "@/components/cards/CartCard";
 import { useHasMounted } from "@/hooks/useHasMounted";
-import { ShoppingCart, X } from "lucide-react";
+import { ShoppingCart, Trash } from "lucide-react";
 
 const CartPage = () => {
   const hasMounted = useHasMounted();
@@ -62,9 +62,9 @@ const CartPage = () => {
             <div>
               <button
                 onClick={() => dispatch(clearCart())}
-                className="text-base flex items-center gap-2 font-bold text-red-600 hover:border-red-600 hover:text-red-800 px-1 transition border-b pb-2"
+                className="text-base flex items-center gap-2 font-bold bg-red-600 rounded-md text-white hover:bg-yellow-400 hover:text-black transition-all duration-200 p-2"
               >
-                <X /> Clear Cart
+                <Trash /> Clear Cart
               </button>
             </div>
 
@@ -72,7 +72,7 @@ const CartPage = () => {
             <div className="bg-gray-50 border rounded-xl p-6 space-y-4 shadow-sm">
               <div className="flex justify-between text-lg font-medium">
                 <span>Total:</span>
-                <span>৳ {total.toLocaleString()}</span>
+                <span>{total.toLocaleString()} BDT</span>
               </div>
               <Link
                 href="/checkout"
