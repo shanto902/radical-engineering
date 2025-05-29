@@ -100,7 +100,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
                 ((product.price - product.discounted_price) / product.price) *
                   100
               )}
-              %`
+              %
             </span>
           )}
         </Link>

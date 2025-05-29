@@ -70,10 +70,10 @@ export default function ProductPage({ product }: { product: TProduct }) {
 
   return (
     <PaddingContainer className="py-20">
-      <div className=" grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div className=" grid grid-cols-1 md:grid-cols-3 gap-10 content-center">
         {/* Image Panel */}
-        <div>
-          <div className="relative border mx-auto rounded-xl mb-4 bg-background overflow-hidden">
+        <div className="">
+          <div className="relative border  rounded-xl mb-4 bg-background overflow-hidden">
             {hasMounted && (
               <div key={selectedImage}>
                 <InnerImageZoom
@@ -88,15 +88,15 @@ export default function ProductPage({ product }: { product: TProduct }) {
                 />
               </div>
             )}
-            <span className="absolute top-4 right-4 bg-primary text-background px-2 py-1 rounded text-xs font-semibold z-10">
-              {product.discounted_price
-                ? `-${Math.round(
-                    ((product.price - product.discounted_price) /
-                      product.price) *
-                      100
-                  )}%`
-                : "New"}
-            </span>
+            {product.discounted_price && (
+              <span className="absolute top-4 right-4 bg-primary text-background px-2 py-1 rounded text-xs font-semibold z-10">
+                {Math.round(
+                  ((product.price - product.discounted_price) / product.price) *
+                    100
+                )}
+                %
+              </span>
+            )}
           </div>
 
           <div className="flex gap-3 overflow-x-auto p-1">

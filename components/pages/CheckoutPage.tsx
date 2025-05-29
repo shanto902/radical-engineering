@@ -125,57 +125,63 @@ export default function CheckoutPage() {
       </div>
 
       {/* Order Summary */}
-      <div className=" p-6 shadow-md rounded-lg border relative">
-        <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
+      <div className="p-4 sm:p-6 shadow-md rounded-lg border relative">
+        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+          Order Summary
+        </h2>
+
         <div className="space-y-4">
           {!hasMounted
             ? Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 border-b pb-4 animate-pulse"
+                  className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 border-b pb-4 animate-pulse"
                 >
-                  <div className="w-[70px] h-[70px] bg-gray-200 rounded" />
-                  <div className="flex-1 space-y-2">
+                  <div className="w-full sm:w-[70px] h-[70px] bg-gray-200 rounded" />
+                  <div className="flex-1 space-y-2 w-full">
                     <div className="h-4 bg-gray-200 rounded w-3/4" />
                     <div className="h-3 bg-gray-200 rounded w-1/2" />
                   </div>
-                  <div className="h-5 w-16 bg-gray-200 rounded" />
+                  <div className="h-5 w-16 bg-gray-200 rounded self-end sm:self-auto" />
                 </div>
               ))
             : items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-4 border-b pb-4"
+                  className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 border-b pb-4"
                 >
                   <Image
                     src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
                     alt={item.name}
                     width={70}
                     height={70}
-                    className="rounded object-cover border"
+                    className="rounded object-cover border w-full sm:w-[70px] h-[70px]"
                   />
-                  <div className="flex-1">
-                    <p className="font-medium">{item.name}</p>
+                  <div className="flex-1 w-full">
+                    <p className="font-medium text-base">{item.name}</p>
                     <p className="text-sm text-gray-500">
                       {item.quantity} × {item.price.toLocaleString()} BDT
                     </p>
                   </div>
-                  <p className="font-semibold text-right">
+                  <p className="font-semibold text-right w-full sm:w-auto">
                     {(item.price * item.quantity).toLocaleString()} BDT
                   </p>
                 </div>
               ))}
         </div>
-        <div className="mt-6 pt-4">
-          <p className="text-xl font-bold">
+
+        <div className="mt-4 sm:mt-6 pt-4">
+          <p className="text-lg sm:text-xl font-bold">
             Total: {`${total ? total.toLocaleString() : 0} BDT`}
           </p>
         </div>
+
         <Link
-          href={"/cart"}
-          className="flex items-center gap-2 absolute bottom-5 right-5 hover:border-b-2 pb-1 hover:border-primary"
+          href="/cart"
+          className="flex items-center gap-1 sm:gap-2 mt-6 sm:mt-0 sm:absolute sm:bottom-5 sm:right-5 text-sm sm:text-base hover:border-b-2 pb-1 hover:border-primary"
         >
-          <ArrowLeftCircle /> Go back to Cart
+          <ArrowLeftCircle className="w-5 h-5" />
+          Go back to Cart
         </Link>
       </div>
     </div>

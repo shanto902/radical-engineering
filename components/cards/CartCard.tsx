@@ -16,82 +16,82 @@ const CartCard = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  // 🔁 If cart is not passed, show Skeleton
+  // Skeleton loader
   if (!cart) {
     return (
-      <div className="flex flex-col sm:flex-row gap-6 items-center justify-between border-b pb-6 animate-pulse">
-        <div className="w-full sm:w-1/2 flex items-center gap-4">
-          <div className="w-24 h-24 bg-gray-200 rounded-lg" />
-          <div className="flex-1 space-y-2">
-            <div className="h-4 bg-gray-200 rounded w-3/4" />
-            <div className="h-3 bg-gray-200 rounded w-1/2" />
-          </div>
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 border-b animate-pulse">
+        <div className="w-full sm:w-1/4 h-24 bg-gray-200 rounded-lg" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 bg-gray-200 rounded w-3/4" />
+          <div className="h-3 bg-gray-200 rounded w-1/2" />
         </div>
-
-        <div className="hidden sm:block w-1/4 space-y-2">
-          <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto" />
-          <div className="h-4 bg-gray-300 rounded w-1/2 mx-auto" />
-        </div>
-
-        <div className="h-6 w-6 bg-gray-200 rounded-full" />
+        <div className="h-6 w-6 bg-gray-200 rounded-full self-end sm:self-center" />
       </div>
     );
   }
 
-  // ✅ Render actual cart item
   return (
-    <div
-      key={cart.id}
-      className="flex flex-col sm:flex-row gap-6 items-center justify-between border-b pb-6"
-    >
-      <div className="flex items-center gap-4 w-full sm:w-1/2">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 p-4 border-b">
+      {/* Left side: Image + Info */}
+      <div className="flex items-start sm:items-center gap-4 w-full sm:w-1/2">
         <Image
           src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cart.image}`}
           alt={cart.name}
           width={90}
           height={90}
-          className="rounded-lg object-cover border"
+          className="rounded-lg object-cover border shrink-0"
         />
-        <div>
-          <h2 className="text-lg font-semibold">{cart.name}</h2>
-          <p className="text-sm">৳ {cart.price.toLocaleString()}</p>
+        <div className="flex-1">
+          <h2 className="text-base font-semibold">{cart.name}</h2>
+          <p className="text-sm ">৳ {cart.price.toLocaleString()}</p>
+
+          {/* Total for mobile */}
+          <div className="sm:hidden mt-1 text-sm font-medium text-right ">
+            Total: BDT {(cart.price * cart.quantity).toLocaleString()}
+          </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <label className="text-sm font-medium">Qty:</label>
-        <div className="flex items-center border rounded overflow-hidden">
-          <button
-            onClick={() =>
-              handleQuantityChange?.(cart.id, Math.max(1, cart.quantity - 1))
-            }
-            className="px-2 py-1 text-sm font-bold hover:bg-secondary hover:text-foreground text-background bg-primary"
-            aria-label="Decrease quantity"
-          >
-            −
-          </button>
-          <span className="px-4 py-1 text-sm">{cart.quantity}</span>
-          <button
-            onClick={() => handleQuantityChange?.(cart.id, cart.quantity + 1)}
-            className="px-2 py-1 text-sm font-bold hover:bg-secondary hover:text-foreground text-background bg-primary"
-            aria-label="Increase quantity"
-          >
-            +
-          </button>
+      {/* Qty + Total + Delete */}
+      <div className="flex w-full sm:w-auto justify-between items-center gap-4 sm:gap-6">
+        {/* Quantity selector */}
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium hidden sm:block">Qty:</label>
+          <div className="flex items-center border rounded overflow-hidden">
+            <button
+              onClick={() =>
+                handleQuantityChange?.(cart.id, Math.max(1, cart.quantity - 1))
+              }
+              className="px-2 py-1 text-sm font-bold hover:bg-secondary hover:text-foreground text-background bg-primary"
+              aria-label="Decrease quantity"
+            >
+              −
+            </button>
+            <span className="px-3 py-1 text-sm">{cart.quantity}</span>
+            <button
+              onClick={() => handleQuantityChange?.(cart.id, cart.quantity + 1)}
+              className="px-2 py-1 text-sm font-bold hover:bg-secondary hover:text-foreground text-background bg-primary"
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="text-right font-semibold  hidden sm:block w-24">
-        BDT {(cart.price * cart.quantity).toLocaleString()}
-      </div>
+        {/* Total price (desktop only) */}
+        <div className="hidden sm:block text-right font-semibold w-24">
+          BDT {(cart.price * cart.quantity).toLocaleString()}
+        </div>
 
-      <button
-        onClick={() => dispatch(removeFromCart(cart.id))}
-        className="text-red-600 hover:text-red-800"
-        title="Remove from cart"
-      >
-        <Trash className="w-5 h-5" />
-      </button>
+        {/* Remove button */}
+        <button
+          onClick={() => dispatch(removeFromCart(cart.id))}
+          className="text-red-600 hover:text-red-800"
+          title="Remove from cart"
+        >
+          <Trash className="w-5 h-5" />
+        </button>
+      </div>
     </div>
   );
 };

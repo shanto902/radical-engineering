@@ -6,7 +6,7 @@ import { addToCart } from "@/store/cartSlice";
 import { removeFromWishlist } from "@/store/wishlistSlice";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingCart, Trash2 } from "lucide-react";
+import { Heart, HeartCrack, ShoppingCart, Trash2 } from "lucide-react";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import toast from "react-hot-toast";
@@ -20,14 +20,16 @@ const WishlistPage = () => {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-3xl font-bold mb-4">Your Wishlist is Empty 💔</h1>
+      <div className="max-w-7xl mx-auto flex flex-col items-center justify-center px-4 py-20 text-center h-[70vh]">
+        <h1 className="md:text-3xl text-xl font-bold mb-4 flex items-center gap-5 justify-center">
+          Your Wishlist is Empty <HeartCrack />{" "}
+        </h1>
         <p className="text-gray-500 mb-6">
           Save your favorite products and come back later!
         </p>
         <Link
           href="/categories"
-          className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-yellow-500 hover:text-black transition font-semibold"
+          className="inline-block bg-primary text-background px-4 py-2 rounded-lg hover:bg-secondary hover:text-foreground transition font-semibold"
         >
           Browse Products
         </Link>
@@ -37,7 +39,7 @@ const WishlistPage = () => {
 
   return (
     <PaddingContainer className="py-20">
-      <h1 className="text-3xl uppercase font-bold mb-12 text-center flex items-center justify-center gap-2">
+      <h1 className="md:text-3xl text-xl uppercase font-bold mb-12 text-center flex items-center justify-center gap-2">
         <Heart className="size-10 text-primary" />
         Your Wishlist
       </h1>
@@ -70,7 +72,7 @@ const WishlistPage = () => {
                   href={`/categories/${product?.category?.slug}/${product.slug}`}
                   className="block hover:text-primary transition"
                 >
-                  <h3 className="text-lg font-semibold text-gray-800 hover:underline">
+                  <h3 className="text-lg font-semibold hover:underline">
                     {product.name}
                   </h3>
                 </Link>
@@ -120,7 +122,7 @@ const WishlistPage = () => {
                   }
                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded transition ${
                     product.status === "in-stock"
-                      ? "bg-primary text-white hover:bg-yellow-500 hover:text-black"
+                      ? "bg-primary text-background hover:bg-secondary hover:text-foreground"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                 >

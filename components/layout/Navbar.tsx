@@ -60,7 +60,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
         <Link
           key={i}
           href={`/categories/${cat.slug}`}
-          className="flex items-center gap-3 p-2 rounded-lg transition-all hover:bg-primary/20 hover:text-primary group"
+          className="flex items-center gap-3 p-2 rounded-lg transition-all hover:bg-secondary hover:text-primary group"
         >
           {cat.image && (
             <Image
@@ -71,7 +71,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
               className="w-8 h-8 object-contain rounded"
             />
           )}
-          <span className="text-sm font-medium text-gray-700 dark:text-white group-hover:text-primary">
+          <span className="text-sm font-medium  group-hover:text-foreground">
             {cat.name}
           </span>
         </Link>
@@ -185,7 +185,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                     {renderSubMenuItems(navItem)}
                   </div>
                   <Link
-                    className="flex justify-center pb-2 pt-1 hover:bg-primary hover:text-foreground text-sm border-t-2 dark:border-gray-700 w-full"
+                    className="flex justify-center pb-2 pt-1 hover:bg-secondary bg-primary text-background hover:text-foreground text-sm border-t-2 dark:border-gray-700 w-full"
                     href={"/categories"}
                   >
                     View All Products
@@ -238,7 +238,8 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <div className="md:hidden">
+        <div className="md:hidden ml-5 flex gap-3 items-center">
+          <ThemeToggle />
           <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
             {isOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
@@ -247,27 +248,27 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden px-4 pt-3 pb-6 bg-white border-t shadow">
+        <div className="md:hidden px-4 pt-3 pb-6 bg-background border-t shadow">
           <div className="mb-4 relative">
             <input
               type="text"
               placeholder="Search..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full border rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full border rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 bg-background focus:ring-primary"
             />
             <Search
               className="absolute left-3 top-2.5 text-gray-400"
               size={18}
             />
             {query && (
-              <div className="absolute top-full left-0 right-0 bg-white border mt-1 rounded-lg shadow z-10">
+              <div className="absolute top-full left-0 right-0 overflow-hidden bg-background border mt-1 rounded-lg shadow z-10">
                 {filteredSuggestions.length > 0 ? (
                   filteredSuggestions.map((item, idx) => (
                     <Link
                       key={idx}
                       href={`/categories/${item.category.slug}/${item.slug}`}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                      className="flex items-center gap-3 px-4 py-2 text-sm  hover:bg-secondary cursor-pointer"
                       onClick={() => {
                         setQuery("");
                         setIsOpen(false);
@@ -284,9 +285,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                     </Link>
                   ))
                 ) : (
-                  <div className="px-4 py-2 text-sm text-gray-400">
-                    No results found
-                  </div>
+                  <div className="px-4 py-2 text-sm ">No results found</div>
                 )}
               </div>
             )}
@@ -309,7 +308,9 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                   href={navItem.link || "#"}
                   onClick={() => setIsOpen(false)}
                   className={`block py-2 text-sm font-medium transition hover:text-primary ${
-                    pathname === navItem.link ? "text-primary" : "text-gray-700"
+                    pathname === navItem.link
+                      ? "text-primary"
+                      : "text-foreground"
                   }`}
                 >
                   {navItem.label}
@@ -320,14 +321,14 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                     key={idx}
                     href={item.link}
                     onClick={() => setIsOpen(false)}
-                    className="block pl-4 py-1 text-sm text-gray-500 hover:text-primary"
+                    className="block pl-4 py-1 text-sm text-foreground hover:text-primary"
                   >
                     {item.label}
                   </Link>
                 ))}
                 {isDynamicCategoryMenu && (
                   <Link
-                    className="block pl-4 py-1 text-sm text-gray-500 hover:text-primary"
+                    className="block pl-4 py-1 text-sm text-foreground hover:text-primary"
                     href={"/categories"}
                   >
                     View All Products
@@ -337,19 +338,31 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
             );
           })}
 
-          <Link
-            href="/cart"
-            onClick={() => setIsOpen(false)}
-            className="block text-center mt-3 bg-primary text-white py-2 rounded-full font-semibold hover:shadow-lg transition"
-          >
-            {/* Badge */}
-            {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
-                {cartItems.length}
-              </span>
-            )}
-            View Cart
-          </Link>
+          <div className="flex items-center gap-4 w-full">
+            <Link
+              href="/cart"
+              onClick={() => setIsOpen(false)}
+              className="block w-full text-center mt-3 bg-primary text-background relative py-1 rounded-full font-semibold hover:shadow-lg transition"
+            >
+              {/* Badge */}
+              {cartItems.length > 0 && (
+                <span
+                  className="absolute top-1/2 -translate-y-1/2
+ right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center "
+                >
+                  {cartItems.length}
+                </span>
+              )}
+              View Cart
+            </Link>
+            <Link
+              href="/wishlist"
+              onClick={() => setIsOpen(false)}
+              className="block text-center mt-3 bg-primary text-background relative py-1 w-full rounded-full font-semibold hover:shadow-lg transition"
+            >
+              View Wishlist
+            </Link>
+          </div>
         </div>
       )}
     </nav>

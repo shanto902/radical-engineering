@@ -26,7 +26,7 @@ const CartPage = () => {
 
   return (
     <div className="max-w-7xl min-h-[60vh] mx-auto px-4 mt-16 py-12">
-      <h1 className="text-3xl uppercase font-bold mb-12 text-center flex items-center justify-center gap-2">
+      <h1 className="md:text-3xl text-xl uppercase font-bold mb-12 text-center flex items-center justify-center gap-2">
         {" "}
         <span>
           <ShoppingCart className="size-10 text-primary" />

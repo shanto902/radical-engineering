@@ -41,7 +41,7 @@ const ProductTabs = ({
             className={`py-2 px-4 text-base font-semibold transition ${
               activeTab === "details"
                 ? "border-b-2 border-primary text-primary"
-                : "text-gray-600 hover:text-primary"
+                : " hover:text-primary"
             }`}
           >
             Product Details
@@ -53,7 +53,7 @@ const ProductTabs = ({
             className={`py-2 px-4 text-base font-semibold transition ${
               activeTab === "pdf"
                 ? "border-b-2 border-primary text-primary"
-                : "text-gray-600 hover:text-primary"
+                : " hover:text-primary"
             }`}
           >
             Data Sheet
@@ -65,7 +65,7 @@ const ProductTabs = ({
             className={`py-2 px-4 text-base font-semibold transition ${
               activeTab === "manual"
                 ? "border-b-2 border-primary text-primary"
-                : "text-gray-600 hover:text-primary"
+                : " hover:text-primary"
             }`}
           >
             User Manual
