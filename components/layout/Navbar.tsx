@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import Image from "next/image";
-
+import logoDark from "@/assets/logo-dark.svg";
 import { TMenu, TSettings } from "@/interfaces";
 
 import CartPopup from "./header/CartPopup";
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { fetchProducts } from "@/store/productSlice";
 import logo from "@/assets/logo.svg";
+import { ThemeToggle } from "../ThemeToggle";
 const Navbar = ({ settings }: { settings: TSettings }) => {
   const [categories, setCategories] = useState<
     { name: string; slug: string; image?: string }[]
@@ -44,8 +45,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   }, []);
 
   const products = useSelector((state: RootState) => state.products.items);
-  console.log("Products in Redux:", products);
-
+  const theme = useSelector((state: RootState) => state.theme.mode);
   const filteredSuggestions = products.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
   );
@@ -71,7 +71,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
               className="w-8 h-8 object-contain rounded"
             />
           )}
-          <span className="text-sm font-medium text-gray-700 group-hover:text-primary">
+          <span className="text-sm font-medium text-gray-700 dark:text-white group-hover:text-primary">
             {cat.name}
           </span>
         </Link>
@@ -90,11 +90,11 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   };
 
   return (
-    <nav className="backdrop-blur-lg bg-white/80 shadow-sm fixed top-0 w-full z-50">
+    <nav className="backdrop-blur-lg bg-white/80 dark:bg-backgroundDark/80  shadow-sm fixed top-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/home">
           <Image
-            src={logo}
+            src={theme === "light" ? logo : logoDark}
             alt="Logo"
             className="h-12 object-contain w-fit rounded-md"
             priority
@@ -109,21 +109,21 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
               placeholder="Search products..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full border border-gray-300 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full border bg-background   rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <Search
-              className="absolute left-3 top-2.5 text-gray-400"
+              className="absolute left-3 top-2.5 text-gray-400 "
               size={18}
             />
           </div>
           {query && (
-            <div className="absolute top-full left-0 right-0 bg-white border mt-1 rounded-lg shadow z-10">
+            <div className="absolute top-full border left-0 right-0 bg-background mt-1 rounded-lg shadow z-10">
               {filteredSuggestions.length > 0 ? (
                 filteredSuggestions.map((item, idx) => (
                   <Link
                     key={idx}
                     href={`/categories/${item.category.slug}/${item.slug}`}
-                    className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-primary/20 hover:text-primary m-1 rounded-md cursor-pointer"
+                    className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-secondary hover:text-foreground m-1 rounded-md cursor-pointer"
                     onClick={() => setQuery("")}
                   >
                     <Image
@@ -158,10 +158,10 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                 <Link
                   href={navItem.link}
                   className={clsx(
-                    "flex items-center text-sm group font-medium text-gray-700 hover:text-primary transition",
+                    "flex items-center text-sm group font-medium text-foreground hover:text-primary transition",
                     pathname.startsWith(navItem.link || "")
                       ? "text-primary font-semibold"
-                      : "text-gray-600 font-medium"
+                      : "text-foreground font-medium"
                   )}
                 >
                   {navItem.label}
@@ -175,7 +175,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
                 <div
                   className={clsx(
-                    "absolute left-0 top-full mt-3 w-[400px] bg-white border rounded-2xl shadow-xl overflow-hidden transition-all font-semibold duration-300 ease-out transform",
+                    "absolute left-0 top-full mt-3 w-[400px] bg-background  border  rounded-2xl shadow-xl overflow-hidden transition-all font-semibold duration-300 ease-out transform",
                     hoveringMenu
                       ? "opacity-100 visible translate-y-0"
                       : "opacity-0 invisible -translate-y-2"
@@ -185,7 +185,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                     {renderSubMenuItems(navItem)}
                   </div>
                   <Link
-                    className="flex justify-center pb-2 pt-1 hover:bg-primary/20 text-sm border-t-2 w-full"
+                    className="flex justify-center pb-2 pt-1 hover:bg-primary hover:text-foreground text-sm border-t-2 dark:border-gray-700 w-full"
                     href={"/categories"}
                   >
                     View All Products
@@ -200,19 +200,20 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                   "text-sm hover:text-primary hover:underline transition-all duration-200 underline-offset-4",
                   pathname.startsWith(navItem.link || "")
                     ? "text-primary font-semibold"
-                    : "text-gray-600 font-medium"
+                    : "text-foreground font-medium"
                 )}
               >
                 {navItem.label}
               </Link>
             )
           )}
+          <ThemeToggle />
 
           {/* ❤️ Wishlist Icon */}
           <Link
             href="/wishlist"
             title="Wishlist"
-            className="text-gray-600 hover:text-primary transition"
+            className="text-foreground hover:text-primary transition"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -2,19 +2,20 @@ import { configureStore } from "@reduxjs/toolkit";
 import cartReducer from "./cartSlice";
 import wishlistReducer from "./wishlistSlice";
 import productReducer from "./productSlice";
+import themeReducer from "./themeSlice";
 import { loadFromLocalStorage, saveToLocalStorage } from "./persistConfig";
-
-// ⬅️ Get slice state types
 import type { CartState } from "./cartSlice";
 import type { WishlistState } from "./wishlistSlice";
+import type { ThemeState } from "./themeSlice";
 
-// ⬅️ Define preloadedState with correct types
 const preloadedState: {
   cart: CartState;
   wishlist: WishlistState;
+  theme: ThemeState;
 } = {
   cart: loadFromLocalStorage<CartState>("cart") || { items: [] },
   wishlist: loadFromLocalStorage<WishlistState>("wishlist") || { items: [] },
+  theme: loadFromLocalStorage<ThemeState>("theme") || { mode: "light" }, // ← FIXED HERE
 };
 
 export const store = configureStore({
@@ -22,14 +23,16 @@ export const store = configureStore({
     cart: cartReducer,
     wishlist: wishlistReducer,
     products: productReducer,
+    theme: themeReducer,
   },
   preloadedState,
 });
 
-// Save to localStorage
 store.subscribe(() => {
-  saveToLocalStorage("cart", store.getState().cart);
-  saveToLocalStorage("wishlist", store.getState().wishlist);
+  const state = store.getState();
+  saveToLocalStorage("cart", state.cart);
+  saveToLocalStorage("wishlist", state.wishlist);
+  saveToLocalStorage("theme", state.theme); // ← PERSIST THEME
 });
 
 export type RootState = ReturnType<typeof store.getState>;

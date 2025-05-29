@@ -42,9 +42,7 @@ const CartPage = () => {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="text-center text-gray-500 text-lg">
-          Your cart is currently empty.
-        </div>
+        <div className="text-center text-lg">Your cart is currently empty.</div>
       ) : (
         <>
           <div className="space-y-8">
@@ -62,21 +60,21 @@ const CartPage = () => {
             <div>
               <button
                 onClick={() => dispatch(clearCart())}
-                className="text-base flex items-center gap-2 font-bold bg-red-600 rounded-md text-white hover:bg-yellow-400 hover:text-black transition-all duration-200 p-2"
+                className="text-base flex items-center gap-2 font-bold bg-red-600 rounded-md text-white hover:bg-primary hover:text-background transition-all duration-200 p-2"
               >
                 <Trash /> Clear Cart
               </button>
             </div>
 
             {/* Right: Total + Checkout */}
-            <div className="bg-gray-50 border rounded-xl p-6 space-y-4 shadow-sm">
+            <div className=" border rounded-xl p-6 space-y-4 shadow-sm">
               <div className="flex justify-between text-lg font-medium">
                 <span>Total:</span>
                 <span>{total.toLocaleString()} BDT</span>
               </div>
               <Link
                 href="/checkout"
-                className="block text-center bg-primary text-white py-3 px-6 rounded-lg hover:bg-yellow-500 hover:text-black font-semibold transition"
+                className="block text-center bg-primary text-background py-3 px-6 rounded-lg hover:bg-secondary hover:text-foreground font-semibold transition"
               >
                 Proceed to Checkout
               </Link>

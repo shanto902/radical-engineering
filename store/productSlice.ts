@@ -23,7 +23,7 @@ export const fetchProducts = createAsyncThunk<TProduct[], string | undefined>(
       const data = await res.json();
       return data;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return thunkAPI.rejectWithValue("Failed to fetch products");
     }
   }

@@ -54,9 +54,7 @@ const CartCard = ({
         />
         <div>
           <h2 className="text-lg font-semibold">{cart.name}</h2>
-          <p className="text-sm text-gray-600">
-            ৳ {cart.price.toLocaleString()}
-          </p>
+          <p className="text-sm">৳ {cart.price.toLocaleString()}</p>
         </div>
       </div>
 
@@ -67,7 +65,7 @@ const CartCard = ({
             onClick={() =>
               handleQuantityChange?.(cart.id, Math.max(1, cart.quantity - 1))
             }
-            className="px-2 py-1 text-sm font-bold hover:bg-yellow-400 hover:text-black text-white bg-primary"
+            className="px-2 py-1 text-sm font-bold hover:bg-secondary hover:text-foreground text-background bg-primary"
             aria-label="Decrease quantity"
           >
             −
@@ -75,7 +73,7 @@ const CartCard = ({
           <span className="px-4 py-1 text-sm">{cart.quantity}</span>
           <button
             onClick={() => handleQuantityChange?.(cart.id, cart.quantity + 1)}
-            className="px-2 py-1 text-sm font-bold hover:bg-yellow-400 hover:text-black text-white bg-primary"
+            className="px-2 py-1 text-sm font-bold hover:bg-secondary hover:text-foreground text-background bg-primary"
             aria-label="Increase quantity"
           >
             +
@@ -83,7 +81,7 @@ const CartCard = ({
         </div>
       </div>
 
-      <div className="text-right font-semibold text-gray-800 hidden sm:block w-24">
+      <div className="text-right font-semibold  hidden sm:block w-24">
         BDT {(cart.price * cart.quantity).toLocaleString()}
       </div>
 

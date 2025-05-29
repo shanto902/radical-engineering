@@ -60,7 +60,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
   // 🔁 Skeleton for Hydration Safety
   if (!hasMounted) {
     return (
-      <div className="bg-white border rounded-xl shadow overflow-hidden animate-pulse">
+      <div className="bg-background border rounded-xl shadow overflow-hidden animate-pulse">
         <div className="w-full h-40 bg-gray-200" />
         <div className="p-4 space-y-2">
           <div className="h-6 bg-gray-200 rounded w-3/4" />
@@ -80,7 +80,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
   return (
     <div
       key={product.id}
-      className="bg-white border hover:bg-primary/10 rounded-xl shadow hover:shadow-md transition overflow-hidden relative flex flex-col justify-between"
+      className="bg-background border hover:bg-primary/10 rounded-xl shadow hover:shadow-md transition overflow-hidden relative flex flex-col justify-between"
     >
       <div>
         <Link
@@ -92,27 +92,28 @@ const ProductCard = ({ product }: { product: TProduct }) => {
             alt={product.name}
             width={400}
             height={400}
-            className="w-full  object-contain aspect-square bg-white"
+            className="w-full  object-contain aspect-square "
           />
-          <span className="absolute top-2  left-2 bg-primary text-white text-xs px-2 py-1 rounded-full font-semibold">
-            {product.discounted_price
-              ? `-${Math.round(
-                  ((product.price - product.discounted_price) / product.price) *
-                    100
-                )}%`
-              : "New"}
-          </span>
+          {product.discounted_price && (
+            <span className="absolute top-2  left-2 bg-primary text-background  text-xs px-2 py-1 rounded-full font-semibold">
+              {Math.round(
+                ((product.price - product.discounted_price) / product.price) *
+                  100
+              )}
+              %`
+            </span>
+          )}
         </Link>
 
         {/* Wishlist Button */}
         <button
           onClick={toggleWishlist}
-          className="absolute top-2 right-2 p-1 bg-white rounded-full shadow hover:bg-gray-100 transition"
+          className="absolute top-2 right-2 p-1 bg-foreground text-back  rounded-full shadow hover:bg-primary transition"
         >
           {isInWishlist ? (
             <X className="text-red-500 w-5 h-5" />
           ) : (
-            <Heart className="text-gray-500 w-5 h-5" />
+            <Heart className="text-background  hover:text-background w-5 h-5" />
           )}
         </button>
 
@@ -122,9 +123,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         >
           <div className="px-4 pt-2">
             <h3 className="text-base font-bold mb-1">{product.name}</h3>
-            <p className="text-xs text-gray-500 mb-2">
-              {product.category.name}
-            </p>
+            <p className="text-xs text-primary mb-2">{product.category.name}</p>
           </div>
         </Link>
       </div>
@@ -156,7 +155,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
               {product.price.toLocaleString()}৳
             </span>
           )}
-          <span className="text-black font-bold text-lg">
+          <span className="text-foreground font-bold text-lg">
             {(product.discounted_price || product.price).toLocaleString()}৳
           </span>
         </div>
@@ -168,7 +167,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
                 ? handleCart()
                 : toast.error("Product Not Available")
             }
-            className="w-full bg-primary hover:bg-yellow-400 text-white hover:text-black text-sm py-2 rounded-lg font-semibold transition"
+            className="w-full bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
           >
             Add To Cart
           </button>
@@ -179,7 +178,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
                 ? handleBuyNow()
                 : toast.error("Product Not Available")
             }
-            className="w-full bg-green-800 hover:bg-yellow-400 text-white hover:text-black text-sm py-2 rounded-lg font-semibold transition"
+            className="w-full bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
           >
             Buy Now
           </button>

@@ -127,7 +127,7 @@ export default function ShopPage({
       <div className="flex gap-4 flex-wrap font-bold mb-4">
         <button
           className={`px-4 py-2 rounded-full ${
-            !categorySlug ? "bg-primary text-white" : "text-gray-700"
+            !categorySlug ? "bg-primary text-background" : "text-foreground"
           }`}
           onClick={() => router.push("/categories")}
         >
@@ -139,15 +139,15 @@ export default function ShopPage({
             onClick={() => router.push(`/categories/${cat.slug}`)}
             className={`px-4 py-2 rounded-full ${
               categorySlug === cat.slug
-                ? "bg-primary text-white"
-                : "text-gray-700"
+                ? "bg-primary text-background"
+                : "text-foreground"
             }`}
           >
             {cat.name}
           </button>
         ))}
       </div>
-
+      <hr className="mb-4" />
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
         {/* Sidebar */}
         <aside className="px-4">
@@ -176,7 +176,7 @@ export default function ShopPage({
 
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-4">Price Range (৳)</h3>
-            <div className="text-sm text-gray-600 mb-2">
+            <div className="text-sm  mb-2">
               {priceRange[0].toLocaleString()}৳ –{" "}
               {priceRange[1].toLocaleString()}৳
             </div>
@@ -200,7 +200,7 @@ export default function ShopPage({
                       max: maxAvailablePrice,
                     }),
                   }}
-                  className="h-1 rounded bg-gray-200"
+                  className="h-1 rounded bg-foreground"
                 >
                   {children}
                 </div>
@@ -247,7 +247,7 @@ export default function ShopPage({
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="h-[60vh] flex flex-col items-center justify-center text-center space-y-4">
-              <h2 className="text-xl font-semibold text-gray-700">
+              <h2 className="text-xl font-semibold">
                 Oops! No products found.
               </h2>
               <p className="text-gray-500 text-sm max-w-md">
@@ -270,7 +270,7 @@ export default function ShopPage({
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                       disabled={currentPage === 1}
-                      className="px-3 py-1 border rounded disabled:opacity-50"
+                      className="px-3 py-1 hover:bg-secondary border rounded disabled:opacity-50"
                     >
                       Previous
                     </button>
@@ -284,8 +284,8 @@ export default function ShopPage({
                         onClick={() => setCurrentPage(idx + 1)}
                         className={`px-3 py-1 border rounded ${
                           currentPage === idx + 1
-                            ? "bg-primary text-white"
-                            : "hover:bg-gray-100"
+                            ? "bg-primary text-background"
+                            : "hover:bg-secondary"
                         }`}
                       >
                         {idx + 1}
@@ -306,7 +306,7 @@ export default function ShopPage({
                         currentPage ===
                         Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE)
                       }
-                      className="px-3 py-1 border rounded disabled:opacity-50"
+                      className="px-3 py-1 border hover:bg-secondary rounded disabled:opacity-50"
                     >
                       Next
                     </button>

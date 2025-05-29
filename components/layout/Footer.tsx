@@ -1,20 +1,25 @@
+"use client";
 import Link from "next/link";
 import { Facebook, Phone, Mail, MapPin } from "lucide-react";
 import Image from "next/image";
-import logo from "@/assets/logo-square.svg"; // Adjust the path as necessary
+import logo from "@/assets/logo-square.svg";
+import logoDark from "@/assets/logo-square-dark.svg";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 export default function Footer() {
+  const theme = useSelector((state: RootState) => state.theme.mode);
   return (
-    <footer className="bg-primary text-white pt-10 pb-6">
+    <footer className="bg-primary text-background pt-10 pb-6">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Logo & Tagline */}
         <div>
           <Image
-            src={logo}
+            src={theme === "light" ? logo : logoDark}
             alt="Logo"
             className=" object-contain w-fit h-28"
             priority
           />
-          <p className="mt-3 ml-1 text-sm text-gray-300">
+          <p className="mt-3 ml-1 text-sm text-background">
             Powering your home with trusted solar and battery solutions.
           </p>
         </div>
@@ -22,7 +27,7 @@ export default function Footer() {
         {/* Navigation */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
-          <ul className="space-y-2 text-sm text-gray-300">
+          <ul className="space-y-2 text-sm text-background">
             <li>
               <Link href="/" className="hover:text-white">
                 Home
@@ -49,7 +54,7 @@ export default function Footer() {
         {/* Contact Info */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Contact</h3>
-          <ul className="space-y-2 text-sm text-gray-300">
+          <ul className="space-y-2 text-sm text-background">
             <li className="flex items-center gap-2">
               <Phone className="w-4 h-4" /> +880 1911-922109
             </li>
@@ -79,7 +84,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-white/10 mt-10 pt-4 text-center text-sm text-gray-400">
+      <div className="border-t border-background mt-10 pt-4 text-center text-sm text-background">
         © {new Date().getFullYear()} Radical Engineering. All rights reserved.
       </div>
     </footer>

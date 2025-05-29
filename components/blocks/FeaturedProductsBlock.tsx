@@ -13,7 +13,7 @@ const FeaturedProductsBlock = ({
     (item) => item.products_id !== null
   );
   return (
-    <section className="py-10 bg-white">
+    <section className="py-10 ">
       <PaddingContainer>
         <h2 className="text-2xl md:text-3xl font-bold mb-8">
           {block.item.header_text || "Featured Products"}

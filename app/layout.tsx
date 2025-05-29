@@ -10,6 +10,9 @@ import { TSettings } from "@/interfaces";
 import { Toaster } from "react-hot-toast";
 import ReduxProvider from "@/components/ReduxProvider";
 
+import ThemeWrapper from "@/components/layout/ThemeWrapper";
+import FaviconSwitcher from "@/components/layout/FaviconSwitcher";
+
 const lato = Lato({
   variable: "--font-lato",
   subsets: ["latin"],
@@ -34,10 +37,13 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${lato.variable} antialiased `}>
         <ReduxProvider>
-          <Toaster position="bottom-right" />
-          <Navbar settings={settings} />
-          <main className="min-h-[80vh]">{children}</main>
-          <Footer />
+          <FaviconSwitcher />
+          <ThemeWrapper>
+            <Toaster position="bottom-right" />
+            <Navbar settings={settings} />
+            <main className="min-h-[80vh] dark:bg-darkBG ">{children}</main>
+            <Footer />
+          </ThemeWrapper>
         </ReduxProvider>
       </body>
     </html>

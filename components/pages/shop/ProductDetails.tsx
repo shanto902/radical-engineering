@@ -20,8 +20,6 @@ import {
   Clock,
   Plus,
   Minus,
-  ShoppingCart,
-  ArrowRightCircle,
 } from "lucide-react";
 
 import { AppDispatch, RootState } from "@/store";
@@ -75,7 +73,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
       <div className=" grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Image Panel */}
         <div>
-          <div className="relative border mx-auto rounded-xl mb-4 bg-white overflow-hidden">
+          <div className="relative border mx-auto rounded-xl mb-4 bg-background overflow-hidden">
             {hasMounted && (
               <div key={selectedImage}>
                 <InnerImageZoom
@@ -86,11 +84,11 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   zoomSrc={getImageUrl(selectedImage)}
                   zoomType="hover"
                   zoomPreload
-                  className="rounded-xl bg-contain bg-white"
+                  className="rounded-xl bg-contain bg-bg-background"
                 />
               </div>
             )}
-            <span className="absolute top-4 right-4 bg-primary text-white px-2 py-1 rounded text-xs font-semibold z-10">
+            <span className="absolute top-4 right-4 bg-primary text-background px-2 py-1 rounded text-xs font-semibold z-10">
               {product.discounted_price
                 ? `-${Math.round(
                     ((product.price - product.discounted_price) /
@@ -115,7 +113,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   alt={`Thumbnail ${idx}`}
                   width={80}
                   height={80}
-                  className="w-20 h-20 p-2 object-cover bg-white"
+                  className="w-20 h-20 p-2 object-cover bg-background"
                 />
               </button>
             ))}
@@ -123,12 +121,12 @@ export default function ProductPage({ product }: { product: TProduct }) {
         </div>
 
         {/* Info Panel */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border col-span-2 flex flex-col justify-between">
+        <div className="bg-background rounded-xl p-6 shadow-sm border col-span-2 flex flex-col justify-between">
           <div>
             <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
             <p className="text-sm font-semibold my-1 flex justify-start items-center gap-4">
               {product.status === "in-stock" && (
-                <span className="text-green-600 flex items-center gap-1">
+                <span className="text-green-600 dark:text-green-400 flex items-center gap-1">
                   <CheckCircle size={16} /> In Stock
                 </span>
               )}
@@ -144,7 +142,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
               )}
 
               {product.warranty && (
-                <span className="font-bold py-2 bg-primary text-white px-3 rounded-full">
+                <span className="font-bold py-2 bg-primary text-background px-3 rounded-full">
                   {product.warranty} Warranty
                 </span>
               )}
@@ -154,13 +152,13 @@ export default function ProductPage({ product }: { product: TProduct }) {
                 <span className="line-through text-gray-400 text-xl font-medium">
                   {product.price}৳
                 </span>
-                <span className="text-green-600 text-2xl font-bold">
+                <span className="text-green-600 dark:text-green-400 text-2xl font-bold">
                   {product.discounted_price}৳
                 </span>
               </div>
             ) : (
               <div className="flex items-center gap-4 my-3">
-                <span className="text-green-600 text-2xl font-bold">
+                <span className="text-green-600 dark:text-green-400 text-2xl font-bold">
                   {product.price}৳
                 </span>
               </div>
@@ -174,14 +172,12 @@ export default function ProductPage({ product }: { product: TProduct }) {
 
           <div>
             <div className="mb-4 flex items-center gap-2">
-              <label className="text-base font-medium text-gray-700 ">
-                Quantity:
-              </label>
+              <label className="text-base font-medium ">Quantity:</label>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                  className="bg-primary hover:bg-yellow-400 text-white hover:text-black font-bold py-2 px-3 rounded"
+                  className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
                 >
                   <Minus size={16} />
                 </button>
@@ -193,13 +189,13 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   onChange={(e) =>
                     setQuantity(Math.max(1, Number(e.target.value)))
                   }
-                  className="w-16 text-center accent-primary border border-gray-300 py-2 rounded-full text-base font-semibold"
+                  className="w-16 text-center accent-primary border bg-background border-gray-300 py-2 rounded-full text-base font-semibold"
                 />
 
                 <button
                   type="button"
                   onClick={() => setQuantity((prev) => prev + 1)}
-                  className="bg-primary hover:bg-yellow-400 text-white hover:text-black font-bold py-2 px-3 rounded"
+                  className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
                 >
                   <Plus size={16} />
                 </button>
@@ -213,9 +209,9 @@ export default function ProductPage({ product }: { product: TProduct }) {
                     ? handleAddToCart()
                     : toast.error("product Not Available")
                 }
-                className="px-5 flex justify-center gap-4 bg-primary text-white hover:bg-yellow-300 hover:text-black transition items-center font-semibold py-2 rounded-xl"
+                className="w-fit px-5 bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
               >
-                <ShoppingCart /> Add to Cart
+                Add to Cart
               </button>
               <button
                 onClick={() =>
@@ -223,13 +219,13 @@ export default function ProductPage({ product }: { product: TProduct }) {
                     ? handleBuyNow()
                     : toast.error("Product Not Available")
                 }
-                className="px-5 flex justify-center gap-4 items-center border border-primary text-primary hover:bg-primary hover:text-white transition font-semibold py-2 rounded-xl"
+                className="w-fit px-5  bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
               >
-                Buy Now <ArrowRightCircle />
+                Buy Now
               </button>
             </div>
 
-            <div className="flex items-center justify-between mb-2 text-sm text-gray-600">
+            <div className="flex items-center justify-between mb-2 text-sm ">
               <button
                 className={`flex items-center gap-2 font-medium transition ${
                   isWishlisted ? "text-red-500" : "hover:text-primary"
@@ -244,16 +240,16 @@ export default function ProductPage({ product }: { product: TProduct }) {
               </button>
 
               <div className="flex gap-3">
-                <Link href="#" className="hover:text-blue-500">
+                <Link href="#" className="hover:text-primary">
                   <Facebook size={16} />
                 </Link>
-                <Link href="#" className="hover:text-sky-400">
+                <Link href="#" className="hover:text-primary">
                   <Twitter size={16} />
                 </Link>
-                <Link href="#" className="hover:text-black">
+                <Link href="#" className="hover:text-primary">
                   <X size={16} />
                 </Link>
-                <Link href="#" className="hover:text-blue-600">
+                <Link href="#" className="hover:text-primary">
                   <Linkedin size={16} />
                 </Link>
               </div>

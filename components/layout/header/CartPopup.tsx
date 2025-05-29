@@ -39,7 +39,7 @@ const CartPopup = () => {
     >
       <Link
         href="/cart"
-        className="ml-3 px-4 py-2 bg-primary hover:bg-yellow-400 hover:text-black transition text-white rounded-full text-sm font-semibold shadow inline-flex items-center gap-2"
+        className="ml-3 px-4 py-2 bg-primary hover:bg-secondary  transition text-background hover:text-foreground rounded-full text-sm font-semibold shadow inline-flex items-center gap-2"
       >
         <ShoppingCart className="w-4 h-4" />
         View Cart
@@ -51,7 +51,7 @@ const CartPopup = () => {
       </Link>
 
       {showPopup && (
-        <div className="absolute right-0 mt-3 w-[320px] bg-white shadow-xl border rounded-xl z-50">
+        <div className="absolute right-0 mt-3 w-[320px] bg-background shadow-xl border rounded-xl z-50">
           <div className="p-4 max-h-[300px] overflow-y-auto space-y-4">
             {cartItems.length === 0 ? (
               <p className="text-sm text-gray-500">Cart is empty.</p>
@@ -86,7 +86,7 @@ const CartPopup = () => {
             <div className="p-4 border-t text-center">
               <Link
                 href="/cart"
-                className="inline-block bg-primary text-white px-4 py-2 rounded-md text-sm hover:bg-yellow-400 hover:text-black transition"
+                className="inline-block bg-primary text-background px-4 py-2 rounded-md text-sm hover:bg-secondary hover:text-foreground transition"
               >
                 Go to Cart
               </Link>

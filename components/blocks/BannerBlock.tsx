@@ -18,7 +18,7 @@ const BannerBlock = ({ block }: { block: TBannerBlock }) => {
 
   return (
     <PaddingContainer>
-      <div className="relative mx-auto rounded-lg overflow-hidden bg-white shadow-sm">
+      <div className="relative mx-auto rounded-lg overflow-hidden  shadow-sm">
         <div
           ref={sliderRef}
           className="keen-slider h-[220px] sm:h-[300px] md:h-[400px]"
@@ -40,13 +40,13 @@ const BannerBlock = ({ block }: { block: TBannerBlock }) => {
         {/* Arrows */}
         <button
           onClick={prev}
-          className="absolute top-1/2 left-3 -translate-y-1/2 bg-primary text-white p-2 rounded-full hover:bg-yellow-400 hover:text-black transition-all duration-200"
+          className="absolute top-1/2 left-3 -translate-y-1/2 bg-primary text-background p-2 rounded-full hover:bg-secondary hover:text-foreground transition-all duration-200"
         >
           <ChevronLeft size={24} />
         </button>
         <button
           onClick={next}
-          className="absolute top-1/2 right-3 -translate-y-1/2 bg-primary text-white p-2 rounded-full hover:bg-yellow-400 hover:text-black transition-all duration-200"
+          className="absolute top-1/2 right-3 -translate-y-1/2  bg-primary text-background p-2 rounded-full hover:bg-secondary hover:text-foreground transition-all duration-200"
         >
           <ChevronRight size={24} />
         </button>

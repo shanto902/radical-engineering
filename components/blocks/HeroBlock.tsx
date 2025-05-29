@@ -49,13 +49,13 @@ const HeroBlock = ({ block }: { block: THeroBlock }) => {
               priority={idx === 0}
               className="object-cover brightness-[.6]"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 to-transparent" />
-            <PaddingContainer className="text-white z-10 space-y-4 flex flex-col justify-center items-center gap-5">
-              <Body className="hero-body">{slide.sliders_id.body}</Body>
+            <div className="absolute inset-0 bg-gradient-to-r from-background  to-transparent" />
+            <PaddingContainer className=" z-10 space-y-4 flex flex-col justify-center items-center gap-5">
+              <Body className="hero-body ">{slide.sliders_id.body}</Body>
               {slide.sliders_id.button && (
                 <Link
                   href={slide.sliders_id.button_link || "#"}
-                  className="bg-primary hover:bg-yellow-300 text-white w-fit hover:text-black font-semibold px-6 py-3 rounded-2xl shadow-md transition"
+                  className="bg-primary hover:bg-secondary text-background hover:text-foreground w-fit font-semibold px-6 py-3 rounded-2xl shadow-md transition"
                 >
                   {slide.sliders_id.button_text || "Learn More"}
                 </Link>
@@ -72,7 +72,7 @@ const HeroBlock = ({ block }: { block: THeroBlock }) => {
             key={idx}
             onClick={() => instanceRef.current?.moveToIdx(idx)}
             className={`w-3 h-3 rounded-full ${
-              currentSlide === idx ? "bg-white" : "bg-white/40"
+              currentSlide === idx ? "bg-foreground" : "bg-white/40"
             } transition-all`}
           />
         ))}

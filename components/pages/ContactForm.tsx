@@ -36,8 +36,8 @@ export default function ContactForm() {
   };
 
   return (
-    <section className="min-h-screen mt-20 bg-gradient-to-br from-white via-gray-100 to-white py-12 px-4 flex items-center justify-center">
-      <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8">
+    <section className="min-h-screen mt-20  py-12 px-4 flex items-center justify-center">
+      <div className="w-full max-w-2xl border shadow-xl rounded-2xl p-8">
         <h2 className="text-3xl font-bold text-primary text-center mb-6">
           Get In Touch
         </h2>
@@ -50,7 +50,7 @@ export default function ContactForm() {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               required
-              className="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="peer w-full px-4 pt-5 pb-2 border border-gray-300 bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <label className="absolute left-4 top-2 text-gray-500 text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
               Full Name
@@ -64,7 +64,7 @@ export default function ContactForm() {
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
               required
-              className="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="peer w-full px-4 pt-5 pb-2 border border-gray-300 bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <label className="absolute left-4 top-2 text-gray-500 text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
               Phone Number
@@ -77,7 +77,7 @@ export default function ContactForm() {
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="peer w-full px-4 pt-5 pb-2 border border-gray-300 bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <label className="absolute left-4 top-2 text-gray-500 text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
               Email Address
@@ -91,9 +91,9 @@ export default function ContactForm() {
               onChange={(e) => setForm({ ...form, message: e.target.value })}
               required
               rows={4}
-              className="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="peer w-full bg-background px-4 pt-5 pb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <label className="absolute left-4 top-2 text-gray-500 text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
+            <label className="absolute left-4 top-2 text-gray-500 text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all ">
               Your Message
             </label>
           </div>
@@ -102,7 +102,7 @@ export default function ContactForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition duration-200"
+              className="w-full flex  items-center justify-center gap-2 bg-primary text-background hover:bg-secondary hover:text-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition duration-200"
             >
               <MailIcon /> {loading ? "Sending..." : "Send Message"}
             </button>
@@ -112,7 +112,7 @@ export default function ContactForm() {
               <a
                 href="https://wa.me/+8801787224460"
                 target="_blank"
-                className="w-full flex items-center justify-center gap-2  bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition duration-200"
+                className="w-full flex  items-center justify-center gap-2 bg-primary text-background hover:bg-secondary hover:text-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition duration-200"
                 rel="noopener noreferrer"
               >
                 <MessageCircleMore /> Chat on WhatsApp

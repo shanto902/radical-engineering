@@ -12,7 +12,7 @@ const FeaturedCategoriesBlock = ({
   block: TFeaturedCategoriesBlock;
 }) => {
   return (
-    <section className="py-12 bg-white">
+    <section className="py-12 ">
       <PaddingContainer>
         <h2 className="text-2xl md:text-3xl font-bold mb-8">
           {block.item.header_text || "Featured Categories"}
@@ -33,7 +33,7 @@ const FeaturedCategoriesBlock = ({
                   className="object-cover w-full h-full transition-transform group-hover:scale-105"
                 />
               </div>
-              <h3 className="mt-4 text-sm md:text-base transition-all duration-200 font-semibold group-hover:text-white  text-gray-800">
+              <h3 className="mt-4 text-sm md:text-base transition-all duration-200 font-semibold group-hover:text-background  ">
                 {cat.categories_id.name}
               </h3>
             </Link>
