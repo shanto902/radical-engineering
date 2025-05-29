@@ -13,7 +13,7 @@ import CartPopup from "./header/CartPopup";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { fetchProducts } from "@/store/productSlice";
-
+import logo from "@/assets/logo.svg";
 const Navbar = ({ settings }: { settings: TSettings }) => {
   const [categories, setCategories] = useState<
     { name: string; slug: string; image?: string }[]
@@ -92,11 +92,13 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   return (
     <nav className="backdrop-blur-lg bg-white/80 shadow-sm fixed top-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link
-          href="/home"
-          className="text-2xl font-extrabold text-primary tracking-tight"
-        >
-          RADICAL ENGINEERING
+        <Link href="/home">
+          <Image
+            src={logo}
+            alt="Logo"
+            className="h-12 object-contain w-fit rounded-md"
+            priority
+          />
         </Link>
 
         {/* Searchbar */}

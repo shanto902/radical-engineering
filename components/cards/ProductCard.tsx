@@ -11,6 +11,7 @@ import { addToCart } from "@/store/cartSlice";
 import { addToWishlist, removeFromWishlist } from "@/store/wishlistSlice";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
   const hasMounted = useHasMounted();
@@ -28,6 +29,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         image: product.image,
       })
     );
+    toast.success("Product added to cart!");
   };
   const handleBuyNow = () => {
     handleCart();
@@ -44,6 +46,11 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           name: product.name,
           price: product.discounted_price || product.price,
           image: product.image,
+          slug: product.slug,
+          status: product.status,
+          category: {
+            slug: product.category.slug,
+          },
         })
       );
     }
@@ -54,9 +61,9 @@ const ProductCard = ({ product }: { product: TProduct }) => {
   if (!hasMounted) {
     return (
       <div className="bg-white border rounded-xl shadow overflow-hidden animate-pulse">
-        <div className="w-full h-60 bg-gray-200" />
+        <div className="w-full h-40 bg-gray-200" />
         <div className="p-4 space-y-2">
-          <div className="h-4 bg-gray-200 rounded w-3/4" />
+          <div className="h-6 bg-gray-200 rounded w-3/4" />
           <div className="h-3 bg-gray-200 rounded w-1/2" />
           <div className="h-3 bg-gray-200 rounded w-1/3" />
           <div className="h-5 bg-gray-300 rounded w-1/2 mt-2" />
@@ -84,7 +91,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           alt={product.name}
           width={400}
           height={400}
-          className="w-full h-60 object-cover"
+          className="w-full h-40 object-cover"
         />
         <span className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded-full font-semibold">
           {product.discounted_price
@@ -146,13 +153,22 @@ const ProductCard = ({ product }: { product: TProduct }) => {
 
         <div className="flex gap-2">
           <button
-            onClick={handleCart}
+            onClick={() =>
+              product.status === "in-stock"
+                ? handleCart()
+                : toast.error("Product Not Available")
+            }
             className="w-full bg-primary hover:bg-yellow-400 text-white hover:text-black text-sm py-2 rounded-lg font-semibold transition"
           >
             Add To Cart
           </button>
+
           <button
-            onClick={handleBuyNow}
+            onClick={() =>
+              product.status === "in-stock"
+                ? handleBuyNow()
+                : toast.error("Product Not Available")
+            }
             className="w-full bg-green-800 hover:bg-yellow-400 text-white hover:text-black text-sm py-2 rounded-lg font-semibold transition"
           >
             Buy Now

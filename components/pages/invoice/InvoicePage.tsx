@@ -9,6 +9,7 @@ interface Product {
   id: string;
   name: string;
   price: number;
+  discounted_price: number;
 }
 
 interface OrderItem {
@@ -123,10 +124,14 @@ export default function InvoicePage() {
             {order.order_items.map((item) => (
               <tr key={item.id}>
                 <td className="border p-2">{item.product.name}</td>
-                <td className="border p-2">{item.product.price} BDT</td>
+                <td className="border p-2">
+                  {item.product.discounted_price || item.product.price} BDT
+                </td>
                 <td className="border p-2">{item.quantity}</td>
                 <td className="border p-2">
-                  {item.product.price * item.quantity} BDT
+                  {(item.product.discounted_price || item.product.price) *
+                    item.quantity}{" "}
+                  BDT
                 </td>
               </tr>
             ))}

@@ -28,6 +28,7 @@ export async function GET(_req: NextRequest, { params }: PageProps) {
           "order_items.product.id",
           "order_items.product.name",
           "order_items.product.price",
+          "order_items.product.discounted_price",
         ],
       })
     );

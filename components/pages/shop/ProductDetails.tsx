@@ -30,6 +30,8 @@ import { toggleWishlist } from "@/store/wishlistSlice";
 import { TProduct } from "@/interfaces";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import ProductTabs from "./ProductTabs";
+import toast from "react-hot-toast";
+import { getImageUrl } from "@/utils/image-url";
 
 export default function ProductPage({ product }: { product: TProduct }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,9 +52,6 @@ export default function ProductPage({ product }: { product: TProduct }) {
   useEffect(() => {
     setHasMounted(true);
   }, []);
-
-  const getImageUrl = (id: string) =>
-    `${process.env.NEXT_PUBLIC_ASSETS_URL}${id}`;
 
   const handleAddToCart = () => {
     dispatch(
@@ -143,14 +142,22 @@ export default function ProductPage({ product }: { product: TProduct }) {
               </span>
             )}
           </p>
-          <div className="flex items-center gap-4 my-3">
-            <span className="line-through text-gray-400 text-xl font-medium">
-              {product.price}৳
-            </span>
-            <span className="text-green-600 text-2xl font-bold">
-              {product.discounted_price}৳
-            </span>
-          </div>
+          {product.discounted_price ? (
+            <div className="flex items-center gap-4 my-3">
+              <span className="line-through text-gray-400 text-xl font-medium">
+                {product.price}৳
+              </span>
+              <span className="text-green-600 text-2xl font-bold">
+                {product.discounted_price}৳
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4 my-3">
+              <span className="text-green-600 text-2xl font-bold">
+                {product.price}৳
+              </span>
+            </div>
+          )}
           <p className="text-sm  mb-4">
             {product.short_description ||
               "This is a great product that you will love. It has many features and benefits that make it stand out from the competition."}
@@ -191,13 +198,21 @@ export default function ProductPage({ product }: { product: TProduct }) {
 
           <div className="flex gap-4 mb-6">
             <button
-              onClick={handleAddToCart}
+              onClick={() =>
+                product.status === "in-stock"
+                  ? handleAddToCart()
+                  : toast.error("product Not Available")
+              }
               className="px-5 flex justify-center gap-4 bg-primary text-white hover:bg-yellow-300 hover:text-black transition items-center font-semibold py-2 rounded-xl"
             >
               <ShoppingCart /> Add to Cart
             </button>
             <button
-              onClick={handleBuyNow}
+              onClick={() =>
+                product.status === "in-stock"
+                  ? handleBuyNow()
+                  : toast.error("Product Not Available")
+              }
               className="px-5 flex justify-center gap-4 items-center border border-primary text-primary hover:bg-primary hover:text-white transition font-semibold py-2 rounded-xl"
             >
               Buy Now <ArrowRightCircle />
@@ -233,8 +248,8 @@ export default function ProductPage({ product }: { product: TProduct }) {
         </div>
       </div>
       <ProductTabs
-        productDetails={product.description as string}
-        pdfUrl={`${getImageUrl(product.datasheet as string)}`}
+        productDetails={product.description}
+        pdfUrl={product.datasheet}
       />
     </PaddingContainer>
   );

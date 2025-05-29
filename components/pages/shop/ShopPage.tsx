@@ -36,7 +36,7 @@ export default function ShopPage({
   return (
     <PaddingContainer className="py-20">
       {/* Category Tabs */}
-      <div className="flex gap-4 mb-6 flex-wrap font-bold">
+      <div className="flex gap-4  flex-wrap font-bold">
         <button
           className={`px-4 py-2 rounded-full drop-shadow-sm ${
             !categorySlug ? "bg-primary text-white" : "text-gray-700"
@@ -60,7 +60,7 @@ export default function ShopPage({
         ))}
       </div>
 
-      <hr className="my-5" />
+      <hr className="my-2" />
       {/* Filters & Product List */}
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
         {/* Sidebar */}
@@ -118,7 +118,7 @@ export default function ShopPage({
           {filteredProducts.length === 0 ? (
             <p>No products match your filters.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-col-3 lg:grid-cols-4 gap-6">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

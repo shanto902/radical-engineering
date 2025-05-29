@@ -22,6 +22,7 @@
     "next": "^15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
     "react-inner-image-zoom": "^4.0.1",
     "react-range": "^1.10.0",
     "react-redux": "^9.2.0",

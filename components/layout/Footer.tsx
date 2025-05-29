@@ -1,16 +1,20 @@
 import Link from "next/link";
 import { Facebook, Phone, Mail, MapPin } from "lucide-react";
-
+import Image from "next/image";
+import logo from "@/assets/logo-square.svg"; // Adjust the path as necessary
 export default function Footer() {
   return (
     <footer className="bg-primary text-white pt-10 pb-6">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Logo & Tagline */}
         <div>
-          <h2 className="text-2xl font-bold text-white uppercase">
-            Radical Engineering
-          </h2>
-          <p className="mt-3 text-sm text-gray-300">
+          <Image
+            src={logo}
+            alt="Logo"
+            className=" object-contain w-fit h-28"
+            priority
+          />
+          <p className="mt-3 ml-1 text-sm text-gray-300">
             Powering your home with trusted solar and battery solutions.
           </p>
         </div>

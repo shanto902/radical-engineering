@@ -7,7 +7,7 @@ import Footer from "@/components/layout/Footer";
 import { readSingleton } from "@directus/sdk";
 import directus from "@/lib/directus";
 import { TSettings } from "@/interfaces";
-
+import { Toaster } from "react-hot-toast";
 import ReduxProvider from "@/components/ReduxProvider";
 
 const lato = Lato({
@@ -34,6 +34,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${lato.variable} antialiased `}>
         <ReduxProvider>
+          <Toaster position="bottom-right" />
           <Navbar settings={settings} />
           <main className="min-h-[80vh]">{children}</main>
           <Footer />

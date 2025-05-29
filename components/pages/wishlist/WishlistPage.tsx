@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Heart, ShoppingCart, Trash2 } from "lucide-react";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import { useHasMounted } from "@/hooks/useHasMounted";
+import toast from "react-hot-toast";
 
 const WishlistPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,60 +36,114 @@ const WishlistPage = () => {
   }
 
   return (
-    <PaddingContainer className=" py-20">
+    <PaddingContainer className="py-20">
       <h1 className="text-3xl uppercase font-bold mb-12 text-center flex items-center justify-center gap-2">
-        {" "}
-        <span>
-          <Heart className="size-10 text-primary" />
-        </span>{" "}
+        <Heart className="size-10 text-primary" />
         Your Wishlist
       </h1>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {items.map((product) => (
-          <div
-            key={product.id}
-            className="border rounded-xl p-4 shadow-sm hover:shadow-md transition relative group"
-          >
-            <Image
-              src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`}
-              alt={product.name}
-              width={400}
-              height={300}
-              className="w-full h-48 object-cover mb-4 rounded"
-            />
-            <h3 className="text-lg font-semibold text-gray-800">
-              {product.name}
-            </h3>
-            <p className="text-primary font-bold text-lg mt-1">
-              ৳ {product.price.toLocaleString()}
-            </p>
+        {items.map((product) => {
+          const showDiscount =
+            product.discounted_price &&
+            product.discounted_price < product.price;
 
-            <div className="flex items-center justify-between mt-4">
-              <button
-                onClick={() =>
-                  dispatch(
-                    addToCart({
-                      ...product,
-                      quantity: 1,
-                    })
-                  )
-                }
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded hover:bg-yellow-500 hover:text-black transition"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                Add to Cart
-              </button>
+          return (
+            <div
+              key={product.id}
+              className="border rounded-xl p-4 shadow-sm hover:shadow-md transition relative group"
+            >
+              {/* Product Image */}
+              <Image
+                src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`}
+                alt={product.name}
+                width={400}
+                height={300}
+                className={`w-full h-48 object-cover mb-4 rounded transition ${
+                  product.status !== "in-stock" ? "opacity-50 grayscale" : ""
+                }`}
+              />
 
-              <button
-                onClick={() => dispatch(removeFromWishlist(product.id))}
-                className="text-red-500 hover:text-red-700 transition"
-                title="Remove from wishlist"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
+              {/* Product Title */}
+              {product.status === "in-stock" ? (
+                <Link
+                  href={`/categories/${product?.category?.slug}/${product.slug}`}
+                  className="block hover:text-primary transition"
+                >
+                  <h3 className="text-lg font-semibold text-gray-800 hover:underline">
+                    {product.name}
+                  </h3>
+                </Link>
+              ) : (
+                <h3 className="text-lg font-semibold text-gray-400 cursor-not-allowed">
+                  {product.name} (Not Available)
+                </h3>
+              )}
+
+              {/* Price */}
+              <div className="mt-1 text-lg font-bold">
+                {showDiscount ? (
+                  <div className="text-primary">
+                    ৳{" "}
+                    {product.discounted_price &&
+                      product.discounted_price.toLocaleString()}{" "}
+                    <span className="text-gray-400 line-through text-sm ml-1">
+                      ৳ {product.price.toLocaleString()}
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-primary">
+                    ৳ {product.price.toLocaleString()}
+                  </p>
+                )}
+              </div>
+
+              {/* Buttons */}
+              <div className="flex items-center justify-between mt-4">
+                <button
+                  onClick={() => {
+                    if (product.status === "in-stock") {
+                      dispatch(
+                        addToCart({
+                          ...product,
+                          quantity: 1,
+                        })
+                      );
+                      toast.success("Product added to cart!");
+                    }
+                  }}
+                  disabled={product.status !== "in-stock"}
+                  title={
+                    product.status === "in-stock"
+                      ? "Add this item to your cart"
+                      : "Product is out of stock"
+                  }
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded transition ${
+                    product.status === "in-stock"
+                      ? "bg-primary text-white hover:bg-yellow-500 hover:text-black"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  Add to Cart
+                </button>
+
+                <button
+                  onClick={() => {
+                    dispatch(removeFromWishlist(product.id));
+                    toast("Removed from wishlist", {
+                      icon: "💔",
+                    });
+                  }}
+                  title="Remove from wishlist"
+                  className="text-red-500 hover:text-red-700 transition"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </PaddingContainer>
   );
