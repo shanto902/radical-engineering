@@ -59,6 +59,11 @@ export type TProduct = {
   name: string;
   date_created: string;
   date_updated: null | string;
+  warranty?: string | null;
+  user_manual?: string | null;
+  brand: {
+    name: string;
+  };
   image: string;
   short_description: string;
   description?: string;
@@ -66,6 +71,7 @@ export type TProduct = {
     label: string;
     value: string;
   }[];
+  sub_category?: string;
   category: TCategory;
   slug: string;
   price: number;

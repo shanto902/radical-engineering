@@ -115,7 +115,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   alt={`Thumbnail ${idx}`}
                   width={80}
                   height={80}
-                  className="w-20 h-20 object-cover bg-white"
+                  className="w-20 h-20 p-2 object-cover bg-white"
                 />
               </button>
             ))}
@@ -123,126 +123,140 @@ export default function ProductPage({ product }: { product: TProduct }) {
         </div>
 
         {/* Info Panel */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border col-span-2">
-          <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
-          <p className="text-sm font-semibold my-1">
-            {product.status === "in-stock" && (
-              <span className="text-green-600 flex items-center gap-1">
-                <CheckCircle size={16} /> In Stock
-              </span>
-            )}
-            {product.status === "out-of-stock" && (
-              <span className="text-red-500 flex items-center gap-1">
-                <XCircle size={16} /> Out of Stock
-              </span>
-            )}
-            {product.status === "pre-order" && (
-              <span className="text-yellow-500 flex items-center gap-1">
-                <Clock size={16} /> Pre Order
-              </span>
-            )}
-          </p>
-          {product.discounted_price ? (
-            <div className="flex items-center gap-4 my-3">
-              <span className="line-through text-gray-400 text-xl font-medium">
-                {product.price}৳
-              </span>
-              <span className="text-green-600 text-2xl font-bold">
-                {product.discounted_price}৳
-              </span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-4 my-3">
-              <span className="text-green-600 text-2xl font-bold">
-                {product.price}৳
-              </span>
-            </div>
-          )}
-          <p className="text-sm  mb-4">
-            {product.short_description ||
-              "This is a great product that you will love. It has many features and benefits that make it stand out from the competition."}
-          </p>
+        <div className="bg-white rounded-xl p-6 shadow-sm border col-span-2 flex flex-col justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
+            <p className="text-sm font-semibold my-1 flex justify-start items-center gap-4">
+              {product.status === "in-stock" && (
+                <span className="text-green-600 flex items-center gap-1">
+                  <CheckCircle size={16} /> In Stock
+                </span>
+              )}
+              {product.status === "out-of-stock" && (
+                <span className="text-red-500 flex items-center gap-1">
+                  <XCircle size={16} /> Out of Stock
+                </span>
+              )}
+              {product.status === "pre-order" && (
+                <span className="text-yellow-500 flex items-center gap-1">
+                  <Clock size={16} /> Pre Order
+                </span>
+              )}
 
-          <div className="mb-4 flex items-center gap-2">
-            <label className="text-base font-medium text-gray-700 ">
-              Quantity:
-            </label>
-            <div className="flex items-center gap-2">
+              {product.warranty && (
+                <span className="font-bold py-2 bg-primary text-white px-3 rounded-full">
+                  {product.warranty} Warranty
+                </span>
+              )}
+            </p>
+            {product.discounted_price ? (
+              <div className="flex items-center gap-4 my-3">
+                <span className="line-through text-gray-400 text-xl font-medium">
+                  {product.price}৳
+                </span>
+                <span className="text-green-600 text-2xl font-bold">
+                  {product.discounted_price}৳
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-4 my-3">
+                <span className="text-green-600 text-2xl font-bold">
+                  {product.price}৳
+                </span>
+              </div>
+            )}
+
+            <p className="text-base  mb-4 text-pretty text-justify">
+              {product.short_description ||
+                "This is a great product that you will love. It has many features and benefits that make it stand out from the competition."}
+            </p>
+          </div>
+
+          <div>
+            <div className="mb-4 flex items-center gap-2">
+              <label className="text-base font-medium text-gray-700 ">
+                Quantity:
+              </label>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                  className="bg-primary hover:bg-yellow-400 text-white hover:text-black font-bold py-2 px-3 rounded"
+                >
+                  <Minus size={16} />
+                </button>
+
+                <input
+                  type="number"
+                  min={1}
+                  value={quantity}
+                  onChange={(e) =>
+                    setQuantity(Math.max(1, Number(e.target.value)))
+                  }
+                  className="w-16 text-center accent-primary border border-gray-300 py-2 rounded-full text-base font-semibold"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setQuantity((prev) => prev + 1)}
+                  className="bg-primary hover:bg-yellow-400 text-white hover:text-black font-bold py-2 px-3 rounded"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex gap-4 mb-6">
               <button
-                type="button"
-                onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                className="bg-primary hover:bg-yellow-400 text-white hover:text-black font-bold py-2 px-3 rounded"
-              >
-                <Minus size={16} />
-              </button>
-
-              <input
-                type="number"
-                min={1}
-                value={quantity}
-                onChange={(e) =>
-                  setQuantity(Math.max(1, Number(e.target.value)))
+                onClick={() =>
+                  product.status === "in-stock"
+                    ? handleAddToCart()
+                    : toast.error("product Not Available")
                 }
-                className="w-16 text-center border border-gray-300 rounded-md py-2 text-base font-semibold"
-              />
-
-              <button
-                type="button"
-                onClick={() => setQuantity((prev) => prev + 1)}
-                className="bg-primary hover:bg-yellow-400 text-white hover:text-black font-bold py-2 px-3 rounded"
+                className="px-5 flex justify-center gap-4 bg-primary text-white hover:bg-yellow-300 hover:text-black transition items-center font-semibold py-2 rounded-xl"
               >
-                <Plus size={16} />
+                <ShoppingCart /> Add to Cart
+              </button>
+              <button
+                onClick={() =>
+                  product.status === "in-stock"
+                    ? handleBuyNow()
+                    : toast.error("Product Not Available")
+                }
+                className="px-5 flex justify-center gap-4 items-center border border-primary text-primary hover:bg-primary hover:text-white transition font-semibold py-2 rounded-xl"
+              >
+                Buy Now <ArrowRightCircle />
               </button>
             </div>
-          </div>
 
-          <div className="flex gap-4 mb-6">
-            <button
-              onClick={() =>
-                product.status === "in-stock"
-                  ? handleAddToCart()
-                  : toast.error("product Not Available")
-              }
-              className="px-5 flex justify-center gap-4 bg-primary text-white hover:bg-yellow-300 hover:text-black transition items-center font-semibold py-2 rounded-xl"
-            >
-              <ShoppingCart /> Add to Cart
-            </button>
-            <button
-              onClick={() =>
-                product.status === "in-stock"
-                  ? handleBuyNow()
-                  : toast.error("Product Not Available")
-              }
-              className="px-5 flex justify-center gap-4 items-center border border-primary text-primary hover:bg-primary hover:text-white transition font-semibold py-2 rounded-xl"
-            >
-              Buy Now <ArrowRightCircle />
-            </button>
-          </div>
+            <div className="flex items-center justify-between mb-2 text-sm text-gray-600">
+              <button
+                className={`flex items-center gap-2 font-medium transition ${
+                  isWishlisted ? "text-red-500" : "hover:text-primary"
+                }`}
+                onClick={() => dispatch(toggleWishlist(product))}
+              >
+                <Heart
+                  className="w-4 h-4"
+                  fill={isWishlisted ? "red" : "none"}
+                />
+                {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+              </button>
 
-          <div className="flex items-center justify-between mb-2 text-sm text-gray-600">
-            <button
-              className={`flex items-center gap-2 font-medium transition ${
-                isWishlisted ? "text-red-500" : "hover:text-primary"
-              }`}
-              onClick={() => dispatch(toggleWishlist(product))}
-            >
-              <Heart className="w-4 h-4" fill={isWishlisted ? "red" : "none"} />
-              {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
-            </button>
-
-            <div className="flex gap-3">
-              <Link href="#" className="hover:text-blue-500">
-                <Facebook size={16} />
-              </Link>
-              <Link href="#" className="hover:text-sky-400">
-                <Twitter size={16} />
-              </Link>
-              <Link href="#" className="hover:text-black">
-                <X size={16} />
-              </Link>
-              <Link href="#" className="hover:text-blue-600">
-                <Linkedin size={16} />
-              </Link>
+              <div className="flex gap-3">
+                <Link href="#" className="hover:text-blue-500">
+                  <Facebook size={16} />
+                </Link>
+                <Link href="#" className="hover:text-sky-400">
+                  <Twitter size={16} />
+                </Link>
+                <Link href="#" className="hover:text-black">
+                  <X size={16} />
+                </Link>
+                <Link href="#" className="hover:text-blue-600">
+                  <Linkedin size={16} />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -250,6 +264,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
       <ProductTabs
         productDetails={product.description}
         pdfUrl={product.datasheet}
+        userManual={product.user_manual}
       />
     </PaddingContainer>
   );

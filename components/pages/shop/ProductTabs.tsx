@@ -4,29 +4,41 @@ import { Body } from "@/components/common/Body";
 import { getImageUrl } from "@/utils/image-url";
 import { useState } from "react";
 
+interface ProductTabsProps {
+  productDetails?: string;
+  pdfUrl?: string | null;
+  userManual?: string | null;
+}
+
 const ProductTabs = ({
   productDetails,
   pdfUrl,
-}: {
-  productDetails?: string;
-  pdfUrl?: string | null;
-}) => {
-  const [activeTab, setActiveTab] = useState<"details" | "pdf">("details");
+  userManual,
+}: ProductTabsProps) => {
+  const initialTab: "details" | "pdf" | "manual" = productDetails
+    ? "details"
+    : pdfUrl
+    ? "pdf"
+    : "manual";
 
-  const hasDetails = Boolean(productDetails);
-  const hasPdf = Boolean(pdfUrl);
+  const [activeTab, setActiveTab] = useState<"details" | "pdf" | "manual">(
+    initialTab
+  );
 
-  // No tabs or content if nothing is available
-  if (!hasDetails && !hasPdf) return null;
+  const hasDetails = !!productDetails;
+  const hasPdf = !!pdfUrl;
+  const hasManual = !!userManual;
+
+  if (!hasDetails && !hasPdf && !hasManual) return null;
 
   return (
     <div className="mt-8">
       {/* Tabs header */}
-      <div className="flex border-b border-gray-300">
+      <div className="flex  overflow-hidden justify-center ">
         {hasDetails && (
           <button
             onClick={() => setActiveTab("details")}
-            className={`py-2 px-4 text-sm font-semibold transition ${
+            className={`py-2 px-4 text-base font-semibold transition ${
               activeTab === "details"
                 ? "border-b-2 border-primary text-primary"
                 : "text-gray-600 hover:text-primary"
@@ -38,7 +50,7 @@ const ProductTabs = ({
         {hasPdf && (
           <button
             onClick={() => setActiveTab("pdf")}
-            className={`py-2 px-4 text-sm font-semibold transition ${
+            className={`py-2 px-4 text-base font-semibold transition ${
               activeTab === "pdf"
                 ? "border-b-2 border-primary text-primary"
                 : "text-gray-600 hover:text-primary"
@@ -47,16 +59,38 @@ const ProductTabs = ({
             Data Sheet
           </button>
         )}
+        {hasManual && (
+          <button
+            onClick={() => setActiveTab("manual")}
+            className={`py-2 px-4 text-base font-semibold transition ${
+              activeTab === "manual"
+                ? "border-b-2 border-primary text-primary"
+                : "text-gray-600 hover:text-primary"
+            }`}
+          >
+            User Manual
+          </button>
+        )}
       </div>
 
       {/* Tab content */}
-      <div className="p-4 border border-t-0 border-gray-300 rounded-md">
-        {activeTab === "details" && hasDetails ? (
-          <Body className="rich-text">{productDetails || ""}</Body>
+      <div className="p-4 border  border-gray-300 rounded-xl">
+        {activeTab === "details" &&
+        hasDetails &&
+        typeof productDetails === "string" ? (
+          <Body className="rich-text p-5">{productDetails}</Body>
         ) : activeTab === "pdf" && hasPdf ? (
           <div className="w-full h-[600px]">
             <iframe
-              src={getImageUrl(pdfUrl as string)}
+              src={getImageUrl(pdfUrl)}
+              className="w-full h-full rounded-md border"
+              loading="lazy"
+            />
+          </div>
+        ) : activeTab === "manual" && hasManual ? (
+          <div className="w-full h-[600px]">
+            <iframe
+              src={getImageUrl(userManual)}
               className="w-full h-full rounded-md border"
               loading="lazy"
             />

@@ -31,7 +31,7 @@
   }
 
   .body > p {
-    @apply text-base;
+    @apply text-base mb-4;
   }
 
   .rich-text h2 {
@@ -63,6 +63,10 @@
 
   .rich-text td {
     @apply p-2 border border-black;
+  }
+
+  .rich-text ul {
+    @apply list-disc list-inside space-y-2 mb-4;
   }
 }
 

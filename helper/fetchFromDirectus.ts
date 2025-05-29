@@ -68,7 +68,7 @@ export const fetchProducts = async (
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const options: any = {
-      fields: ["*", "category.*"],
+      fields: ["*", "category.*", "brand.*"],
     };
 
     if (categorySlug) {

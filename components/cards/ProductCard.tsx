@@ -80,45 +80,55 @@ const ProductCard = ({ product }: { product: TProduct }) => {
   return (
     <div
       key={product.id}
-      className="bg-white border rounded-xl shadow hover:shadow-md transition overflow-hidden relative"
+      className="bg-white border hover:bg-primary/10 rounded-xl shadow hover:shadow-md transition overflow-hidden relative flex flex-col justify-between"
     >
-      <Link
-        href={`/categories/${product.category.slug}/${product.slug}`}
-        className="relative block"
-      >
-        <Image
-          src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`}
-          alt={product.name}
-          width={400}
-          height={400}
-          className="w-full h-40 object-cover"
-        />
-        <span className="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded-full font-semibold">
-          {product.discounted_price
-            ? `-${Math.round(
-                ((product.price - product.discounted_price) / product.price) *
-                  100
-              )}%`
-            : "New"}
-        </span>
-      </Link>
+      <div>
+        <Link
+          href={`/categories/${product.category.slug}/${product.slug}`}
+          className="relative block aspect-square"
+        >
+          <Image
+            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`}
+            alt={product.name}
+            width={400}
+            height={400}
+            className="w-full  object-contain aspect-square bg-white"
+          />
+          <span className="absolute top-2  left-2 bg-primary text-white text-xs px-2 py-1 rounded-full font-semibold">
+            {product.discounted_price
+              ? `-${Math.round(
+                  ((product.price - product.discounted_price) / product.price) *
+                    100
+                )}%`
+              : "New"}
+          </span>
+        </Link>
 
-      {/* Wishlist Button */}
-      <button
-        onClick={toggleWishlist}
-        className="absolute top-2 right-2 p-1 bg-white rounded-full shadow hover:bg-gray-100 transition"
-      >
-        {isInWishlist ? (
-          <X className="text-red-500 w-5 h-5" />
-        ) : (
-          <Heart className="text-gray-500 w-5 h-5" />
-        )}
-      </button>
+        {/* Wishlist Button */}
+        <button
+          onClick={toggleWishlist}
+          className="absolute top-2 right-2 p-1 bg-white rounded-full shadow hover:bg-gray-100 transition"
+        >
+          {isInWishlist ? (
+            <X className="text-red-500 w-5 h-5" />
+          ) : (
+            <Heart className="text-gray-500 w-5 h-5" />
+          )}
+        </button>
 
-      <div className="p-4">
-        <h3 className="text-base font-bold mb-1">{product.name}</h3>
-        <p className="text-xs text-gray-500 mb-2">{product.category.name}</p>
-
+        <Link
+          href={`/categories/${product.category.slug}/${product.slug}`}
+          className=""
+        >
+          <div className="px-4 pt-2">
+            <h3 className="text-base font-bold mb-1">{product.name}</h3>
+            <p className="text-xs text-gray-500 mb-2">
+              {product.category.name}
+            </p>
+          </div>
+        </Link>
+      </div>
+      <div className="px-4 pb-4">
         <p className="text-sm font-semibold mb-1">
           {product.status === "in-stock" && (
             <span className="text-green-600 flex items-center gap-1">
