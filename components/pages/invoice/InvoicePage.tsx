@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-
+import logo from "@/assets/logo-square.svg";
+import Image from "next/image";
+import { Mail, MapPin, Phone } from "lucide-react";
 interface Product {
   id: string;
   name: string;
@@ -79,7 +81,7 @@ export default function InvoicePage() {
       <div className="flex justify-end mb-4">
         <button
           onClick={handleDownloadPDF}
-          className="bg-primary text-white px-4 py-2 rounded hover:bg-yellow-500 hover:text-black transition"
+          className="bg-primary text-background px-4 py-2 rounded hover:bg-secondary hover:text-foreground transition"
         >
           Download PDF
         </button>
@@ -88,24 +90,51 @@ export default function InvoicePage() {
       {/* Invoice Content */}
       <div
         ref={invoiceRef}
-        className="border rounded shadow p-6 bg-white"
+        className="border rounded shadow p-6 bg-white text-black"
         id="invoice"
       >
+        <div className="flex items-start flex-row-reverse justify-between">
+          <Image
+            height={100}
+            width={140}
+            src={logo}
+            alt="Radical Engineering"
+          />
+          <p className="w-80 text-sm space-y-1">
+            <span className="flex gap-2 items-center">
+              <Phone size={20} className="" />: 01911922109
+            </span>
+            <span className="flex gap-2 items-start">
+              <Mail size={20} className="" />: absuvro@gmail.com
+            </span>
+            <span className="flex gap-2 items-start">
+              <span className="flex gap-2 items-center mt-1">
+                <MapPin size={20} className="" />:
+              </span>
+              <span>
+                Hazi Hasen Ali Market Station Road (opposite of Medilab)
+                Kishoregonj , Kishoreganj, Bangladesh
+              </span>
+            </span>
+          </p>
+        </div>
         <h1 className="text-2xl font-bold mb-4">Invoice</h1>
 
-        <div className="mb-4 space-y-1">
-          <p>
-            <strong>Order ID:</strong> {order.order_id}
-          </p>
-          <p>
-            <strong>Name:</strong> {order.name}
-          </p>
-          <p>
-            <strong>Phone:</strong> {order.phone}
-          </p>
-          <p>
-            <strong>Address:</strong> {order.address}
-          </p>
+        <div className="flex justify-between">
+          <div className="mb-4 space-y-1">
+            <p>
+              <strong>Order ID:</strong> {order.order_id}
+            </p>
+            <p>
+              <strong>Name:</strong> {order.name}
+            </p>
+            <p>
+              <strong>Phone:</strong> {order.phone}
+            </p>
+            <p>
+              <strong>Address:</strong> {order.address}
+            </p>
+          </div>
           <p>
             <strong>Date:</strong> {new Date(order.placed_at).toLocaleString()}
           </p>
@@ -113,7 +142,7 @@ export default function InvoicePage() {
 
         <table className="w-full border mt-6 text-sm">
           <thead>
-            <tr className="bg-gray-100">
+            <tr className="bg-zinc-700 text-white">
               <th className="border p-2 text-left">Product</th>
               <th className="border p-2">Price</th>
               <th className="border p-2">Qty</th>
