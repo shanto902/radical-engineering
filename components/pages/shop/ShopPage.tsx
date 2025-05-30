@@ -104,7 +104,24 @@ export default function ShopPage({
     )
   );
   const brands = Array.from(
-    new Set(products.map((p) => p.brand?.name).filter(Boolean))
+    new Set(
+      products
+        .filter((p) => {
+          const matchCategory = categorySlug
+            ? p.category?.slug === categorySlug
+            : true;
+          const matchSub =
+            selectedSubcategories.length > 0
+              ? selectedSubcategories.includes(p.sub_category || "")
+              : true;
+          const matchPrice =
+            p.price >= priceRange[0] && p.price <= priceRange[1];
+
+          return matchCategory && matchSub && matchPrice;
+        })
+        .map((p) => p.brand?.name)
+        .filter(Boolean)
+    )
   );
 
   const handleBrandChange = (brand: string) => {
@@ -213,6 +230,7 @@ export default function ShopPage({
               )}
             />
           </div>
+          <hr className="border-primary/30 my-4" />
 
           {brands.length > 0 && (
             <div className="mb-6">

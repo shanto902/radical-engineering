@@ -14,8 +14,6 @@ export default {
         foreground: "var(--foreground)",
         primary: "var(--primary)",
         secondary: "var(--secondary)",
-        backgroundDark: "#1f1f1f",
-        primaryDark: "#facc15",
       },
     },
   },
