@@ -29,6 +29,10 @@ interface Order {
   placed_at: string;
   total: number;
   order_items: OrderItem[];
+  extra_charges?: {
+    name: string;
+    cost: string;
+  }[];
 }
 
 export default function InvoicePage() {
@@ -70,7 +74,7 @@ export default function InvoicePage() {
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`invoice-${order?.id}.pdf`);
+    pdf.save(`invoice-${order?.order_id}.pdf`);
   };
 
   if (!order) return <p className="p-6">Loading invoice...</p>;
@@ -78,7 +82,8 @@ export default function InvoicePage() {
   return (
     <div className="max-w-3xl mx-auto p-6 my-20">
       {/* 📥 Download PDF Button */}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Print Preview</h2>
         <button
           onClick={handleDownloadPDF}
           className="bg-primary text-background px-4 py-2 rounded hover:bg-secondary hover:text-foreground transition"
@@ -107,9 +112,9 @@ export default function InvoicePage() {
             <span className="flex gap-2 items-start">
               <Mail size={20} className="" />: absuvro@gmail.com
             </span>
-            <span className="flex gap-2 items-start">
-              <span className="flex gap-2 items-center mt-1">
-                <MapPin size={20} className="" />:
+            <span className="flex  gap-1 items-start">
+              <span className="flex gap-2 items-center ">
+                <MapPin size={20} />:
               </span>
               <span>
                 Hazi Hasen Ali Market Station Road (opposite of Medilab)
@@ -118,12 +123,22 @@ export default function InvoicePage() {
             </span>
           </p>
         </div>
-        <h1 className="text-2xl font-bold mb-4">Invoice</h1>
+        <hr className="my-4" />
 
-        <div className="flex justify-between">
-          <div className="mb-4 space-y-1">
+        <div className="grid grid-cols-2">
+          <div className="mb-2 space-y-1">
             <p>
+              <h1 className="text-2xl font-bold mb-4">Invoice</h1>
               <strong>Order ID:</strong> {order.order_id}
+            </p>
+            <p>
+              <strong>Date:</strong>{" "}
+              {new Date(order.placed_at).toLocaleString()}
+            </p>
+          </div>
+          <div>
+            <p>
+              <h3 className="mb-2 text-base font-bold">Shipping Address</h3>
             </p>
             <p>
               <strong>Name:</strong> {order.name}
@@ -135,9 +150,6 @@ export default function InvoicePage() {
               <strong>Address:</strong> {order.address}
             </p>
           </div>
-          <p>
-            <strong>Date:</strong> {new Date(order.placed_at).toLocaleString()}
-          </p>
         </div>
 
         <table className="w-full border mt-6 text-sm">
@@ -164,6 +176,16 @@ export default function InvoicePage() {
                 </td>
               </tr>
             ))}
+
+            {order.extra_charges &&
+              order.extra_charges.map((item, i) => (
+                <tr key={i}>
+                  <td className="border p-2">{item.name}</td>
+                  <td className="border p-2">{item.cost} BDT</td>
+                  <td className="border p-2"></td>
+                  <td className="border p-2">{parseFloat(item.cost)} BDT</td>
+                </tr>
+              ))}
           </tbody>
         </table>
 

@@ -25,6 +25,11 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   const pathname = usePathname();
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -62,7 +67,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
           href={`/categories/${cat.slug}`}
           className="flex items-center gap-3 p-2 rounded-lg transition-all hover:bg-secondary hover:text-primary group"
         >
-          {cat.image && (
+          {cat.image && hasMounted && (
             <Image
               src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.image}`}
               alt={cat.name}
