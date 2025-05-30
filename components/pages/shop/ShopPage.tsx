@@ -39,7 +39,7 @@ export default function ShopPage({
 
   const maxAvailablePrice = useMemo(() => {
     if (products.length === 0) return 1000; // fallback
-    return Math.max(...products.map((p) => p.price));
+    return Math.max(...products.map((p) => parseFloat(p.price)));
   }, [products]);
 
   const [priceRange, setPriceRange] = useState<[number, number]>([MIN, 100]);
@@ -74,7 +74,9 @@ export default function ShopPage({
         selectedBrands.length > 0
           ? selectedBrands.includes(p.brand?.name || "")
           : true;
-      const matchPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
+      const matchPrice =
+        parseFloat(p.price) >= priceRange[0] &&
+        parseFloat(p.price) <= priceRange[1];
 
       return matchCategory && matchSub && matchBrand && matchPrice;
     });
@@ -115,7 +117,8 @@ export default function ShopPage({
               ? selectedSubcategories.includes(p.sub_category || "")
               : true;
           const matchPrice =
-            p.price >= priceRange[0] && p.price <= priceRange[1];
+            parseFloat(p.price) >= priceRange[0] &&
+            parseFloat(p.price) <= priceRange[1];
 
           return matchCategory && matchSub && matchPrice;
         })
@@ -139,9 +142,10 @@ export default function ShopPage({
   };
 
   return (
-    <PaddingContainer className="py-20">
+    <PaddingContainer>
       {/* Category Tabs */}
-      <div className="flex gap-4 flex-wrap font-bold mb-4">
+
+      <div className="flex gap-4 pt-10 flex-wrap font-bold mb-3">
         <button
           className={`px-4 py-2 rounded-full ${
             !categorySlug ? "bg-primary text-background" : "text-foreground"
@@ -164,6 +168,7 @@ export default function ShopPage({
           </button>
         ))}
       </div>
+
       <hr className="mb-4" />
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
         {/* Sidebar */}

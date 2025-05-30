@@ -2,6 +2,7 @@
 import { MailIcon, MessageCircleMore } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import PaddingContainer from "../common/PaddingContainer";
 
 export default function ContactForm() {
   const [form, setForm] = useState({
@@ -36,8 +37,8 @@ export default function ContactForm() {
   };
 
   return (
-    <section className="min-h-screen mt-20  py-12 px-4 flex items-center justify-center">
-      <div className="w-full max-w-2xl border shadow-xl rounded-2xl p-8">
+    <PaddingContainer className="min-h-[80vh]  px-4 flex items-center justify-center">
+      <div className="w-full max-w-2xl  ">
         <h2 className="text-3xl font-bold text-primary text-center mb-6">
           Get In Touch
         </h2>
@@ -98,7 +99,7 @@ export default function ContactForm() {
             </label>
           </div>
           <hr className="border border-primary" />
-          <div className="flex justify-center items-center gap-5">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-5">
             <button
               type="submit"
               disabled={loading}
@@ -121,6 +122,6 @@ export default function ContactForm() {
           </div>
         </form>
       </div>
-    </section>
+    </PaddingContainer>
   );
 }

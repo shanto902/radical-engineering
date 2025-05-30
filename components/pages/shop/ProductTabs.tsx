@@ -78,7 +78,7 @@ const ProductTabs = ({
         {activeTab === "details" &&
         hasDetails &&
         typeof productDetails === "string" ? (
-          <Body className="rich-text p-5">{productDetails}</Body>
+          <Body className="rich-text  sm:p-2 md:p-4">{productDetails}</Body>
         ) : activeTab === "pdf" && hasPdf ? (
           <div className="w-full h-[600px]">
             <iframe

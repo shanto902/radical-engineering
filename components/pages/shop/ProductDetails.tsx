@@ -56,7 +56,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
       addToCart({
         id: product.id,
         name: product.name,
-        price: product.discounted_price || product.price,
+        price: parseFloat(product.discounted_price || product.price),
         image: product.image,
         quantity,
       })
@@ -91,7 +91,9 @@ export default function ProductPage({ product }: { product: TProduct }) {
             {product.discounted_price && (
               <span className="absolute top-4 right-4 bg-primary text-background px-2 py-1 rounded text-xs font-semibold z-10">
                 {Math.round(
-                  ((product.price - product.discounted_price) / product.price) *
+                  ((parseFloat(product.price) -
+                    parseFloat(product.discounted_price)) /
+                    parseFloat(product.price)) *
                     100
                 )}
                 %
@@ -123,7 +125,20 @@ export default function ProductPage({ product }: { product: TProduct }) {
         {/* Info Panel */}
         <div className="bg-background rounded-xl p-6 shadow-sm border col-span-2 flex flex-col justify-between">
           <div>
-            <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
+              {product?.brand?.logo && (
+                <Link href={product.brand.link} target="_blank">
+                  <Image
+                    className="rounded-md"
+                    src={getImageUrl(product.brand.logo)}
+                    alt={product.brand.name}
+                    height={80}
+                    width={80}
+                  />
+                </Link>
+              )}
+            </div>
             <p className="text-sm font-semibold my-1 flex justify-start items-center gap-4">
               {product.status === "in-stock" && (
                 <span className="text-green-600 dark:text-green-400 flex items-center gap-1">
@@ -147,6 +162,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                 </span>
               )}
             </p>
+
             {product.discounted_price ? (
               <div className="flex items-center gap-4 my-3">
                 <span className="line-through text-gray-400 text-xl font-medium">
@@ -171,58 +187,60 @@ export default function ProductPage({ product }: { product: TProduct }) {
           </div>
 
           <div>
-            <div className="mb-4 flex items-center gap-2">
-              <label className="text-base font-medium ">Quantity:</label>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                  className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
-                >
-                  <Minus size={16} />
-                </button>
+            <div className="flex md:items-center flex-col md:flex-row gap-5   md:justify-between mb-6">
+              <div className=" flex items-center gap-2 place-self-end">
+                <label className="text-base font-medium ">Quantity:</label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                    className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
+                  >
+                    <Minus size={16} />
+                  </button>
 
-                <input
-                  type="number"
-                  min={1}
-                  value={quantity}
-                  onChange={(e) =>
-                    setQuantity(Math.max(1, Number(e.target.value)))
+                  <input
+                    type="number"
+                    min={1}
+                    value={quantity}
+                    onChange={(e) =>
+                      setQuantity(Math.max(1, Number(e.target.value)))
+                    }
+                    className="w-16 text-center accent-primary border bg-background border-gray-300 py-1 rounded-full text-base font-semibold"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((prev) => prev + 1)}
+                    className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex gap-4 ">
+                <button
+                  onClick={() =>
+                    product.status === "in-stock"
+                      ? handleAddToCart()
+                      : toast.error("product Not Available")
                   }
-                  className="w-16 text-center accent-primary border bg-background border-gray-300 py-2 rounded-full text-base font-semibold"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setQuantity((prev) => prev + 1)}
-                  className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
+                  className="md:w-fit w-full px-5 bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
                 >
-                  <Plus size={16} />
+                  Add to Cart
+                </button>
+                <button
+                  onClick={() =>
+                    product.status === "in-stock"
+                      ? handleBuyNow()
+                      : toast.error("Product Not Available")
+                  }
+                  className="md:w-fit w-full px-5  bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
+                >
+                  Buy Now
                 </button>
               </div>
-            </div>
-
-            <div className="flex gap-4 mb-6">
-              <button
-                onClick={() =>
-                  product.status === "in-stock"
-                    ? handleAddToCart()
-                    : toast.error("product Not Available")
-                }
-                className="w-fit px-5 bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
-              >
-                Add to Cart
-              </button>
-              <button
-                onClick={() =>
-                  product.status === "in-stock"
-                    ? handleBuyNow()
-                    : toast.error("Product Not Available")
-                }
-                className="w-fit px-5  bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
-              >
-                Buy Now
-              </button>
             </div>
 
             <div className="flex items-center justify-between mb-2 text-sm ">
@@ -230,7 +248,20 @@ export default function ProductPage({ product }: { product: TProduct }) {
                 className={`flex items-center gap-2 font-medium transition ${
                   isWishlisted ? "text-red-500" : "hover:text-primary"
                 }`}
-                onClick={() => dispatch(toggleWishlist(product))}
+                onClick={() =>
+                  dispatch(
+                    toggleWishlist({
+                      ...product,
+                      price: parseFloat(
+                        product.discounted_price || product.price
+                      ),
+                      discounted_price:
+                        product.discounted_price != null
+                          ? parseFloat(product.discounted_price)
+                          : undefined,
+                    })
+                  )
+                }
               >
                 <Heart
                   className="w-4 h-4"

@@ -1,4 +1,5 @@
 "use client";
+import confetti from "canvas-confetti";
 
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
@@ -10,6 +11,8 @@ import Link from "next/link";
 import { ArrowLeftCircle } from "lucide-react";
 
 export default function CheckoutPage() {
+  const [showThankYou, setShowThankYou] = useState(false);
+
   const { items } = useSelector((state: RootState) => state.cart);
   const hasMounted = useHasMounted();
   const dispatch = useDispatch();
@@ -24,6 +27,30 @@ export default function CheckoutPage() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
+  const handlePhoneBlur = async () => {
+    if (!form.phone.match(/^01[0-9]{9}$/)) return; // Only valid BD numbers
+
+    try {
+      const res = await fetch("/api/last-order-by-phone", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: form.phone }),
+      });
+
+      const data = await res.json();
+
+      if (data?.found) {
+        setForm((prev) => ({
+          ...prev,
+          name: data.name || "",
+          address: data.address || "",
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to fetch address by phone", err);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,9 +73,20 @@ export default function CheckoutPage() {
       const data = await res.json();
 
       if (data.success) {
-        alert("✅ Order placed successfully!");
         dispatch(clearCart());
         setForm({ name: "", phone: "", address: "" });
+        setShowThankYou(true);
+
+        // Launch confetti
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
+
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 4000);
       } else {
         alert("❌ Failed to place order");
       }
@@ -64,6 +102,25 @@ export default function CheckoutPage() {
       <div className=" p-6 shadow-md rounded-lg border">
         <h1 className="text-2xl font-bold mb-6">Shipping Information</h1>
         <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
+          {/* Phone Number */}
+          <div>
+            <label className="block text-sm font-semibold mb-1 ">
+              Phone Number{" "}
+              <span className="text-xs text-gray-500">(e.g. 01XXXXXXXXX)</span>
+            </label>
+            <input
+              type="tel"
+              autoComplete="tel"
+              inputMode="tel"
+              pattern="01[0-9]{9}"
+              onBlur={handlePhoneBlur}
+              placeholder="01XXXXXXXXX"
+              className="w-full border   bg-background  px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              required
+            />
+          </div>
           {/* Name */}
           <div>
             <label className="block text-sm font-semibold mb-1 ">
@@ -76,25 +133,6 @@ export default function CheckoutPage() {
               className="w-full border  bg-background px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              required
-            />
-          </div>
-
-          {/* Phone Number */}
-          <div>
-            <label className="block text-sm font-semibold mb-1 ">
-              Phone Number{" "}
-              <span className="text-xs text-gray-500">(e.g. 01XXXXXXXXX)</span>
-            </label>
-            <input
-              type="tel"
-              autoComplete="tel"
-              inputMode="tel"
-              pattern="01[0-9]{9}"
-              placeholder="01XXXXXXXXX"
-              className="w-full border   bg-background  px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
               required
             />
           </div>
@@ -184,6 +222,19 @@ export default function CheckoutPage() {
           Go back to Cart
         </Link>
       </div>
+      {showThankYou && (
+        <div className="fixed inset-0 z-[999] bg-black/80 flex items-center justify-center text-center px-4">
+          <div className="text-white animate-fadeInUp space-y-4">
+            <h2 className="text-3xl sm:text-5xl font-bold">
+              Thank you for your purchase!
+            </h2>
+            <p className="text-lg sm:text-xl">Our agent will call you soon.</p>
+            <p className="text-base text-gray-300">
+              Redirecting to homepage...
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

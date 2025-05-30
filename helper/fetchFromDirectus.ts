@@ -32,6 +32,8 @@ export const fetchPage = async (
                     "*",
                     "products.products_id.*",
                     "products.products_id.category.*",
+                    "category.name",
+                    "category.slug",
                   ],
                 },
               },
@@ -90,6 +92,50 @@ export const fetchProducts = async (
   }
 };
 
+export const fetchProductsWithLimitAndSorting = async (
+  limit: number,
+  sort: "most_popular" | "latest_updated",
+  categorySlug?: string
+): Promise<TProduct[]> => {
+  try {
+    const sortField = sort === "most_popular" ? "-total_sold" : "-date_updated";
+
+    const options: {
+      fields: string[];
+      limit: number;
+      sort: string;
+      filter?: {
+        category?: {
+          slug: {
+            _eq: string;
+          };
+        };
+      };
+    } = {
+      fields: ["*", "category.*", "brand.*"],
+      limit,
+      sort: sortField,
+    };
+
+    if (categorySlug) {
+      options.filter = {
+        category: {
+          slug: {
+            _eq: categorySlug,
+          },
+        },
+      };
+    }
+
+    const result = await directus.request(readItems("products", options));
+
+    return result as TProduct[];
+  } catch (error) {
+    console.error("Error fetching products", error);
+    throw new Error("Failed to fetch products");
+  }
+};
+
 export const fetchCategories = async (): Promise<TCategory[]> => {
   try {
     const result = await directus.request(
@@ -113,7 +159,7 @@ export const fetchProductData = cache(
             slug,
           },
           sort: ["sort"],
-          fields: ["*", "category.name", "image_gallery.*"],
+          fields: ["*", "category.name", "image_gallery.*", "brand.*"],
         })
       );
 

@@ -24,7 +24,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
       addToCart({
         id: product.id,
         name: product.name,
-        price: product.discounted_price || product.price,
+        price: parseFloat(product.discounted_price || product.price),
         quantity: 1,
         image: product.image,
       })
@@ -44,7 +44,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         addToWishlist({
           id: product.id,
           name: product.name,
-          price: product.discounted_price || product.price,
+          price: parseFloat(product.discounted_price || product.price),
           image: product.image,
           slug: product.slug,
           status: product.status,
@@ -97,7 +97,9 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           {product.discounted_price && (
             <span className="absolute top-2  left-2 bg-primary text-background  text-xs px-2 py-1 rounded-full font-semibold">
               {Math.round(
-                ((product.price - product.discounted_price) / product.price) *
+                ((parseFloat(product.price) -
+                  parseFloat(product.discounted_price)) /
+                  parseFloat(product.price)) *
                   100
               )}
               %
@@ -122,8 +124,12 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           className=""
         >
           <div className="px-4 pt-2">
-            <h3 className="text-base font-bold mb-1">{product.name}</h3>
-            <p className="text-xs text-primary mb-2">{product.category.name}</p>
+            <h3 className="text-base font-bold mb-1 line-clamp-2">
+              {product.name}
+            </h3>
+            <p className="text-xs text-primary mb-2 ">
+              {product.category.name}
+            </p>
           </div>
         </Link>
       </div>
@@ -160,7 +166,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           </span>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-2">
           <button
             onClick={() =>
               product.status === "in-stock"

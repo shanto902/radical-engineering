@@ -10,7 +10,7 @@ export default function Footer() {
   const theme = useSelector((state: RootState) => state.theme.mode);
 
   return (
-    <footer className="bg-primary text-background pt-10 pb-6">
+    <footer className="bg-primary text-background pt-10 mt-10 pb-6">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Logo & Tagline */}
         <div>

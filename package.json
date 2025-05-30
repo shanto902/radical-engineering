@@ -11,6 +11,7 @@
   "dependencies": {
     "@directus/sdk": "^19.1.0",
     "@reduxjs/toolkit": "^2.8.2",
+    "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "html-react-parser": "^5.2.5",
     "html2canvas": "^1.4.1",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

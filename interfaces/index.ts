@@ -40,6 +40,10 @@ export type TFeaturedProductsBlock = {
   id: string;
   item: {
     header_text: string;
+    option: "automatic" | "manual";
+    sort_by: "latest_updated" | "most_popular";
+    limit: number;
+    category: TCategory;
     products: { products_id: TProduct }[];
   };
 };
@@ -63,6 +67,8 @@ export type TProduct = {
   user_manual?: string | null;
   brand: {
     name: string;
+    logo?: string;
+    link: string;
   };
   image: string;
   short_description: string;
@@ -74,8 +80,8 @@ export type TProduct = {
   sub_category?: string;
   category: TCategory;
   slug: string;
-  price: number;
-  discounted_price?: number | null;
+  price: string;
+  discounted_price?: string | null;
   image_gallery: {
     id: string;
     products_id: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X, ChevronDown, Search } from "lucide-react";
+import { Menu, X, ChevronDown, Search, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -15,6 +15,9 @@ import { AppDispatch, RootState } from "@/store";
 import { fetchProducts } from "@/store/productSlice";
 import logo from "@/assets/logo.svg";
 import { ThemeToggle } from "../ThemeToggle";
+import BreadcrumbBanner from "../common/BreadCrumb";
+
+import { openCartSidebar } from "@/store/cartUISlice";
 const Navbar = ({ settings }: { settings: TSettings }) => {
   const [categories, setCategories] = useState<
     { name: string; slug: string; image?: string }[]
@@ -243,7 +246,10 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <div className="md:hidden ml-5 flex gap-3 items-center">
+        <div className="md:hidden ml-5 flex gap-3 items-center ">
+          <button onClick={() => dispatch(openCartSidebar())}>
+            <ShoppingBag />
+          </button>
           <ThemeToggle />
           <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
             {isOpen ? <X size={26} /> : <Menu size={26} />}
@@ -253,7 +259,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden px-4 pt-3 pb-6 bg-background border-t shadow">
+        <div className="md:hidden px-4 pt-3 pb-6  border-t shadow">
           <div className="mb-4 relative">
             <input
               type="text"
@@ -370,6 +376,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
           </div>
         </div>
       )}
+      <BreadcrumbBanner />
     </nav>
   );
 };

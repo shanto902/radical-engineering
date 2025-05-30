@@ -7,7 +7,7 @@ import { loadFromLocalStorage, saveToLocalStorage } from "./persistConfig";
 import type { CartState } from "./cartSlice";
 import type { WishlistState } from "./wishlistSlice";
 import type { ThemeState } from "./themeSlice";
-
+import cartUIReducer from "./cartUISlice";
 const preloadedState: {
   cart: CartState;
   wishlist: WishlistState;
@@ -24,6 +24,7 @@ export const store = configureStore({
     wishlist: wishlistReducer,
     products: productReducer,
     theme: themeReducer,
+    cartUI: cartUIReducer,
   },
   preloadedState,
 });

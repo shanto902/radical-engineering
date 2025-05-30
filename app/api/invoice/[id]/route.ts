@@ -66,6 +66,35 @@ export async function GET(_req: NextRequest, { params }: PageProps) {
       })
     );
 
+    if (order.order_items) {
+      for (const item of order.order_items) {
+        const product = item.product;
+        if (!product?.id) continue;
+
+        try {
+          // Get current total_sold
+          const productData = await directus.request(
+            readItem("products", product.id, { fields: ["total_sold"] })
+          );
+
+          const currentSold = parseInt(productData?.total_sold || "0", 10);
+          const updatedSold = currentSold + item.quantity;
+
+          // Update the total_sold field
+          await directus.request(
+            updateItem("products", product.id, {
+              total_sold: updatedSold,
+            })
+          );
+        } catch (err) {
+          console.error(
+            `Failed to update total_sold for product ${product.id}`,
+            err
+          );
+        }
+      }
+    }
+
     // Return updated order with totals
     return NextResponse.json({
       ...order,

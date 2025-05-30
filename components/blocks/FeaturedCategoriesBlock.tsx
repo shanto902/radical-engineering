@@ -30,6 +30,8 @@ const FeaturedCategoriesBlock = ({
                   alt={cat.categories_id.name}
                   width={300}
                   height={300}
+                  placeholder="blur"
+                  blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.categories_id.image}?width=10&quality=1`}
                   className="object-cover w-full h-full transition-transform group-hover:scale-105"
                 />
               </div>

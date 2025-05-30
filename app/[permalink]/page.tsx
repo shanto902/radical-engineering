@@ -196,9 +196,9 @@ const page = async ({ params }: PageProps) => {
     notFound();
   }
   return (
-    <div className="pt-14" key={pageData.id}>
+    <section key={pageData.id}>
       {pageData.blocks?.map((block) => renderBlock(block))}
-    </div>
+    </section>
   );
 };
 
