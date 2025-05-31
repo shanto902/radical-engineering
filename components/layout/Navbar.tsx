@@ -149,7 +149,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
       <PaddingContainer>
         <hr className=" hidden  md:block" />
       </PaddingContainer>
-      <nav className="backdrop-blur-lg bg-white/80 h-20 dark:bg-backgroundDark/80   sticky top-0 transition-all duration-300 w-full z-50">
+      <nav className="backdrop-blur-lg bg-white/80 h-[72px] dark:bg-backgroundDark/80    sticky top-0 transition-all duration-300 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/home">
             <Image
@@ -209,7 +209,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
               />
             </div>
             {query && (
-              <div className="absolute top-full border left-0 right-0 bg-background mt-1 rounded-lg shadow z-10">
+              <div className="absolute top-full border left-0 right-0 bg-background mt-1 rounded-lg  z-10">
                 {filteredSuggestions.length > 0 ? (
                   <>
                     {filteredSuggestions.slice(0, 5).map((item, idx) => (
@@ -302,7 +302,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
                   <div
                     className={clsx(
-                      "absolute left-0 top-full mt-3 w-[400px] bg-background  border  rounded-2xl shadow-xl z-20 overflow-hidden transition-all font-semibold duration-300 ease-out transform",
+                      "absolute left-0 top-full mt-3 w-[400px] bg-background  border  rounded-2xl  z-20 overflow-hidden transition-all font-semibold duration-300 ease-out transform",
                       hoveringMenu
                         ? "opacity-100 visible translate-y-0"
                         : "opacity-0 invisible -translate-y-2"
@@ -366,7 +366,10 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
           {/* Mobile Menu Toggle */}
           <div className="md:hidden ml-5 flex gap-3 items-center ">
-            <button onClick={() => dispatch(openCartSidebar())}>
+            <button
+              aria-label="Open Cart Sidebar"
+              onClick={() => dispatch(openCartSidebar())}
+            >
               <div className="relative">
                 <ShoppingBag />
                 {cartItems.length > 0 && (
@@ -380,11 +383,15 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
               </div>
             </button>
             <ThemeToggle />
-            <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
+            <button
+              aria-label="Toggle Mobile Menu"
+              onClick={() => setIsOpen(!isOpen)}
+            >
               {isOpen ? <X size={26} /> : <Menu size={26} />}
             </button>
           </div>
         </div>
+
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden backdrop-blur-lg bg-white/80  dark:bg-backgroundDark/80  px-4 pt-3 pb-6  border-t shadow">
@@ -412,7 +419,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                 size={18}
               />
               {query && (
-                <div className="absolute top-full border left-0 right-0 bg-background mt-1 rounded-lg shadow z-10">
+                <div className="absolute top-full border left-0 right-0 bg-background mt-1 rounded-lg  z-10">
                   {filteredSuggestions.length > 0 ? (
                     <>
                       {filteredSuggestions.slice(0, 5).map((item, idx) => (
@@ -511,8 +518,8 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
             </div>
           </div>
         )}
-        <BreadcrumbBanner />
       </nav>
+      <BreadcrumbBanner />
     </>
   );
 };

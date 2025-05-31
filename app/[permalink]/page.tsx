@@ -11,6 +11,9 @@ import {
   TFeaturedProductsBlock,
   THeroBlock,
 } from "@/interfaces";
+import directus from "@/lib/directus";
+import { readItems } from "@directus/sdk";
+import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import React, { Suspense } from "react";
 
@@ -20,64 +23,64 @@ interface PageProps {
   }>;
 }
 
-// export async function generateMetadata(
-//   { params }: PageProps,
-//   parent: ResolvingMetadata
-// ): Promise<Metadata> {
-//   try {
-//     const { permalink } = await params;
-//     const result = await directus.request(
-//       readItems("pages", {
-//         filter: {
-//           permalink: {
-//             _eq: permalink,
-//           },
-//         },
-//         limit: 1,
-//         fields: ["permalink", "seo", "name"],
-//       })
-//     );
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  try {
+    const { permalink } = await params;
+    const result = await directus.request(
+      readItems("pages", {
+        filter: {
+          permalink: {
+            _eq: permalink,
+          },
+        },
+        limit: 1,
+        fields: ["permalink", "seo", "name"],
+      })
+    );
 
-//     if (!result || result.length === 0) {
-//       return {
-//         title: "Page not found",
-//         description: "This page does not exist.",
-//       };
-//     }
+    if (!result || result.length === 0) {
+      return {
+        title: "Page not found",
+        description: "This page does not exist.",
+      };
+    }
 
-//     const previousImages = (await parent).openGraph?.images || [];
-//     if (result && result.length > 0) {
-//       const page = result[0];
-//       return {
-//         title: page.seo.title || page.name || "No description available",
-//         description: page.seo.meta_description || "",
-//         openGraph: {
-//           images: page.seo.og_image
-//             ? [
-//                 {
-//                   url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${page.seo.og_image}`,
-//                 },
-//               ]
-//             : [...previousImages],
-//         },
-//         twitter: {
-//           card: "summary_large_image",
-//         },
-//       };
-//     }
+    const previousImages = (await parent).openGraph?.images || [];
+    if (result && result.length > 0) {
+      const page = result[0];
+      return {
+        title: page.seo.title || page.name || "No description available",
+        description: page.seo.meta_description || "",
+        openGraph: {
+          images: page.seo.og_image
+            ? [
+                {
+                  url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${page.seo.og_image}`,
+                },
+              ]
+            : [...previousImages],
+        },
+        twitter: {
+          card: "summary_large_image",
+        },
+      };
+    }
 
-//     return {
-//       title: "Page not found",
-//       description: "This page does not exist.",
-//     };
-//   } catch (error) {
-//     console.error("Error fetching page metadata:", error);
-//     return {
-//       title: "Error",
-//       description: "Failed to fetch page metadata.",
-//     };
-//   }
-// }
+    return {
+      title: "Page not found",
+      description: "This page does not exist.",
+    };
+  } catch (error) {
+    console.error("Error fetching page metadata:", error);
+    return {
+      title: "Error",
+      description: "Failed to fetch page metadata.",
+    };
+  }
+}
 
 export async function generateStaticParams() {
   try {

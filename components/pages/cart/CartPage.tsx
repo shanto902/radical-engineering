@@ -57,6 +57,7 @@ const CartPage = () => {
 
           <div className="flex justify-end mt-2">
             <button
+              aria-label="Clear Cart"
               onClick={() => dispatch(clearCart())}
               className="text-base flex items-center gap-2 font-bold bg-red-600 rounded-md text-white hover:bg-primary hover:text-background transition-all duration-200 p-2"
             >

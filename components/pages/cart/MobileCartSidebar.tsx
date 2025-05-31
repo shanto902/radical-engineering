@@ -49,7 +49,10 @@ const MobileCartSidebar = () => {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-lg font-bold">Your Cart</h2>
-          <button onClick={() => dispatch(closeCartSidebar())}>
+          <button
+            aria-label="Close cart sidebar"
+            onClick={() => dispatch(closeCartSidebar())}
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -80,6 +83,7 @@ const MobileCartSidebar = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 mt-1">
                       <button
+                        aria-label="Quantity Decrement"
                         onClick={() => dispatch(decrementQuantity(item.id))}
                         className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
                       >
@@ -89,6 +93,7 @@ const MobileCartSidebar = () => {
                         {item.quantity}
                       </span>
                       <button
+                        aria-label="Quantity Increment"
                         onClick={() => dispatch(incrementQuantity(item.id))}
                         className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
                       >
@@ -101,6 +106,7 @@ const MobileCartSidebar = () => {
                   </div>
                 </div>
                 <button
+                  aria-label="Remove From Cart"
                   className="text-red-500 hover:text-red-700"
                   onClick={() => dispatch(removeFromCart(item.id))}
                 >

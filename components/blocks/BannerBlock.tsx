@@ -39,12 +39,14 @@ const BannerBlock = ({ block }: { block: TBannerBlock }) => {
 
         {/* Arrows */}
         <button
+          aria-label="Previous Button"
           onClick={prev}
           className="absolute top-1/2 left-3 -translate-y-1/2 bg-primary text-background p-2 rounded-full hover:bg-secondary hover:text-foreground transition-all duration-200"
         >
           <ChevronLeft size={24} />
         </button>
         <button
+          aria-label="Next Button"
           onClick={next}
           className="absolute top-1/2 right-3 -translate-y-1/2  bg-primary text-background p-2 rounded-full hover:bg-secondary hover:text-foreground transition-all duration-200"
         >

@@ -67,6 +67,7 @@ export type TCategory = {
   date_updated: null | string;
   image: string;
   slug: string;
+  description: string;
 };
 
 export type TProduct = {

@@ -40,9 +40,9 @@ export default function BreadcrumbBanner() {
   if (breadcrumb.length === 0) return null;
 
   return (
-    <div className="relative w-full backdrop-blur-lg  overflow-hidden  bg-white/80  dark:bg-backgroundDark/80  shadow-sm ">
-      <div className="z-10 ">
-        <PaddingContainer>
+    <PaddingContainer className=" sticky top-[72px] z-40 backdrop-blur-lg bg-white/80  dark:bg-backgroundDark/80 transition-all duration-300">
+      <div className="relative w-full   ">
+        <div>
           <nav className="text-xs md:text-sm flex items-center border-t border-b gap-2 py-2">
             <Link href="/" className="hover:underline">
               Home
@@ -66,8 +66,8 @@ export default function BreadcrumbBanner() {
               );
             })}
           </nav>
-        </PaddingContainer>
+        </div>
       </div>
-    </div>
+    </PaddingContainer>
   );
 }

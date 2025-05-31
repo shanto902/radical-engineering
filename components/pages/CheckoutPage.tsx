@@ -169,6 +169,7 @@ export default function CheckoutPage() {
 
           {/* Submit */}
           <button
+            aria-label="Submit Button"
             type="submit"
             className="bg-primary text-background font-semibold px-6 py-2 rounded hover:bg-secondary hover:text-foreground transition w-full"
           >

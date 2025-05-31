@@ -82,6 +82,7 @@ const CartCard = ({
 
               <div className="flex items-center border rounded overflow-hidden">
                 <button
+                  aria-label="Add To Cart"
                   onClick={() =>
                     handleQuantityChange?.(
                       cart.id,
@@ -96,6 +97,7 @@ const CartCard = ({
                   {cart.quantity}
                 </span>
                 <button
+                  aria-label="Quantity Up"
                   onClick={() =>
                     handleQuantityChange?.(cart.id, cart.quantity + 1)
                   }
@@ -132,6 +134,7 @@ const CartCard = ({
           <label className="text-sm font-medium hidden sm:block">Qty:</label>
           <div className="flex items-center border rounded overflow-hidden">
             <button
+              aria-label="Quantity Down"
               onClick={() =>
                 handleQuantityChange?.(cart.id, Math.max(1, cart.quantity - 1))
               }
@@ -141,6 +144,7 @@ const CartCard = ({
             </button>
             <span className="px-3 py-1 text-sm">{cart.quantity}</span>
             <button
+              aria-label="Add To Cart"
               onClick={() => handleQuantityChange?.(cart.id, cart.quantity + 1)}
               className="px-2 py-1 text-sm font-bold hover:bg-secondary hover:text-foreground text-background bg-primary"
             >
@@ -156,6 +160,7 @@ const CartCard = ({
 
         {/* Remove */}
         <button
+          aria-label="Remove From Cart"
           onClick={() => dispatch(removeFromCart(cart.id))}
           className="bg-red-600 p-2 text-white rounded-full hover:bg-primary hover:text-background"
         >
@@ -166,6 +171,7 @@ const CartCard = ({
       {/* Mobile remove icon (optional, if not visible elsewhere) */}
       <div className="sm:hidden mt-3 absolute -top-2 -left-2 text-right">
         <button
+          aria-label="Remove From Cart"
           onClick={() => dispatch(removeFromCart(cart.id))}
           className="text-white p-2 bg-red-600 rounded-full"
           title="Remove from cart"

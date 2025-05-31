@@ -50,6 +50,7 @@ export default function PDFExportWrapper({
       {/* Export Button */}
       <div className="text-right mt-6">
         <button
+          aria-label="Export PDF"
           onClick={handleExportPDF}
           disabled={isGenerating}
           className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"

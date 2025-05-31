@@ -109,6 +109,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
           <div className="flex gap-3 overflow-x-auto p-1">
             {images.map((imgId, idx) => (
               <button
+                aria-label="Image Thumbnail"
                 key={idx}
                 onClick={() => setSelectedImage(imgId)}
                 className={`border rounded overflow-hidden ${
@@ -197,6 +198,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                 <label className="text-base font-medium ">Quantity:</label>
                 <div className="flex items-center gap-2">
                   <button
+                    aria-label="Quantity Decrement"
                     type="button"
                     onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                     className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
@@ -215,6 +217,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   />
 
                   <button
+                    aria-label="Quantity Increment"
                     type="button"
                     onClick={() => setQuantity((prev) => prev + 1)}
                     className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
@@ -226,6 +229,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
 
               <div className="flex gap-4 ">
                 <button
+                  aria-label="Add to Cart"
                   onClick={() =>
                     product.status === "in-stock"
                       ? handleAddToCart()
@@ -236,6 +240,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   Add to Cart
                 </button>
                 <button
+                  aria-label="Buy Now"
                   onClick={() =>
                     product.status === "in-stock"
                       ? handleBuyNow()
@@ -250,6 +255,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
 
             <div className="flex items-center justify-between mb-2 text-sm ">
               <button
+                aria-label="Toggle Wishlist"
                 className={`flex items-center gap-2 font-medium transition ${
                   isWishlisted ? "text-red-500" : "hover:text-primary"
                 }`}

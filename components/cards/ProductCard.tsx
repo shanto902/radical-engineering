@@ -115,6 +115,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
 
         {/* Wishlist Button */}
         <button
+          aria-label="Toggle Wishlist"
           onClick={toggleWishlist}
           className="absolute top-2 right-2 p-1 bg-foreground text-back  rounded-full shadow hover:bg-primary transition"
         >
@@ -174,6 +175,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
 
         <div className="flex flex-col md:flex-row gap-2">
           <button
+            aria-label="Add To Cart"
             onClick={() =>
               product.status === "in-stock"
                 ? handleCart()
@@ -185,6 +187,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           </button>
 
           <button
+            aria-label="Buy Now"
             onClick={() =>
               product.status === "in-stock"
                 ? handleBuyNow()

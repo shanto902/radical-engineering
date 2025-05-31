@@ -112,6 +112,7 @@ export default function InvoicePage() {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Print Preview</h2>
         <button
+          aria-label="Download PDF"
           onClick={handleDownloadPDF}
           className="bg-primary text-background px-4 py-2 rounded hover:bg-secondary hover:text-foreground transition"
         >

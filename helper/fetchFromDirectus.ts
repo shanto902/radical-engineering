@@ -185,3 +185,23 @@ export const fetchProductData = cache(
     }
   }
 );
+
+export const fetchCategoryData = cache(
+  async (slug: string): Promise<TCategory> => {
+    try {
+      const results = await directus.request(
+        readItems("categories", {
+          filter: {
+            slug,
+          },
+          fields: ["*"],
+        })
+      );
+
+      return results[0] as TCategory;
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+      throw new Error("Error fetching category ");
+    }
+  }
+);

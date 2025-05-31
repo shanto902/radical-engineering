@@ -80,6 +80,7 @@ const HeroBlock = ({ block }: { block: THeroBlock }) => {
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
             {block.item.sliders.map((_, idx) => (
               <button
+                aria-label="Pagination Dots"
                 key={idx}
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
                 className={`w-3 h-3 rounded-full ${

@@ -37,6 +37,7 @@ const ProductTabs = ({
       <div className="flex  overflow-hidden justify-center ">
         {hasDetails && (
           <button
+            aria-label="Details Tab"
             onClick={() => setActiveTab("details")}
             className={`py-2 px-4 text-base font-semibold transition ${
               activeTab === "details"
@@ -49,6 +50,7 @@ const ProductTabs = ({
         )}
         {hasPdf && (
           <button
+            aria-label="Data Sheet Tab"
             onClick={() => setActiveTab("pdf")}
             className={`py-2 px-4 text-base font-semibold transition ${
               activeTab === "pdf"
@@ -61,6 +63,7 @@ const ProductTabs = ({
         )}
         {hasManual && (
           <button
+            aria-label="User Manual Tab"
             onClick={() => setActiveTab("manual")}
             className={`py-2 px-4 text-base font-semibold transition ${
               activeTab === "manual"

@@ -82,6 +82,7 @@ const CartPopup = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1 mt-1">
                         <button
+                          aria-label="Quantity Decrement"
                           onClick={() => dispatch(decrementQuantity(item.id))}
                           className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary text-background hover:text-foreground"
                         >
@@ -91,6 +92,7 @@ const CartPopup = () => {
                           {item.quantity}
                         </span>
                         <button
+                          aria-label="Quantity Increment"
                           onClick={() => dispatch(incrementQuantity(item.id))}
                           className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary text-background hover:text-foreground"
                         >
@@ -103,6 +105,7 @@ const CartPopup = () => {
                     </div>
                   </div>
                   <button
+                    aria-label="Remove item from cart"
                     className="text-red-500 hover:text-red-700"
                     onClick={() => dispatch(removeFromCart(item.id))}
                     title="Remove item"

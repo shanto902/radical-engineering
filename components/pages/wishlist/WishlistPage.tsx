@@ -103,6 +103,7 @@ const WishlistPage = () => {
               {/* Buttons */}
               <div className="flex items-center justify-between mt-4">
                 <button
+                  aria-label="Add to Cart"
                   onClick={() => {
                     if (product.status === "in-stock") {
                       dispatch(
@@ -131,6 +132,7 @@ const WishlistPage = () => {
                 </button>
 
                 <button
+                  aria-label="Wishlist Toggle"
                   onClick={() => {
                     dispatch(removeFromWishlist(product.id));
                     toast("Removed from wishlist", {

@@ -145,8 +145,9 @@ export default function ShopPage({
     <PaddingContainer>
       {/* Category Tabs */}
 
-      <div className="flex gap-4 pt-10 flex-wrap font-bold mb-3">
+      <div className="flex gap-4 pt-3 flex-wrap font-bold mb-3">
         <button
+          aria-label="Category Button"
           className={`px-4 py-2 rounded-full ${
             !categorySlug ? "bg-primary text-background" : "text-foreground"
           }`}
@@ -156,6 +157,7 @@ export default function ShopPage({
         </button>
         {categories.map((cat) => (
           <button
+            aria-label="Category link button"
             key={cat.slug}
             onClick={() => router.push(`/categories/${cat.slug}`)}
             className={`px-4 py-2 rounded-full ${
@@ -291,6 +293,7 @@ export default function ShopPage({
                 <div className="flex justify-center mt-8">
                   <div className="inline-flex gap-2">
                     <button
+                      aria-label="Previous page button"
                       onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                       disabled={currentPage === 1}
                       className="px-3 py-1 hover:bg-secondary border rounded disabled:opacity-50"
@@ -303,6 +306,7 @@ export default function ShopPage({
                       ),
                     }).map((_, idx) => (
                       <button
+                        aria-label="Pagination button"
                         key={idx}
                         onClick={() => setCurrentPage(idx + 1)}
                         className={`px-3 py-1 border rounded ${
@@ -315,6 +319,7 @@ export default function ShopPage({
                       </button>
                     ))}
                     <button
+                      aria-label="Next Page button"
                       onClick={() =>
                         setCurrentPage((p) =>
                           Math.min(

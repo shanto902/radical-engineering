@@ -179,6 +179,7 @@ export default function SolarSystemBuilder() {
 
           <div className="flex items-center justify-center gap-1">
             <button
+              aria-label="Quantity Decrement"
               onClick={() =>
                 updateLoad(i, "quantity", Math.max(1, load.quantity - 1))
               }
@@ -187,6 +188,7 @@ export default function SolarSystemBuilder() {
             </button>
             <span>{load.quantity}</span>
             <button
+              aria-label="Quantity Increment"
               onClick={() => updateLoad(i, "quantity", load.quantity + 1)}
             >
               <Plus className="w-4 h-4" />
@@ -205,6 +207,7 @@ export default function SolarSystemBuilder() {
           </span>
 
           <button
+            aria-label="Remove from cart"
             onClick={() => removeLoad(i)}
             className="text-red-600 bg-white rounded-full p-2 hover:bg-primary hover:text-background justify-self-end"
           >
@@ -216,6 +219,7 @@ export default function SolarSystemBuilder() {
       {/* Add Load Button */}
       <div className="text-center mt-4">
         <button
+          aria-label="Add Load"
           onClick={addLoad}
           className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-background rounded hover:bg-secondary hover:text-foreground"
         >
@@ -300,6 +304,7 @@ export default function SolarSystemBuilder() {
                   {/* Quantity Selector */}
                   <div className="flex items-center justify-between mt-2 border px-2 py-1 rounded">
                     <button
+                      aria-label="Quantity Decrement"
                       onClick={() => handleQtyChange(product.id, -1)}
                       className="p-1"
                     >
@@ -307,6 +312,7 @@ export default function SolarSystemBuilder() {
                     </button>
                     <span>{qty}</span>
                     <button
+                      aria-label="Quantity Increment"
                       onClick={() => handleQtyChange(product.id, 1)}
                       className="p-1"
                     >
@@ -316,6 +322,7 @@ export default function SolarSystemBuilder() {
 
                   {/* Add to Cart */}
                   <button
+                    aria-label="Add To Cart"
                     onClick={() =>
                       dispatch(
                         addToCart({

@@ -101,6 +101,7 @@ export default function ContactForm() {
           <hr className="border border-primary" />
           <div className="flex flex-col sm:flex-row justify-center items-center gap-5">
             <button
+              aria-label="Submit Button"
               type="submit"
               disabled={loading}
               className="w-full flex  items-center justify-center gap-2 bg-primary text-background hover:bg-secondary hover:text-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition duration-200"

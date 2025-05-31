@@ -18,7 +18,11 @@ export const ThemeToggle = () => {
   }, [mode]);
 
   return (
-    <button onClick={() => dispatch(toggleTheme())} className="  rounded">
+    <button
+      aria-label="Theme Toggle"
+      onClick={() => dispatch(toggleTheme())}
+      className="  rounded"
+    >
       {mode === "light" ? (
         <span>
           <MoonIcon />
