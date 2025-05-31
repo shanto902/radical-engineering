@@ -65,7 +65,7 @@ const CartPopup = () => {
                 <div key={item.id} className="flex gap-3 items-start">
                   <Link href={`/categories/${item.category.slug}/${item.slug}`}>
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
+                      src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=50&height=50`}
                       alt={item.name}
                       width={50}
                       height={50}

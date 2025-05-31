@@ -26,7 +26,7 @@ const BannerBlock = ({ block }: { block: TBannerBlock }) => {
           {block.item.banners.map((banner) => (
             <div key={banner.banners_id.id} className="keen-slider__slide">
               <Image
-                src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${banner.banners_id.image}`}
+                src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${banner.banners_id.image}?height=500`}
                 alt={"banner"}
                 width={1920}
                 height={500}

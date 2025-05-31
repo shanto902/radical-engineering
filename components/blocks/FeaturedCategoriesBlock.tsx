@@ -26,10 +26,11 @@ const FeaturedCategoriesBlock = ({
             >
               <div className="w-full aspect-square bg-gray-100 overflow-hidden rounded-lg">
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.categories_id.image}`}
+                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.categories_id.image}?width=150&height=150`}
                   alt={`${cat.categories_id.name} image`}
-                  width={300}
-                  height={300}
+                  width={150}
+                  priority
+                  height={150}
                   placeholder="blur"
                   blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.categories_id.image}?width=10&quality=1`}
                   className="object-cover w-full h-full transition-transform group-hover:scale-105"

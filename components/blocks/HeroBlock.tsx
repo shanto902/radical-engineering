@@ -45,7 +45,7 @@ const HeroBlock = ({ block }: { block: THeroBlock }) => {
       className="keen-slider__slide relative h-full w-full flex items-center justify-center"
     >
       <Image
-        src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${slide.sliders_id.image}`}
+        src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${slide.sliders_id.image}?height=600`}
         alt={slide.sliders_id.body}
         fill
         priority={idx === 0}

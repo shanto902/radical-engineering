@@ -65,7 +65,7 @@ const MobileCartSidebar = () => {
             cartItems.map((item) => (
               <div key={item.id} className="flex items-start gap-3 mb-4">
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
+                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=50&height=50`}
                   alt={item.name}
                   width={50}
                   onClick={() => dispatch(closeCartSidebar())}

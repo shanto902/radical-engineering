@@ -94,10 +94,10 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           className="relative block aspect-square"
         >
           <Image
-            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`}
+            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=200&height=200`}
             alt={product.name}
-            width={400}
-            height={400}
+            width={200}
+            height={200}
             className="w-full  object-contain aspect-square "
           />
           {product.discounted_price && (

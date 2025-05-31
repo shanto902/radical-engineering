@@ -394,7 +394,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden backdrop-blur-lg bg-white/80  dark:bg-backgroundDark/80  px-4 pt-3 pb-6  border-t shadow">
+          <div className="fixed inset-x-0 top-[72px] z-50 md:hidden backdrop-blur-lg bg-white/80 dark:bg-backgroundDark/80 px-4 pt-3 pb-6 border-t shadow">
             <div className="mb-4 relative">
               <input
                 type="text"

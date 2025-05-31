@@ -60,7 +60,7 @@ const CartCard = ({
       <div className="flex items-start sm:items-center gap-4 w-full sm:w-1/2">
         <Link href={`/categories/${cart.category.slug}/${cart.slug}`}>
           <Image
-            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cart.image}`}
+            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cart.image}?width=90&height=90`}
             alt={cart.name}
             width={90}
             height={90}

@@ -27,7 +27,7 @@ const BrandMarquee = ({ brands }: { brands: TBrand[] }) => {
             >
               <Image
                 className="object-contain aspect-square opacity-80 hover:opacity-100 transition-opacity duration-300"
-                src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${brand.logo}`}
+                src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${brand.logo}?height=96`}
                 alt={brand.name}
                 height={96}
                 width={96}
