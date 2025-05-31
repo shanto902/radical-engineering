@@ -7,6 +7,11 @@ export interface ICartItem {
   price: number;
   quantity: number;
   image: string;
+  slug: string;
+  category: {
+    name: string;
+    slug: string;
+  };
 }
 
 export interface CartState {

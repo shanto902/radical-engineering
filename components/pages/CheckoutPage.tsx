@@ -114,7 +114,7 @@ export default function CheckoutPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
       {/* Shipping Info */}
-      <div className=" p-6 shadow-md rounded-lg border">
+      <div className=" p-6 shadow-md order-2 rounded-lg border">
         <h1 className="text-2xl font-bold mb-6">Shipping Information</h1>
         <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
           {/* Phone Number */}
@@ -178,64 +178,73 @@ export default function CheckoutPage() {
       </div>
 
       {/* Order Summary */}
-      <div className="p-4 sm:p-6 shadow-md rounded-lg border relative">
+      <div className="p-4 sm:p-6 shadow-md order-1 rounded-lg border relative">
         <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
           Order Summary
         </h2>
 
-        <div className="space-y-4">
+        <div className="space-y-4 ">
           {!hasMounted
             ? Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 border-b pb-4 animate-pulse"
+                  className="flex items-center gap-4 border-b pb-4 animate-pulse"
                 >
-                  <div className="w-full sm:w-[70px] h-[70px] bg-gray-200 rounded" />
-                  <div className="flex-1 space-y-2 w-full">
+                  <div className="w-[70px] h-[70px] bg-gray-200 rounded" />
+                  <div className="flex-1 space-y-2">
                     <div className="h-4 bg-gray-200 rounded w-3/4" />
                     <div className="h-3 bg-gray-200 rounded w-1/2" />
                   </div>
-                  <div className="h-5 w-16 bg-gray-200 rounded self-end sm:self-auto" />
+                  <div className="h-5 w-16 bg-gray-200 rounded" />
                 </div>
               ))
             : items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 border-b pb-4"
+                  className="flex flex-row items-center gap-4 border-b pb-4"
                 >
                   <Image
                     src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
                     alt={item.name}
                     width={70}
                     height={70}
-                    className="rounded object-cover border w-full sm:w-[70px] h-[70px]"
+                    className="rounded border w-[70px] h-[70px] object-contain"
                   />
-                  <div className="flex-1 w-full">
-                    <p className="font-medium text-base">{item.name}</p>
+                  <div className="flex-1">
+                    <Link
+                      href={`/categories/${item.category.slug}/${item.slug}`}
+                      className="font-medium text-base hover:underline underline-offset-2 text-primary"
+                    >
+                      {item.name}
+                    </Link>
                     <p className="text-sm text-gray-500">
                       {item.quantity} × {item.price.toLocaleString()} BDT
                     </p>
                   </div>
-                  <p className="font-semibold text-right w-full sm:w-auto">
+                  <p className="font-semibold text-right w-auto">
                     {(item.price * item.quantity).toLocaleString()} BDT
                   </p>
                 </div>
               ))}
         </div>
 
-        <div className="mt-4 sm:mt-6 pt-4">
+        <div className="  flex flex-col pb-12 items-end gap-4 justify-end py-4">
           <p className="text-lg sm:text-xl font-bold">
             Total: {`${total ? total.toLocaleString() : 0} BDT`}
           </p>
+          <Link
+            href="/cart"
+            className="flex absolute bottom-2 right-5 flex-col items-end gap-1 text-sm sm:text-base hover:border-b-2 pb-1 hover:border-primary"
+          >
+            <span className="text-xs">
+              Need Something to change? <br />{" "}
+            </span>
+            <span className="flex gap-1 items-center">
+              <ArrowLeftCircle className="w-5 h-5 grou" />
+              Go back to Cart
+            </span>
+          </Link>
         </div>
-
-        <Link
-          href="/cart"
-          className="flex items-center gap-1 sm:gap-2 mt-6 sm:mt-0 sm:absolute sm:bottom-5 sm:right-5 text-sm sm:text-base hover:border-b-2 pb-1 hover:border-primary"
-        >
-          <ArrowLeftCircle className="w-5 h-5" />
-          Go back to Cart
-        </Link>
       </div>
       {showThankYou && (
         <div className="fixed inset-0 z-[999] bg-black/80 flex items-center justify-center text-center px-4">

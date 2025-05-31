@@ -59,6 +59,11 @@ export default function ProductPage({ product }: { product: TProduct }) {
         price: parseFloat(product.discounted_price || product.price),
         image: product.image,
         quantity,
+        slug: product.slug,
+        category: {
+          name: product.category.name,
+          slug: product.category.slug,
+        },
       })
     );
   };

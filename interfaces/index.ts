@@ -135,6 +135,18 @@ export type TPageBlock = {
 
 export type TSettings = {
   menu: TMenu[];
+  short_description: string;
+  quick_links: {
+    label: string;
+    link: string;
+  }[];
+  phone: string;
+  email: string;
+  address: string;
+  social_links: {
+    icon: string;
+    link: string;
+  };
 };
 
 export type TMenu = {

@@ -40,10 +40,10 @@ export default function BreadcrumbBanner() {
   if (breadcrumb.length === 0) return null;
 
   return (
-    <div className="relative w-full overflow-hidden">
-      <div className="z-10">
+    <div className="relative w-full backdrop-blur-lg  overflow-hidden  bg-white/80  dark:bg-backgroundDark/80  shadow-sm ">
+      <div className="z-10 ">
         <PaddingContainer>
-          <nav className="text-xs md:text-sm flex items-center border-b gap-2 py-2">
+          <nav className="text-xs md:text-sm flex items-center border-t border-b gap-2 py-2">
             <Link href="/" className="hover:underline">
               Home
             </Link>

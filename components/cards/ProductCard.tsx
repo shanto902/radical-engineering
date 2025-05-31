@@ -27,6 +27,11 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         price: parseFloat(product.discounted_price || product.price),
         quantity: 1,
         image: product.image,
+        slug: product.slug,
+        category: {
+          name: product.category.name,
+          slug: product.category.slug,
+        },
       })
     );
     toast.success("Product added to cart!");
@@ -50,6 +55,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           status: product.status,
           category: {
             slug: product.category.slug,
+            name: product.category.name,
           },
         })
       );

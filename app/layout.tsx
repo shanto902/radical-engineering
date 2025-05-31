@@ -42,7 +42,7 @@ export default async function RootLayout({
           <ThemeWrapper>
             <Toaster position="bottom-right" />
             <Navbar settings={settings} />
-            <main className="min-h-[80vh] relative dark:bg-darkBG mt-20">
+            <main className="min-h-[80vh] relative dark:bg-darkBG ">
               {children}
             </main>
             <MobileCartSidebar />

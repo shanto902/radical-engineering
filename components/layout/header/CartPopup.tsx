@@ -45,12 +45,9 @@ const CartPopup = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Link
-        href="/cart"
-        className="ml-3 px-4 py-2 bg-primary hover:bg-secondary transition text-background hover:text-foreground rounded-full text-sm font-semibold shadow inline-flex items-center gap-2"
-      >
-        <ShoppingCart className="w-4 h-4" />
-        View Cart
+      <Link href="/cart" className="">
+        <ShoppingCart />
+
         {totalQuantity > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
             {totalQuantity}
@@ -66,15 +63,22 @@ const CartPopup = () => {
             ) : (
               cartItems.map((item) => (
                 <div key={item.id} className="flex gap-3 items-start">
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
-                    alt={item.name}
-                    width={50}
-                    height={50}
-                    className="rounded border w-[50px] h-[50px] object-cover"
-                  />
+                  <Link href={`/categories/${item.category.slug}/${item.slug}`}>
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
+                      alt={item.name}
+                      width={50}
+                      height={50}
+                      className="rounded border w-[50px] h-[50px] object-cover"
+                    />
+                  </Link>
                   <div className="flex-1">
-                    <p className="text-sm font-medium">{item.name}</p>
+                    <Link
+                      href={`/categories/${item.category.slug}/${item.slug}`}
+                      className="text-sm font-medium text-primary hover:under"
+                    >
+                      {item.name}
+                    </Link>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1 mt-1">
                         <button
@@ -112,7 +116,7 @@ const CartPopup = () => {
           {cartItems.length > 0 && (
             <div className="p-4 border-t space-y-2">
               <div className="flex justify-between text-sm font-medium">
-                <span>Subtotal:</span>
+                <span className="font-bold">Subtotal:</span>
                 <span>{subtotal.toLocaleString()} BDT</span>
               </div>
               <Link

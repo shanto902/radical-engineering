@@ -65,11 +65,18 @@ const MobileCartSidebar = () => {
                   src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
                   alt={item.name}
                   width={50}
+                  onClick={() => dispatch(closeCartSidebar())}
                   height={50}
                   className="rounded border w-[50px] h-[50px] object-cover"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">{item.name}</p>
+                  <Link
+                    onClick={() => dispatch(closeCartSidebar())}
+                    href={`/categories/${item.category.slug}/${item.slug}`}
+                    className="text-sm font-medium line-clamp-2 text-primary hover:underline"
+                  >
+                    {item.name}
+                  </Link>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 mt-1">
                       <button

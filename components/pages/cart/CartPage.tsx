@@ -55,20 +55,19 @@ const CartPage = () => {
             ))}
           </div>
 
-          <div className="mt-12  pt-8 grid md:grid-cols-2 gap-8 items-start">
-            {/* Left: Clear Cart */}
-            <div>
-              <button
-                onClick={() => dispatch(clearCart())}
-                className="text-base flex items-center gap-2 font-bold bg-red-600 rounded-md text-white hover:bg-primary hover:text-background transition-all duration-200 p-2"
-              >
-                <Trash /> Clear Cart
-              </button>
-            </div>
+          <div className="flex justify-end mt-2">
+            <button
+              onClick={() => dispatch(clearCart())}
+              className="text-base flex items-center gap-2 font-bold bg-red-600 rounded-md text-white hover:bg-primary hover:text-background transition-all duration-200 p-2"
+            >
+              <Trash /> Clear Cart
+            </button>
+          </div>
 
-            {/* Right: Total + Checkout */}
-            <div className=" border rounded-xl p-6 space-y-4 shadow-sm">
-              <div className="flex justify-between text-lg font-medium">
+          <div className="mt-12  w-full flex justify-end">
+            {/*  Total + Checkout */}
+            <div className=" space-y-4 shadow-sm">
+              <div className="flex justify-between text-lg md:text-xl  font-bold">
                 <span>Total:</span>
                 <span>{total.toLocaleString()} BDT</span>
               </div>

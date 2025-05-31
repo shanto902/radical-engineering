@@ -10,6 +10,7 @@ export interface WishlistItem {
   slug: string;
   category: {
     slug: string;
+    name: string;
   };
   discounted_price?: number | null;
   status: "in-stock" | "out-of-stock" | "pre-order";
