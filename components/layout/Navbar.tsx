@@ -12,16 +12,17 @@ import {
   ArrowRightCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import Image from "next/image";
 import logoDark from "@/assets/logo-dark.svg";
-import { TMenu, TSettings } from "@/interfaces";
+import { TMenu, TProduct, TSettings } from "@/interfaces";
 
 import CartPopup from "./header/CartPopup";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
-import { fetchProducts } from "@/store/productSlice";
+import { useDebounce } from "@/hooks/useDebounce"; // ✅ import hook
+
 import logo from "@/assets/logo.svg";
 import { ThemeToggle } from "../ThemeToggle";
 import BreadcrumbBanner from "../common/BreadCrumb";
@@ -30,17 +31,23 @@ import { openCartSidebar } from "@/store/cartUISlice";
 import TopBar from "./header/TopBar";
 import PaddingContainer from "../common/PaddingContainer";
 const Navbar = ({ settings }: { settings: TSettings }) => {
+  const pathname = usePathname();
+  const router = useRouter();
   const [categories, setCategories] = useState<
     { name: string; slug: string; image?: string }[]
   >([]);
   const [isOpen, setIsOpen] = useState(false);
   const [hoveringMenu, setHoveringMenu] = useState(false);
   const [query, setQuery] = useState("");
-  const pathname = usePathname();
   const [activeIndex, setActiveIndex] = useState<number>(-1); // -1 means nothing selected
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const [hasMounted, setHasMounted] = useState(false);
   const [hideTopBar, setHideTopBar] = useState(false);
+  const [products, setProducts] = useState<TProduct[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+
+  const debouncedQuery = useDebounce(query, 300); // ✅ 300ms delay
+
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -70,9 +77,42 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   }, []);
   const dispatch = useDispatch<AppDispatch>(); // ✅ Typed dispatch
 
+  // REMOVE this
+  // const dispatch = useDispatch<AppDispatch>();
+  // const products = useSelector((state: RootState) => state.products.items);
+
+  // ADD THIS INSTEAD
+
   useEffect(() => {
-    dispatch(fetchProducts()); // ✅ No more TS error
-  }, []);
+    if (!debouncedQuery.trim()) {
+      setProducts([]);
+      return;
+    }
+
+    const fetchProducts = async () => {
+      try {
+        setLoadingProducts(true);
+        const res = await fetch(
+          `/api/search?query=${encodeURIComponent(debouncedQuery)}`
+        );
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        if (
+          typeof err === "object" &&
+          err !== null &&
+          "name" in err &&
+          (err as { name: string }).name !== "AbortError"
+        ) {
+          console.error("Search failed", err);
+        }
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+
+    fetchProducts();
+  }, [debouncedQuery]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,10 +127,9 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const products = useSelector((state: RootState) => state.products.items);
   const theme = useSelector((state: RootState) => state.theme.mode);
   const filteredSuggestions = products.filter((item) =>
-    item.name.toLowerCase().includes(query.toLowerCase())
+    item.name.toLowerCase().includes(debouncedQuery.toLowerCase())
   );
 
   useEffect(() => {
@@ -185,15 +224,13 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
                     if (activeIndex >= 0 && activeIndex < 5) {
                       const selectedItem = filteredSuggestions[activeIndex];
-                      window.location.href = `/categories/${selectedItem.category.slug}/${selectedItem.slug}`;
+                      router.push(
+                        `/categories/${selectedItem.category.slug}/${selectedItem.slug}`
+                      );
                     } else if (activeIndex === 5) {
-                      window.location.href = `/search?query=${encodeURIComponent(
-                        query
-                      )}`;
+                      router.push(`/search?query=${encodeURIComponent(query)}`);
                     } else if (query.trim()) {
-                      window.location.href = `/search?query=${encodeURIComponent(
-                        query
-                      )}`;
+                      router.push(`/search?query=${encodeURIComponent(query)}`);
                     }
 
                     setQuery("");
@@ -209,8 +246,15 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
               />
             </div>
             {query && (
-              <div className="absolute top-full border left-0 right-0 bg-background mt-1 rounded-lg  z-10">
-                {filteredSuggestions.length > 0 ? (
+              <div className="absolute top-full border left-0 right-0 bg-background mt-1 rounded-lg z-10">
+                {loadingProducts ? (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="w-6 h-6 border-2 border-t-2 border-primary rounded-full animate-spin" />
+                    <span className="ml-2 text-sm text-gray-500">
+                      Searching...
+                    </span>
+                  </div>
+                ) : filteredSuggestions.length > 0 ? (
                   <>
                     {filteredSuggestions.slice(0, 5).map((item, idx) => (
                       <Link
@@ -236,13 +280,11 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                         <span>{item.name}</span>
                       </Link>
                     ))}
-
-                    {/* See more option (navigable with index 5) */}
                     {filteredSuggestions.length > 5 && (
                       <Link
                         href={`/search?query=${encodeURIComponent(query)}`}
                         className={clsx(
-                          "flex justify-between items-center px-4 py-2  text-sm font-semibold text-primary hover:underline",
+                          "flex justify-between items-center px-4 py-2 text-sm font-semibold text-primary hover:underline",
                           activeIndex === 5 &&
                             "underline font-bold underline-offset-4 text-foreground"
                         )}
@@ -252,12 +294,12 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                           setActiveIndex(-1);
                         }}
                       >
-                        See more results for “{query}”{" "}
+                        See more results for “{query}”
                         <ArrowRightCircle
-                          className={` ${
+                          className={`${
                             activeIndex === 5
-                              ? "opacity-100   translate-x-0  transition-all duration-200"
-                              : "opacity-0 -translate-x-14 "
+                              ? "opacity-100 translate-x-0 transition-all duration-200"
+                              : "opacity-0 -translate-x-14"
                           }`}
                         />
                       </Link>
@@ -404,9 +446,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && query.trim()) {
                     e.preventDefault();
-                    window.location.href = `/search?query=${encodeURIComponent(
-                      query
-                    )}`;
+                    router.push(`/search?query=${encodeURIComponent(query)}`);
                     setQuery("");
                     setIsOpen(false); // optional
                   }

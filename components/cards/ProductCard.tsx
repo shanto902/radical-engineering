@@ -166,7 +166,9 @@ const ProductCard = ({ product }: { product: TProduct }) => {
             </span>
           )}
           <span className="text-foreground font-bold text-lg">
-            {(product.discounted_price || product.price).toLocaleString()}৳
+            {product.discounted_price
+              ? Number(product.discounted_price).toLocaleString()
+              : Number(product.price || 0).toLocaleString()}
           </span>
         </div>
 
