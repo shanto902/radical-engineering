@@ -89,7 +89,7 @@ const WishlistPage = () => {
                     ৳{" "}
                     {product.discounted_price &&
                       product.discounted_price.toLocaleString()}{" "}
-                    <span className="text-gray-400 line-through text-sm ml-1">
+                    <span className=" line-through text-sm ml-1">
                       ৳ {product.price.toLocaleString()}
                     </span>
                   </div>

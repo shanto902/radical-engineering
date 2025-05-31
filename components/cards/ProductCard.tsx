@@ -143,7 +143,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
       <div className="px-4 pb-4">
         <p className="text-sm font-semibold mb-1">
           {product.status === "in-stock" && (
-            <span className="text-green-600 flex items-center gap-1">
+            <span className="text-green-900 dark:text-green-400 flex items-center gap-1">
               <CheckCircle size={16} />
               In Stock
             </span>
@@ -164,7 +164,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
 
         <div className="mb-3">
           {product.discounted_price && (
-            <span className="line-through text-gray-400 text-sm mr-2">
+            <span className="line-through  text-sm mr-2">
               {product.price.toLocaleString()}৳
             </span>
           )}

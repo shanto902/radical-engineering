@@ -74,7 +74,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
   };
 
   return (
-    <PaddingContainer className="py-20">
+    <PaddingContainer className="py-10">
       <div className=" grid grid-cols-1 md:grid-cols-3 gap-10 content-center">
         {/* Image Panel */}
         <div className="">
@@ -147,7 +147,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
             </div>
             <p className="text-sm font-semibold my-1 flex justify-start items-center gap-4">
               {product.status === "in-stock" && (
-                <span className="text-green-600 dark:text-green-400 flex items-center gap-1">
+                <span className="text-green-900 dark:text-green-400 flex items-center gap-1">
                   <CheckCircle size={16} /> In Stock
                 </span>
               )}

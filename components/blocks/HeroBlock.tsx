@@ -69,7 +69,7 @@ const HeroBlock = ({ block }: { block: THeroBlock }) => {
   );
 
   return (
-    <div className="relative -mt-4 h-[60vh] overflow-hidden">
+    <div className="relative -mt-4 h-[500px] overflow-hidden">
       {isClient ? (
         <>
           <div ref={sliderRef} className="keen-slider h-full">
@@ -80,10 +80,10 @@ const HeroBlock = ({ block }: { block: THeroBlock }) => {
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
             {block.item.sliders.map((_, idx) => (
               <button
-                aria-label="Pagination Dots"
+                aria-label={`Pagination Dot ${idx + 1}`}
                 key={idx}
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
-                className={`w-3 h-3 rounded-full ${
+                className={`w-3 h-3 p-3 rounded-full ${
                   currentSlide === idx ? "bg-foreground" : "bg-white/40"
                 } transition-all`}
               />

@@ -45,7 +45,7 @@ const CartPopup = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Link href="/cart" className="">
+      <Link aria-label="Go to Cart" href="/cart" className="">
         <ShoppingCart />
 
         {totalQuantity > 0 && (

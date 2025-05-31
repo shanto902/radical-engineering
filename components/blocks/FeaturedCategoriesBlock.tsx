@@ -27,7 +27,7 @@ const FeaturedCategoriesBlock = ({
               <div className="w-full aspect-square bg-gray-100 overflow-hidden rounded-lg">
                 <Image
                   src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.categories_id.image}`}
-                  alt={cat.categories_id.name}
+                  alt={`${cat.categories_id.name} image`}
                   width={300}
                   height={300}
                   placeholder="blur"

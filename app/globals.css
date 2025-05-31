@@ -78,7 +78,7 @@
   }
 
   .rich-text td {
-    @apply p-2 border border-black;
+    @apply p-2 border border-foreground;
   }
 
   .rich-text ul {

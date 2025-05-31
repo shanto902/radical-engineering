@@ -290,9 +290,7 @@ export default function SolarSystemBuilder() {
 
                   {discounted ? (
                     <p className="gap-2">
-                      <span className="text-xs text-gray-500 line-through">
-                        ৳ {price}
-                      </span>{" "}
+                      <span className="text-xs  line-through">৳ {price}</span>{" "}
                       <span className="text-sm font-bold text-primary">
                         ৳ {discounted}
                       </span>

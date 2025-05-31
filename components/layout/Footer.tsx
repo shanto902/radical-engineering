@@ -73,6 +73,7 @@ export default function Footer() {
           <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
           <div className="flex gap-4 mt-2">
             <Link
+              aria-label="Go to Facebook"
               href="https://facebook.com"
               target="_blank"
               className="p-2 bg-white/10 hover:bg-white/20 rounded-full"
