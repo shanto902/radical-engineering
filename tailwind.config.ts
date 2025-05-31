@@ -16,6 +16,8 @@ export default {
         secondary: "var(--secondary)",
         backgroundDark: "#1f1f1f",
         primaryDark: "#facc15",
+        imageBgPrimary: "#facc15",
+        imageBgPrimaryDark: "#3c1100",
       },
     },
   },

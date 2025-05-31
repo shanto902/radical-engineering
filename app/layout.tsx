@@ -41,7 +41,7 @@ export default async function RootLayout({
         <ReduxProvider>
           <FaviconSwitcher />
           <ThemeWrapper>
-            <Toaster position="bottom-right" />
+            <Toaster position="top-center" />
             <Navbar settings={settings} />
             <main className="min-h-[80vh] relative dark:bg-darkBG ">
               {children}

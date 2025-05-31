@@ -17,7 +17,7 @@ const FeaturedCategoriesBlock = ({
         <h2 className="text-2xl md:text-3xl font-bold mb-8">
           {block.item.header_text || "Featured Categories"}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6  gap-3 md:gap-6">
           {block.item.categories.map((cat) => (
             <Link
               href={`/categories/${cat.categories_id.slug}`}

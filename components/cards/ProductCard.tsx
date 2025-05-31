@@ -94,11 +94,11 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           className="relative block aspect-square"
         >
           <Image
-            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=200&height=200`}
+            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?height=200`}
             alt={product.name}
             width={200}
             height={200}
-            className="w-full  object-contain aspect-square "
+            className="w-full dark:bg-imageBgPrimary/20 bg-imageBgPrimaryDark/20  object-contain aspect-square "
           />
           {product.discounted_price && (
             <span className="absolute top-2  left-2 bg-primary text-background  text-xs px-2 py-1 rounded-full font-semibold">

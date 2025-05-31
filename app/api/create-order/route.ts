@@ -26,9 +26,45 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, phone, address, total, items } = body;
 
+    // ✅ Validate fields
+    if (
+      !name ||
+      typeof name !== "string" ||
+      !phone ||
+      !/^01[0-9]{9}$/.test(phone) || // Valid BD number
+      !address ||
+      typeof address !== "string" ||
+      !Array.isArray(items) ||
+      items.length === 0 ||
+      typeof total !== "number" ||
+      total <= 0
+    ) {
+      return NextResponse.json(
+        { success: false, error: "Invalid order data" },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Validate each item
+    const validItems = items.filter(
+      (item) =>
+        item &&
+        typeof item.id === "string" &&
+        item.id.trim() !== "" &&
+        typeof item.quantity === "number" &&
+        item.quantity > 0
+    );
+
+    if (validItems.length === 0) {
+      return NextResponse.json(
+        { success: false, error: "No valid order items" },
+        { status: 400 }
+      );
+    }
+
     const orderId = generateOrderId();
 
-    // Step 1: Create the order with generated order_id
+    // Step 1: Create the order
     const createdOrder = await directus.request(
       createItem("orders", {
         order_id: orderId,
@@ -45,7 +81,7 @@ export async function POST(req: NextRequest) {
     await directus.request(
       createItems(
         "order_items",
-        items.map((item: { id: string; quantity: number }) => ({
+        validItems.map((item) => ({
           order: createdOrder.id,
           product: item.id,
           quantity: item.quantity,

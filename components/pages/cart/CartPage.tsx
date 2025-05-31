@@ -42,7 +42,16 @@ const CartPage = () => {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="text-center text-lg">Your cart is currently empty.</div>
+        <div className="flex flex-col justify-center items-center">
+          <p className="text-center text-lg">Your cart is currently empty.</p>
+          <Link
+            aria-label="Shop Button"
+            href="/categories"
+            className="inline-flex gap-2 items-center bg-primary hover:bg-secondary text-background font-semibold px-6 py-2 rounded transition-all shadow-md hover:shadow-lg mt-5 "
+          >
+            Lets Go <ShoppingCart /> for Shopping
+          </Link>
+        </div>
       ) : (
         <>
           <div className="space-y-8">

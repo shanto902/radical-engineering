@@ -8,7 +8,8 @@ import { useState } from "react";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { clearCart } from "@/store/cartSlice";
 import Link from "next/link";
-import { ArrowLeftCircle } from "lucide-react";
+import { ArrowLeftCircle, ShoppingCart } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function CheckoutPage() {
   const [showThankYou, setShowThankYou] = useState(false);
@@ -54,8 +55,16 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (items.length === 0) {
+      toast.error(
+        "🛒 Your cart is empty. Please add products before checking out."
+      );
+      return;
+    }
+
     if (!form.name || !form.phone || !form.address) {
-      alert("Please fill out all fields");
+      toast.error("❗ Please fill out all fields.");
       return;
     }
 
@@ -112,7 +121,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
       {/* Shipping Info */}
       <div className=" p-6 shadow-md order-2 rounded-lg border">
         <h1 className="text-2xl font-bold mb-6">Shipping Information</h1>
@@ -184,69 +193,86 @@ export default function CheckoutPage() {
           Order Summary
         </h2>
 
-        <div className="space-y-4 ">
-          {!hasMounted
-            ? Array.from({ length: 3 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 border-b pb-4 animate-pulse"
-                >
-                  <div className="w-[70px] h-[70px] bg-gray-200 rounded" />
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-3/4" />
-                    <div className="h-3 bg-gray-200 rounded w-1/2" />
-                  </div>
-                  <div className="h-5 w-16 bg-gray-200 rounded" />
+        <div className="space-y-4 min-h-[200px] flex flex-col justify-center">
+          {!hasMounted ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 border-b pb-4 animate-pulse"
+              >
+                <div className="w-[70px] h-[70px] bg-gray-200 rounded" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-200 rounded w-1/2" />
                 </div>
-              ))
-            : items.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex flex-row items-center gap-4 border-b pb-4"
-                >
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
-                    alt={item.name}
-                    width={70}
-                    height={70}
-                    className="rounded border w-[70px] h-[70px] object-contain"
-                  />
-                  <div className="flex-1">
-                    <Link
-                      href={`/categories/${item.category.slug}/${item.slug}`}
-                      className="font-medium text-base hover:underline underline-offset-2 text-primary"
-                    >
-                      {item.name}
-                    </Link>
-                    <p className="text-sm text-gray-500">
-                      {item.quantity} × {item.price.toLocaleString()} BDT
-                    </p>
-                  </div>
-                  <p className="font-semibold text-right w-auto">
-                    {(item.price * item.quantity).toLocaleString()} BDT
+                <div className="h-5 w-16 bg-gray-200 rounded" />
+              </div>
+            ))
+          ) : items.length === 0 ? (
+            <div className="text-center space-y-5 py-6">
+              <p className="text-xl font-semibold ">🛒 Your cart is empty!</p>
+              <p className="text-sm mb-50 text-gray-500">
+                Looks like you haven’t added anything yet.
+              </p>
+              <Link
+                aria-label="Shop Button"
+                href="/categories"
+                className="inline-flex gap-2 items-center bg-primary hover:bg-secondary text-background font-semibold px-6 py-2 rounded transition-all shadow-md hover:shadow-lg "
+              >
+                Lets Go <ShoppingCart /> for Shopping
+              </Link>
+            </div>
+          ) : (
+            items.map((item) => (
+              <div
+                key={item.id}
+                className="flex flex-row items-center gap-4 border-b pb-4"
+              >
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
+                  alt={item.name}
+                  width={70}
+                  height={70}
+                  className="rounded border w-[70px] h-[70px] object-contain"
+                />
+                <div className="flex-1">
+                  <Link
+                    href={`/categories/${item.category.slug}/${item.slug}`}
+                    className="font-medium text-base hover:underline underline-offset-2 text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                  <p className="text-sm text-gray-500">
+                    {item.quantity} × {item.price.toLocaleString()} BDT
                   </p>
                 </div>
-              ))}
+                <p className="font-semibold text-right w-auto">
+                  {(item.price * item.quantity).toLocaleString()} BDT
+                </p>
+              </div>
+            ))
+          )}
         </div>
 
-        <div className="  flex flex-col pb-12 items-end gap-4 justify-end py-4">
-          <p className="text-lg sm:text-xl font-bold">
-            Total: {`${total ? total.toLocaleString() : 0} BDT`}
-          </p>
-          <Link
-            href="/cart"
-            className="flex absolute bottom-2 right-5 flex-col items-end gap-1 text-sm sm:text-base hover:border-b-2 pb-1 hover:border-primary"
-          >
-            <span className="text-xs">
-              Need Something to change? <br />{" "}
-            </span>
-            <span className="flex gap-1 items-center">
-              <ArrowLeftCircle className="w-5 h-5 grou" />
-              Go back to Cart
-            </span>
-          </Link>
-        </div>
+        {items.length > 0 && (
+          <div className="flex flex-col pb-12 items-end gap-4 justify-end py-4">
+            <p className="text-lg sm:text-xl font-bold">
+              Total: {`${total ? total.toLocaleString() : 0} BDT`}
+            </p>
+            <Link
+              href="/cart"
+              className="flex absolute bottom-2 right-5 flex-col items-end gap-1 text-sm sm:text-base hover:border-b-2 pb-1 hover:border-primary"
+            >
+              <span className="text-xs">Need Something to change?</span>
+              <span className="flex gap-1 items-center">
+                <ArrowLeftCircle className="w-5 h-5" />
+                Go back to Cart
+              </span>
+            </Link>
+          </div>
+        )}
       </div>
+
       {showThankYou && (
         <div className="fixed inset-0 z-[999] bg-black/80 flex items-center justify-center text-center px-4">
           <div className="text-white animate-fadeInUp space-y-4">

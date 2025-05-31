@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 const page = () => {
   return (
-    <PaddingContainer className="mt-16">
+    <PaddingContainer>
       <CheckoutPage />
     </PaddingContainer>
   );
