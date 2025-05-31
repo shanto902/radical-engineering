@@ -1,4 +1,5 @@
 import BannerBlock from "@/components/blocks/BannerBlock";
+import BrandBlock from "@/components/blocks/BrandBlock";
 import FeaturedCategoriesBlock from "@/components/blocks/FeaturedCategoriesBlock";
 import FeaturedProductsBlock from "@/components/blocks/FeaturedProductsBlock";
 import HeroBlock from "@/components/blocks/HeroBlock";
@@ -120,6 +121,12 @@ const renderBlock = (block: TBlock) => {
             key={block.id}
             block={block as TFeaturedProductsBlock}
           />
+        </Suspense>
+      );
+    case "block_brands":
+      return (
+        <Suspense key={block.id}>
+          <BrandBlock key={block.id} />
         </Suspense>
       );
     // case "block_two_columns":

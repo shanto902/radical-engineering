@@ -2,6 +2,7 @@ export type TBlock =
   | THeroBlock
   | TFeaturedCategoriesBlock
   | TBannerBlock
+  | TBrandBlock
   | TFeaturedProductsBlock;
 
 export type THeroBlock = {
@@ -11,12 +12,23 @@ export type THeroBlock = {
     sliders: TSlider[];
   };
 };
-
+export type TBrand = {
+  logo?: string;
+  name: string;
+  link: string;
+};
 export type TBannerBlock = {
   collection: "block_banners";
   id: string;
   item: {
     banners: TBanner[];
+  };
+};
+export type TBrandBlock = {
+  collection: "block_brands";
+  id: string;
+  item: {
+    title: string;
   };
 };
 export type TBanner = {

@@ -66,13 +66,28 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           ...form,
           total,
-          items, // used in API to link relationally
+          items,
         }),
       });
 
       const data = await res.json();
 
       if (data.success) {
+        // Send Gotify notification
+        await fetch("/api/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: `🛒 New Order from ${form.name}`,
+            message: `Order of ${items.length} item(s):\n${items
+              .map((item) => `${item.name} x${item.quantity}`)
+              .join(", ")}\nTotal: ${total.toLocaleString()} BDT\nPhone: ${
+              form.phone
+            }`,
+          }),
+        });
+
+        // Clear cart and reset form
         dispatch(clearCart());
         setForm({ name: "", phone: "", address: "" });
         setShowThankYou(true);

@@ -1,4 +1,4 @@
-import { TCategory, TPageBlock, TProduct } from "@/interfaces";
+import { TBrand, TCategory, TPageBlock, TProduct } from "@/interfaces";
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
 import { cache } from "react";
@@ -35,6 +35,7 @@ export const fetchPage = async (
                     "category.name",
                     "category.slug",
                   ],
+                  block_brands: ["title"],
                 },
               },
             ],
@@ -144,6 +145,20 @@ export const fetchCategories = async (): Promise<TCategory[]> => {
       })
     );
     return result as TCategory[];
+  } catch (error) {
+    console.error("Error fetch locations", error);
+    throw new Error("Failed to fetch all locations");
+  }
+};
+
+export const fetchBrands = async (): Promise<TBrand[]> => {
+  try {
+    const result = await directus.request(
+      readItems("brands", {
+        fields: ["*"],
+      })
+    );
+    return result as TBrand[];
   } catch (error) {
     console.error("Error fetch locations", error);
     throw new Error("Failed to fetch all locations");
