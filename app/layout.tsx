@@ -47,7 +47,7 @@ export default async function RootLayout({
               {children}
             </main>
             <MobileCartSidebar />
-            <Footer />
+            <Footer settings={settings} />
           </ThemeWrapper>
         </ReduxProvider>
       </body>

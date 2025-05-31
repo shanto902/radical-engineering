@@ -1,12 +1,15 @@
 "use client";
 import Link from "next/link";
-import { Facebook, Phone, Mail, MapPin } from "lucide-react";
-import Image from "next/image";
+import { Phone, Mail, MapPin } from "lucide-react";
+
 import logo from "@/assets/logo-square.svg";
 import logoDark from "@/assets/logo-square-dark.svg";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
-export default function Footer() {
+import { TSettings } from "@/interfaces";
+import { SocialIconLink } from "../common/SocialLinks";
+import Image from "next/image";
+export default function Footer({ settings }: { settings: TSettings }) {
   const theme = useSelector((state: RootState) => state.theme.mode);
 
   return (
@@ -18,7 +21,6 @@ export default function Footer() {
             src={theme === "light" ? logo : logoDark}
             alt="Logo"
             className=" object-contain w-fit h-28"
-            priority
           />
           <p className="mt-3 ml-1 text-sm text-background">
             Powering your home with trusted solar and battery solutions.
@@ -30,7 +32,7 @@ export default function Footer() {
           <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
           <ul className="space-y-2 text-sm text-background">
             <li>
-              <Link href="/" className="hover:underline">
+              <Link href="/home" className="hover:underline">
                 Home
               </Link>
             </li>
@@ -72,15 +74,9 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
           <div className="flex gap-4 mt-2">
-            <Link
-              aria-label="Go to Facebook"
-              href="https://facebook.com"
-              target="_blank"
-              className="p-2 bg-white/10 hover:bg-white/20 rounded-full"
-            >
-              <Facebook className="w-5 h-5" />
-            </Link>
-            {/* Add more icons as needed */}
+            {settings.social_links?.map((link, i) => (
+              <SocialIconLink key={i} icon={link.icon} link={link.link} />
+            ))}
           </div>
         </div>
       </div>

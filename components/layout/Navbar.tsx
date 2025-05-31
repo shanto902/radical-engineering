@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -156,7 +157,6 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
               src={theme === "light" ? logo : logoDark}
               alt="Logo"
               className="h-12 object-contain w-fit rounded-md"
-              priority
             />
           </Link>
 

@@ -1,4 +1,4 @@
-import SolarCalculator from "@/components/pages/builder/SolarCalculator";
+import SolarSystemBuilder from "@/components/pages/builder/SolarSystemBuilder";
 import { Metadata } from "next";
 import React from "react";
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div>
-      <SolarCalculator />
+      <SolarSystemBuilder />
     </div>
   );
 };

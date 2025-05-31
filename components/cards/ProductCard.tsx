@@ -126,10 +126,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           )}
         </button>
 
-        <Link
-          href={`/categories/${product.category.slug}/${product.slug}`}
-          className=""
-        >
+        <Link href={`/categories/${product.category.slug}/${product.slug}`}>
           <div className="px-4 pt-2">
             <h3 className="text-base font-bold mb-1 line-clamp-2">
               {product.name}

@@ -147,7 +147,7 @@ export type TSettings = {
   social_links: {
     icon: string;
     link: string;
-  };
+  }[];
 };
 
 export type TMenu = {

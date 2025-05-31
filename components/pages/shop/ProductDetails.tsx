@@ -134,7 +134,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
               {product?.brand?.logo && (
-                <Link href={product.brand.link} target="_blank">
+                <Link href={`${product.brand.link}`} target="_blank">
                   <Image
                     className="rounded-md"
                     src={getImageUrl(product.brand.logo)}
@@ -282,16 +282,16 @@ export default function ProductPage({ product }: { product: TProduct }) {
               </button>
 
               <div className="flex gap-3">
-                <Link href="#" className="hover:text-primary">
+                <Link href="/#" className="hover:text-primary">
                   <Facebook size={16} />
                 </Link>
-                <Link href="#" className="hover:text-primary">
+                <Link href="/#" className="hover:text-primary">
                   <Twitter size={16} />
                 </Link>
-                <Link href="#" className="hover:text-primary">
+                <Link href="/#" className="hover:text-primary">
                   <X size={16} />
                 </Link>
-                <Link href="#" className="hover:text-primary">
+                <Link href="/#" className="hover:text-primary">
                   <Linkedin size={16} />
                 </Link>
               </div>
