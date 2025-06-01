@@ -248,7 +248,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                 {loadingProducts ? (
                   <div className="flex items-center justify-center py-4">
                     <div className="w-6 h-6 border-2 border-t-2 border-primary rounded-full animate-spin" />
-                    <span className="ml-2 text-sm text-gray-500">
+                    <span className="ml-2 text-sm text-foreground">
                       Searching...
                     </span>
                   </div>

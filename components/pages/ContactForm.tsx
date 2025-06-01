@@ -60,7 +60,7 @@ export default function ContactForm() {
               required
               className="peer w-full px-4 pt-5 pb-2 border border-gray-300 bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <label className="absolute left-4 top-2 text-gray-500 text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
+            <label className="absolute left-4 top-2 text-foreground text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
               Full Name
             </label>
           </div>
@@ -74,7 +74,7 @@ export default function ContactForm() {
               required
               className="peer w-full px-4 pt-5 pb-2 border border-gray-300 bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <label className="absolute left-4 top-2 text-gray-500 text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
+            <label className="absolute left-4 top-2 text-foreground text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
               Phone Number
             </label>
           </div>
@@ -87,7 +87,7 @@ export default function ContactForm() {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="peer w-full px-4 pt-5 pb-2 border border-gray-300 bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <label className="absolute left-4 top-2 text-gray-500 text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
+            <label className="absolute left-4 top-2 text-foreground text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all">
               Email Address
             </label>
           </div>
@@ -101,7 +101,7 @@ export default function ContactForm() {
               rows={4}
               className="peer w-full bg-background px-4 pt-5 pb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <label className="absolute left-4 top-2 text-gray-500 text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all ">
+            <label className="absolute left-4 top-2 text-foreground text-sm peer-focus:text-primary peer-focus:top-1 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base transition-all ">
               Your Message
             </label>
           </div>

@@ -18,7 +18,7 @@ export const LoadingFallback = () => {
             />
           </svg>
         </div>
-        <p className="text-lg text-gray-500 font-medium">Searching...</p>
+        <p className="text-lg text-foreground font-medium">Searching...</p>
       </div>
     </div>
   );

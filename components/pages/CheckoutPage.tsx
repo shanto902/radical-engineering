@@ -137,7 +137,9 @@ export default function CheckoutPage() {
           <div>
             <label className="block text-sm font-semibold mb-1 ">
               Phone Number{" "}
-              <span className="text-xs text-gray-500">(e.g. 01XXXXXXXXX)</span>
+              <span className="text-xs text-foreground">
+                (e.g. 01XXXXXXXXX)
+              </span>
             </label>
             <input
               type="tel"
@@ -218,7 +220,7 @@ export default function CheckoutPage() {
           ) : items.length === 0 ? (
             <div className="text-center space-y-5 py-6">
               <p className="text-xl font-semibold ">🛒 Your cart is empty!</p>
-              <p className="text-sm mb-50 text-gray-500">
+              <p className="text-sm mb-50 text-foreground">
                 Looks like you haven’t added anything yet.
               </p>
               <Link
@@ -251,7 +253,7 @@ export default function CheckoutPage() {
                   >
                     {item.name}
                   </Link>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-foreground">
                     {item.quantity} × {item.price.toLocaleString()} BDT
                   </p>
                 </div>

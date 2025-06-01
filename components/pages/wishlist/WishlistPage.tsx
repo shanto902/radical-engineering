@@ -25,7 +25,7 @@ const WishlistPage = () => {
         <h1 className="md:text-3xl text-xl font-bold mb-4 flex items-center gap-5 justify-center">
           Your Wishlist is Empty <HeartCrack />{" "}
         </h1>
-        <p className="text-gray-500 mb-6">
+        <p className="text-foreground mb-6">
           Save your favorite products and come back later!
         </p>
         <Link
@@ -132,7 +132,7 @@ const WishlistPage = () => {
                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded transition ${
                     product.status === "in-stock"
                       ? "bg-primary text-background hover:bg-secondary hover:text-foreground"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-gray-300 text-foreground cursor-not-allowed"
                   }`}
                 >
                   <ShoppingCart className="w-4 h-4" />

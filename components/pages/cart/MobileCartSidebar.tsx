@@ -60,7 +60,7 @@ const MobileCartSidebar = () => {
         {/* Body */}
         <div className="flex-1 p-4 overflow-y-auto">
           {cartItems.length === 0 ? (
-            <p className="text-sm text-gray-500">Your cart is empty.</p>
+            <p className="text-sm text-foreground">Your cart is empty.</p>
           ) : (
             cartItems.map((item) => (
               <div key={item.id} className="flex items-start gap-3 mb-4">

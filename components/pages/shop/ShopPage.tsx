@@ -275,7 +275,7 @@ export default function ShopPage({
               <h2 className="text-xl font-semibold">
                 Oops! No products found.
               </h2>
-              <p className="text-gray-500 text-sm max-w-md">
+              <p className="text-foreground text-sm max-w-md">
                 Try adjusting your filters or check back later. We’re always
                 adding new items!
               </p>
