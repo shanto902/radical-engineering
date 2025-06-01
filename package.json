@@ -19,6 +19,7 @@
     "jspdf": "^3.0.1",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.511.0",
+    "moment": "^2.30.1",
     "next": "^15.3.2",
     "rc-slider": "^11.1.8",
     "react": "^19.0.0",
@@ -26,6 +27,7 @@
     "react-fast-marquee": "^1.6.5",
     "react-hot-toast": "^2.5.2",
     "react-inner-image-zoom": "^4.0.1",
+    "react-medium-image-zoom": "^5.2.14",
     "react-range": "^1.10.0",
     "react-redux": "^9.2.0",
     "tailwind-merge": "^3.3.0"

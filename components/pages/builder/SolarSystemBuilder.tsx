@@ -16,8 +16,9 @@ import {
   Trash,
   Zap,
 } from "lucide-react";
-import toast from "react-hot-toast";
+
 import PaddingContainer from "@/components/common/PaddingContainer";
+import { showCustomToast } from "@/lib/showCustomToast";
 
 type LoadType = "Light" | "Fan" | "TV" | "Computer" | "Printer" | "Custom";
 
@@ -307,6 +308,8 @@ export default function SolarSystemBuilder() {
                 <Image
                   src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?height=200`}
                   alt={product.name}
+                  placeholder="blur"
+                  blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=10&quality=1`}
                   width={200}
                   height={200}
                   className="object-contain w-full h-40 bg-imageBgPrimary/20 dark:bg-imageBgPrimaryDark/20"
@@ -366,7 +369,13 @@ export default function SolarSystemBuilder() {
                   );
                 }
               });
-              toast.success("All selected products added to cart!");
+
+              showCustomToast({
+                icon: ShoppingCart,
+                message: "All selected products added to cart!",
+                id: `added-to-cart`,
+                iconClass: "text-green-500",
+              });
             }}
             className="mt-4 sm:mt-0 px-6 py-2 bg-primary text-background rounded hover:bg-secondary"
           >

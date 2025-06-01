@@ -8,8 +8,9 @@ import { useState } from "react";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { clearCart } from "@/store/cartSlice";
 import Link from "next/link";
-import { ArrowLeftCircle, ShoppingCart } from "lucide-react";
-import toast from "react-hot-toast";
+import { ArrowLeftCircle, CircleAlert, ShoppingCart } from "lucide-react";
+
+import { showCustomToast } from "@/lib/showCustomToast";
 
 export default function CheckoutPage() {
   const [showThankYou, setShowThankYou] = useState(false);
@@ -57,14 +58,22 @@ export default function CheckoutPage() {
     e.preventDefault();
 
     if (items.length === 0) {
-      toast.error(
-        "🛒 Your cart is empty. Please add products before checking out."
-      );
+      showCustomToast({
+        icon: ShoppingCart,
+        message: "Your cart is empty. Please add products before checking out",
+        id: `empty`,
+        iconClass: "text-red-500",
+      });
       return;
     }
 
     if (!form.name || !form.phone || !form.address) {
-      toast.error("❗ Please fill out all fields.");
+      showCustomToast({
+        icon: CircleAlert,
+        message: "Please fill out all fields.",
+        id: `form-error`,
+        iconClass: "text-red-500",
+      });
       return;
     }
 
@@ -229,7 +238,9 @@ export default function CheckoutPage() {
                 className="flex flex-row items-center gap-4 border-b pb-4"
               >
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
+                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=70&height=70`}
+                  placeholder="blur"
+                  blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=10&quality=1`}
                   alt={item.name}
                   width={70}
                   height={70}

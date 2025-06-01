@@ -63,6 +63,8 @@ const CartCard = ({
             src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cart.image}?width=90&height=90`}
             alt={cart.name}
             width={90}
+            placeholder="blur"
+            blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cart.image}?width=10&quality=1`}
             height={90}
             className="rounded-lg object-contain border shrink-0"
           />

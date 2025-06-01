@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import cartReducer from "./cartSlice";
 import wishlistReducer from "./wishlistSlice";
 import productReducer from "./productSlice";
+import projectReducer from "./projectSlice";
 import themeReducer from "./themeSlice";
 import { loadFromLocalStorage, saveToLocalStorage } from "./persistConfig";
 import type { CartState } from "./cartSlice";
@@ -25,6 +26,7 @@ export const store = configureStore({
     products: productReducer,
     theme: themeReducer,
     cartUI: cartUIReducer,
+    projects: projectReducer,
   },
   preloadedState,
 });

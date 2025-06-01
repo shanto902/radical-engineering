@@ -1,7 +1,15 @@
 "use client";
 
 import { TProduct } from "@/interfaces";
-import { CheckCircle, Clock, Heart, X, XCircle } from "lucide-react";
+import {
+  CheckCircle,
+  CircleAlert,
+  Clock,
+  Heart,
+  HeartCrack,
+  ShoppingBag,
+  XCircle,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -11,7 +19,8 @@ import { addToCart } from "@/store/cartSlice";
 import { addToWishlist, removeFromWishlist } from "@/store/wishlistSlice";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+
+import { showCustomToast } from "@/lib/showCustomToast";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
   const hasMounted = useHasMounted();
@@ -34,7 +43,13 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         },
       })
     );
-    toast.success("Product added to cart!");
+
+    showCustomToast({
+      icon: ShoppingBag,
+      message: "Product added to cart!",
+      id: `cart-add-${product.id}`,
+      iconClass: "text-green-500",
+    });
   };
   const handleBuyNow = () => {
     handleCart();
@@ -44,6 +59,13 @@ const ProductCard = ({ product }: { product: TProduct }) => {
   const toggleWishlist = () => {
     if (isInWishlist) {
       dispatch(removeFromWishlist(product.id));
+      showCustomToast({
+        icon: HeartCrack,
+        message: "Removed from Wishlist",
+        id: `wishlist-remove-${product.id}`,
+
+        iconClass: "text-red-500",
+      });
     } else {
       dispatch(
         addToWishlist({
@@ -59,6 +81,14 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           },
         })
       );
+
+      showCustomToast({
+        icon: Heart,
+        message: "Added to Wishlist",
+        id: `wishlist-add-${product.id}`,
+
+        iconClass: "text-green-500",
+      });
     }
   };
 
@@ -98,7 +128,9 @@ const ProductCard = ({ product }: { product: TProduct }) => {
             alt={product.name}
             width={200}
             height={200}
-            className="w-full dark:bg-imageBgPrimary/20 bg-imageBgPrimaryDark/20  object-contain aspect-square "
+            placeholder="blur"
+            blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=10&quality=1`}
+            className="w-full bg-imageBgPrimary/20 dark:bg-imageBgPrimaryDark/20  object-contain aspect-square "
           />
           {product.discounted_price && (
             <span className="absolute top-2  left-2 bg-primary text-background  text-xs px-2 py-1 rounded-full font-semibold">
@@ -120,7 +152,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           className="absolute top-2 right-2 p-1 bg-foreground text-back  rounded-full shadow hover:bg-primary transition"
         >
           {isInWishlist ? (
-            <X className="text-red-500 w-5 h-5" />
+            <HeartCrack className="text-red-500 w-5 h-5" />
           ) : (
             <Heart className="text-background  hover:text-background w-5 h-5" />
           )}
@@ -178,7 +210,12 @@ const ProductCard = ({ product }: { product: TProduct }) => {
             onClick={() =>
               product.status === "in-stock"
                 ? handleCart()
-                : toast.error("Product Not Available")
+                : showCustomToast({
+                    icon: CircleAlert,
+                    message: "Product Not Available",
+                    id: `cart-not-${product.id}`,
+                    iconClass: "text-red-500",
+                  })
             }
             className="w-full bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
           >
@@ -190,7 +227,12 @@ const ProductCard = ({ product }: { product: TProduct }) => {
             onClick={() =>
               product.status === "in-stock"
                 ? handleBuyNow()
-                : toast.error("Product Not Available")
+                : showCustomToast({
+                    icon: CircleAlert,
+                    message: "Product Not Available",
+                    id: `buy-not-${product.id}`,
+                    iconClass: "text-red-500",
+                  })
             }
             className="w-full bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
           >

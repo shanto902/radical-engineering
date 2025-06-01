@@ -10,6 +10,7 @@ import { Heart, HeartCrack, ShoppingCart, Trash2 } from "lucide-react";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import toast from "react-hot-toast";
+import { showCustomToast } from "@/lib/showCustomToast";
 
 const WishlistPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -59,6 +60,8 @@ const WishlistPage = () => {
               <Image
                 src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`}
                 alt={product.name}
+                placeholder="blur"
+                blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=10&quality=1`}
                 width={400}
                 height={300}
                 className={`w-full h-48 object-cover mb-4 rounded transition ${
@@ -112,7 +115,13 @@ const WishlistPage = () => {
                           quantity: 1,
                         })
                       );
-                      toast.success("Product added to cart!");
+
+                      showCustomToast({
+                        icon: ShoppingCart,
+                        message: "Product added to cart!",
+                        id: `cart-add-${product.id}`,
+                        iconClass: "text-green-500",
+                      });
                     }
                   }}
                   disabled={product.status !== "in-stock"}

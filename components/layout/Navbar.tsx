@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -46,7 +45,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   const [products, setProducts] = useState<TProduct[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
 
-  const debouncedQuery = useDebounce(query, 300); // ✅ 300ms delay
+  const debouncedQuery = useDebounce(query, 300);
 
   useEffect(() => {
     setHasMounted(true);
@@ -76,12 +75,6 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
     fetchCategories();
   }, []);
   const dispatch = useDispatch<AppDispatch>(); // ✅ Typed dispatch
-
-  // REMOVE this
-  // const dispatch = useDispatch<AppDispatch>();
-  // const products = useSelector((state: RootState) => state.products.items);
-
-  // ADD THIS INSTEAD
 
   useEffect(() => {
     if (!debouncedQuery.trim()) {
@@ -128,9 +121,9 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   }, []);
 
   const theme = useSelector((state: RootState) => state.theme.mode);
-  const filteredSuggestions = products.filter((item) =>
-    item.name.toLowerCase().includes(debouncedQuery.toLowerCase())
-  );
+  const filteredSuggestions = products;
+
+  console.log(filteredSuggestions);
 
   useEffect(() => {
     setActiveIndex(-1);
@@ -145,16 +138,19 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
       return categories.map((cat, i) => (
         <Link
           key={i}
+          aria-label="Go to products page"
           href={`/categories/${cat.slug}`}
           className="flex items-center gap-3 p-2 rounded-lg transition-all hover:bg-secondary hover:text-primary group"
         >
           {cat.image && hasMounted && (
             <Image
-              src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.image}`}
+              src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.image}?width=50&height=50`}
+              placeholder="blur"
+              blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.image}?width=10&quality=1`}
               alt={cat.name}
-              width={32}
-              height={32}
-              className="w-8 h-8 object-contain rounded"
+              width={50}
+              height={50}
+              className="w-8 h-8 object-cover rounded"
             />
           )}
           <span className="text-sm font-medium  group-hover:text-foreground">
@@ -166,6 +162,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
     return navItem.sub_menu?.map((submenu, i: number) => (
       <Link
+        aria-label={"Got to menu item"}
         key={i}
         href={submenu.link || "#"}
         className="text-sm font-medium text-gray-700 hover:text-primary hover:pl-2 transition-all duration-200 border-l-2 border-transparent hover:border-primary pl-2"
@@ -203,6 +200,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
           <div className="hidden md:block w-1/3 relative">
             <div className="relative">
               <input
+                aria-label={`Go to Search Page`}
                 type="text"
                 placeholder="Search products..."
                 value={query}
@@ -258,6 +256,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                   <>
                     {filteredSuggestions.slice(0, 5).map((item, idx) => (
                       <Link
+                        aria-label={`Go to ${item.name} Product Page`}
                         key={idx}
                         href={`/categories/${item.category.slug}/${item.slug}`}
                         className={clsx(
@@ -271,8 +270,10 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                         }}
                       >
                         <Image
-                          src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
+                          src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=40&height=40`}
                           alt={item.name}
+                          placeholder="blur"
+                          blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=10&quality=1`}
                           width={40}
                           height={40}
                           className="w-10 h-10 object-cover rounded"
@@ -282,6 +283,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                     ))}
                     {filteredSuggestions.length > 5 && (
                       <Link
+                        aria-label={`Go to Search Page`}
                         href={`/search?query=${encodeURIComponent(query)}`}
                         className={clsx(
                           "flex justify-between items-center px-4 py-2 text-sm font-semibold text-primary hover:underline",
@@ -325,6 +327,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                   onMouseLeave={() => setHoveringMenu(false)}
                 >
                   <Link
+                    aria-label={`Go to ${navItem.label} Page`}
                     href={navItem.link}
                     className={clsx(
                       "flex items-center text-sm group font-medium text-foreground hover:text-primary transition",
@@ -354,6 +357,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                       {renderSubMenuItems(navItem)}
                     </div>
                     <Link
+                      aria-label={`Go to Category Page`}
                       className="flex justify-center pb-2 pt-1 hover:bg-secondary bg-primary text-background hover:text-foreground text-sm border-t-2 dark:border-gray-700 w-full"
                       href={"/categories"}
                     >
@@ -364,6 +368,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
               ) : (
                 <Link
                   key={i}
+                  aria-label={`Go to ${navItem.label} Page`}
                   href={navItem.link || "#"}
                   className={clsx(
                     "text-sm hover:text-primary hover:underline transition-all duration-200 underline-offset-4",
@@ -380,6 +385,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
             {/* ❤️ Wishlist Icon */}
             <Link
+              aria-label={`Toggle Whishlist`}
               href="/wishlist"
               title="Wishlist"
               className="text-foreground hover:text-primary transition"
@@ -436,9 +442,10 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="fixed inset-x-0 top-[72px] z-50 md:hidden backdrop-blur-lg bg-white/80 dark:bg-backgroundDark/80 px-4 pt-3 pb-6 border-t shadow">
+          <div className="fixed inset-x-0 top-[72px] z-50 md:hidden backdrop-blur-lg bg-white dark:bg-backgroundDark px-4 pt-3 pb-6 border-t shadow">
             <div className="mb-4 relative">
               <input
+                aria-label="Got to search"
                 type="text"
                 placeholder="Search products..."
                 value={query}
@@ -465,13 +472,16 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                       {filteredSuggestions.slice(0, 5).map((item, idx) => (
                         <Link
                           key={idx}
+                          aria-label={`Got to ${item.name} Product Page`}
                           href={`/categories/${item.category.slug}/${item.slug}`}
                           className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-secondary hover:text-foreground m-1 rounded-md cursor-pointer"
                           onClick={() => setQuery("")}
                         >
                           <Image
-                            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}`}
+                            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=40&height=40`}
                             alt={item.name}
+                            placeholder="blur"
+                            blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=10&quality=1`}
                             width={40}
                             height={40}
                             className="w-10 h-10 object-cover rounded"
@@ -481,6 +491,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                       ))}
                       {filteredSuggestions.length > 5 && (
                         <Link
+                          aria-label={`Go to Search Page`}
                           href={`/search?query=${encodeURIComponent(query)}`}
                           className="block px-4 py-2 text-sm text-primary hover:underline font-semibold"
                           onClick={() => setQuery("")}
@@ -514,6 +525,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                   <div key={i} className="mb-1">
                     <Link
                       href={navItem.link || "#"}
+                      aria-label={`Go to ${navItem.label} Page`}
                       onClick={() => setIsOpen(false)}
                       className={`block py-2 text-base font-medium transition hover:text-primary ${
                         pathname === navItem.link
@@ -526,6 +538,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
                     {submenuItems?.map((item, idx: number) => (
                       <Link
+                        aria-label={`Go to ${item.label} Page`}
                         key={idx}
                         href={item.link}
                         onClick={() => setIsOpen(false)}
@@ -550,6 +563,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
             <div className="flex items-center gap-4 w-full">
               <Link
                 href="/wishlist"
+                aria-label={`Go to Whishlist Page`}
                 onClick={() => setIsOpen(false)}
                 className=" text-center mt-3 bg-primary text-background relative py-3 w-fit px-4 rounded-full flex items-center gap-2  font-semibold hover:shadow-lg transition"
               >

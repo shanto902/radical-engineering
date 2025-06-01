@@ -1,4 +1,10 @@
-import { TBrand, TCategory, TPageBlock, TProduct } from "@/interfaces";
+import {
+  TBrand,
+  TCategory,
+  TPageBlock,
+  TProduct,
+  TProject,
+} from "@/interfaces";
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
 import { cache } from "react";
@@ -205,3 +211,41 @@ export const fetchCategoryData = cache(
     }
   }
 );
+
+export const fetchProjects = async (): Promise<TProject[]> => {
+  try {
+    const result = await directus.request(
+      readItems("projects", {
+        fields: ["*"],
+      })
+    );
+    return result as TProject[];
+  } catch (error) {
+    console.error("Error fetch projects", error);
+    throw new Error("Failed to fetch projects");
+  }
+};
+
+export const getProjectData = cache(async (slug: string): Promise<TProject> => {
+  try {
+    const result = await directus.request(
+      readItems("projects", {
+        filter: {
+          status: {
+            _eq: "published",
+          },
+          slug: {
+            _eq: slug,
+          },
+        },
+        sort: ["sort"],
+        fields: ["*"],
+      })
+    );
+
+    return result[0] as TProject;
+  } catch (error) {
+    console.error("Error fetching member data:", error);
+    throw new Error("Error fetching post");
+  }
+});

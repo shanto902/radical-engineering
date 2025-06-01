@@ -29,6 +29,8 @@ const BannerBlock = ({ block }: { block: TBannerBlock }) => {
                 src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${banner.banners_id.image}?height=500`}
                 alt={"banner"}
                 width={1920}
+                placeholder="blur"
+                blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${banner.banners_id.image}?width=10&quality=1`}
                 height={500}
                 className="w-full h-full object-cover"
                 priority={banner.banners_id.id === 1}

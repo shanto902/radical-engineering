@@ -1,8 +1,8 @@
 "use client";
-import { MailIcon, MessageCircleMore } from "lucide-react";
+import { CircleAlert, Mail, MailIcon, MessageCircleMore } from "lucide-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
 import PaddingContainer from "../common/PaddingContainer";
+import { showCustomToast } from "@/lib/showCustomToast";
 
 export default function ContactForm() {
   const [form, setForm] = useState({
@@ -24,12 +24,21 @@ export default function ContactForm() {
       });
 
       if (res.ok) {
-        toast.success("Your message has been sent!");
-
+        showCustomToast({
+          icon: Mail,
+          message: "Your message has been sent!",
+          id: `mail-sent`,
+          iconClass: "text-green-500",
+        });
         setForm({ name: "", phone: "", email: "", message: "" });
       }
     } catch (err) {
-      toast.error("Something went wrong.");
+      showCustomToast({
+        icon: CircleAlert,
+        message: "Product Not Available",
+        id: `form-error`,
+        iconClass: "text-red-500",
+      });
       console.error("Form error:", err);
     } finally {
       setLoading(false);

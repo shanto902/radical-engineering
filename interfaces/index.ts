@@ -150,6 +150,21 @@ export type TSettings = {
   }[];
 };
 
+export type TProject = {
+  id: string;
+  status: "published" | "draft" | "archived";
+  title: string;
+  slug: string;
+  sort: number;
+  image: string;
+  short_description: string;
+  tags?: string[];
+  body: string;
+  date_created: string;
+  date_updated?: string;
+  seo: TSeo;
+};
+
 export type TMenu = {
   label: string;
   link: string;

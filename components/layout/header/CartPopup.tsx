@@ -67,6 +67,8 @@ const CartPopup = () => {
                     <Image
                       src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=50&height=50`}
                       alt={item.name}
+                      placeholder="blur"
+                      blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=10&quality=1`}
                       width={50}
                       height={50}
                       className="rounded border w-[50px] h-[50px] object-cover"

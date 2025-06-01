@@ -20,6 +20,7 @@ import {
   Clock,
   Plus,
   Minus,
+  CircleAlert,
 } from "lucide-react";
 
 import { AppDispatch, RootState } from "@/store";
@@ -28,8 +29,9 @@ import { toggleWishlist } from "@/store/wishlistSlice";
 import { TProduct } from "@/interfaces";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import ProductTabs from "./ProductTabs";
-import toast from "react-hot-toast";
+
 import { getImageUrl } from "@/utils/image-url";
+import { showCustomToast } from "@/lib/showCustomToast";
 
 export default function ProductPage({ product }: { product: TProduct }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -75,21 +77,19 @@ export default function ProductPage({ product }: { product: TProduct }) {
 
   return (
     <PaddingContainer className="py-10">
-      <div className=" grid grid-cols-1 md:grid-cols-3 gap-10 content-center">
+      <div className=" grid grid-cols-1 md:grid-cols-3 md:gap-10 space-y-5 md:space-y-0 content-center">
         {/* Image Panel */}
         <div className="">
-          <div className="relative border  rounded-xl mb-4 bg-background overflow-hidden">
+          <div className="flex relative justify-center items-center  rounded-xl mb-4 bg-background overflow-hidden">
             {hasMounted && (
               <div key={selectedImage}>
                 <InnerImageZoom
                   key={selectedImage}
-                  height={500}
-                  width={1000}
                   src={getImageUrl(selectedImage)}
                   zoomSrc={getImageUrl(selectedImage)}
                   zoomType="hover"
                   zoomPreload
-                  className="rounded-xl bg-contain bg-bg-background"
+                  className="w-full max-w-xs sm:max-w-md md:max-w-lg  bg-background object-scale-down rounded-xl"
                 />
               </div>
             )}
@@ -117,7 +117,9 @@ export default function ProductPage({ product }: { product: TProduct }) {
                 }`}
               >
                 <Image
-                  src={getImageUrl(imgId)}
+                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${imgId}?height=80&width=80`}
+                  placeholder="blur"
+                  blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${imgId}?width=10&quality=1`}
                   alt={`Thumbnail ${idx}`}
                   width={80}
                   height={80}
@@ -136,6 +138,8 @@ export default function ProductPage({ product }: { product: TProduct }) {
               {product?.brand?.logo && (
                 <Link href={`${product.brand.link}`} target="_blank">
                   <Image
+                    placeholder="blur"
+                    blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.brand.logo}?width=10&quality=1`}
                     className="rounded-md"
                     src={getImageUrl(product.brand.logo)}
                     alt={product.brand.name}
@@ -233,7 +237,12 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   onClick={() =>
                     product.status === "in-stock"
                       ? handleAddToCart()
-                      : toast.error("product Not Available")
+                      : showCustomToast({
+                          icon: CircleAlert,
+                          message: "Product Not Available",
+                          id: `cart-not-${product.id}`,
+                          iconClass: "text-red-500",
+                        })
                   }
                   className="md:w-fit w-full px-5 bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
                 >
@@ -244,7 +253,12 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   onClick={() =>
                     product.status === "in-stock"
                       ? handleBuyNow()
-                      : toast.error("Product Not Available")
+                      : showCustomToast({
+                          icon: CircleAlert,
+                          message: "Product Not Available",
+                          id: `cart-not-${product.id}`,
+                          iconClass: "text-red-500",
+                        })
                   }
                   className="md:w-fit w-full px-5  bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
                 >
