@@ -15,7 +15,7 @@ export const showCustomToast = ({
   icon: Icon,
   message,
   id,
-  duration = 5000,
+  duration = 1000,
   iconClass = "text-primary",
 }: ShowCustomToastProps) => {
   toast.custom(
@@ -23,7 +23,7 @@ export const showCustomToast = ({
       <div
         className={`${
           t.visible ? "animate-enter" : "animate-leave"
-        } w-fit backdrop-blur-2xl text-foreground shadow-xl rounded-xl pointer-events-auto flex ring-1 ring-primary`}
+        } w-fit border-primary backdrop-blur-2xl border bg-background text-foreground shadow-xl rounded-xl pointer-events-auto flex`}
       >
         <div className="p-4 flex items-center gap-3">
           <Icon className={`w-5 h-5 ${iconClass} animate-bounce`} />

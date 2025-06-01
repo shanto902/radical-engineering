@@ -12,7 +12,7 @@ const BrandMarquee = ({ brands }: { brands: TBrand[] }) => {
     <Marquee
       speed={50}
       pauseOnHover={true}
-      gradientColor={theme === "light" ? "#ffffff" : "#1f1f1f"}
+      gradientColor={theme === "light" ? "#f6f2ed" : "#181818"}
       gradient={true}
       autoFill={true}
     >

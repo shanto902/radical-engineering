@@ -142,10 +142,10 @@ const page = async ({ params }: PageProps) => {
                 <p className=" text-white text-sm">Share On: </p>
 
                 <a target="_blank" href={facebookShareURL}>
-                  <Facebook className="bg-primary hover:bg-secondary hover:text-primary h-8 w-8 p-2 rounded-full transition-all duration-300" />
+                  <Facebook className="bg-primary hover:bg-secondary hover:text-foreground text-background h-8 w-8 p-2 rounded-full transition-all duration-300" />
                 </a>
                 <a target="_blank" href={xShareURL}>
-                  <Twitter className="bg-primary hover:bg-secondary hover:text-primary h-8 w-8 p-2 rounded-full transition-all duration-300" />
+                  <Twitter className="bg-primary hover:bg-secondary hover:text-foreground text-background h-8 w-8 p-2 rounded-full transition-all duration-300" />
                 </a>
               </div>
             </div>

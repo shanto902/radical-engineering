@@ -55,7 +55,7 @@ export default function BreadcrumbBanner() {
   if (breadcrumb.length === 0) return null;
 
   return (
-    <div className="sticky top-[72px] z-40 backdrop-blur-lg bg-white/80 dark:bg-backgroundDark/80 transition-all duration-300">
+    <div className="sticky top-[72px] z-40 backdrop-blur-lg bg-backgroundLight/80 dark:bg-backgroundDark/80 transition-all duration-300">
       <PaddingContainer className="relative w-full">
         <nav className="text-xs md:text-sm flex items-center border-t border-b gap-2 py-2">
           <Link href="/" className="hover:underline">

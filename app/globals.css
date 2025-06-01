@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
+  --background: #f6f2ed;
+  --foreground: #1a0a00;
   --primary: #3c1100;
-  --gradient-color: #ffffff;
-  --secondary: #ce8b3f;
+  --gradient-color: #f4f1ec;
+  --secondary: #fcb974; /* 🔥 Best contrast and brand match */
 }
 
 .dark {
-  --background: #1f1f1f;
-  --foreground: #ffffff;
-  --primary: #facc15;
-  --secondary: #a78500;
-  --gradient-color: #1f1f1f;
+  --background: #181818; /* Slightly softer than #121212, easier on the eyes */
+  --foreground: #f0f0f0; /* Slightly warmer white for more comfortable reading */
+  --primary: #ff8533; /* Softer than #ff7a33, still vibrant and brand-aligned */
+  --secondary: #e26a00; /* Rich warm orange, good contrast and harmony */
+  --gradient-color: #1f1f1f; /* Slightly textured dark, good for subtle gradients */
 }
 
 @layer utilities {
