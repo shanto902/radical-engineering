@@ -27,7 +27,7 @@ export async function generateMetadata(
     const previousImages = (await parent).openGraph?.images || [];
     if (project !== null) {
       return {
-        title: project.title,
+        title: `${project.title} | Projects | Radical Engineering`,
         description: `${project.short_description}` || "",
         openGraph: {
           images: project.image

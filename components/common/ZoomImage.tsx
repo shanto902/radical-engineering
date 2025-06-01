@@ -6,7 +6,6 @@ import "react-medium-image-zoom/dist/styles.css";
 
 import Image from "next/image";
 import Zoom from "react-medium-image-zoom";
-import { Weight } from "lucide-react";
 
 // Define the props type for the ErrorBoundary component
 
@@ -34,8 +33,8 @@ const ZoomImage = ({
           className="w-full  md:pb-0 object-cover rounded-lg object-center  aspect-[4/3] h-full"
           src={src}
           alt={alt}
-          width={800}
-          height={600}
+          width={Number(width) || 800}
+          height={Number(height) || 600}
           placeholder="blur"
           blurDataURL={`${src}?width=10&q=1`}
         />
