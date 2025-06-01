@@ -5,8 +5,17 @@ const config: CapacitorConfig = {
   appName: "Radical Engineering",
   webDir: "public",
   server: {
-    url: "https://radical-engineering.vercel.app/home", // your live site
+    url: "https://radical-engineering.vercel.app/home",
     cleartext: true,
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 3000,
+      launchAutoHide: true,
+      androidScaleType: "CENTER_CROP",
+      showSpinner: false,
+      backgroundColor: "#ffffff", // fallback (light mode)
+    },
   },
 };
 

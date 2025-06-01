@@ -12,18 +12,16 @@ export default function BackButtonHandler() {
 
     const setupListener = async () => {
       const listener = await CapacitorApp.addListener("backButton", () => {
-        if (pathname !== "/") {
-          // Go back if not on homepage
-          window.history.back();
-        } else {
-          // Exit app on homepage
+        if (pathname === "/" || pathname === "/home") {
+          // 🟢 Exit the app if on home page
           CapacitorApp.exitApp();
+        } else {
+          // 🔙 Go back if on any other page
+          window.history.back();
         }
       });
 
-      removeListener = () => {
-        listener.remove();
-      };
+      removeListener = () => listener.remove();
     };
 
     setupListener();
@@ -31,7 +29,7 @@ export default function BackButtonHandler() {
     return () => {
       if (removeListener) removeListener();
     };
-  }, [pathname]); // include pathname to update listener on route change
+  }, [pathname]);
 
   return null;
 }
