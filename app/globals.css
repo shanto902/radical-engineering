@@ -18,6 +18,59 @@
   --gradient-color: #1f1f1f; /* Slightly textured dark, good for subtle gradients */
 }
 
+::selection {
+  background: var(--primary);
+  color: var(--background);
+}
+html {
+  scrollbar-color: var(--primary) var(--background);
+  scrollbar-width: auto;
+}
+
+/* WebKit Browsers */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 5px;
+}
+
+@keyframes toast-enter-top-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px) translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-leave-top-right {
+  from {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px) translateY(-10px) scale(0.95);
+  }
+}
+
+.animate-enter {
+  animation: toast-enter-top-right 300ms ease-out forwards;
+}
+
+.animate-leave {
+  animation: toast-leave-top-right 300ms ease-in forwards;
+}
+
 @layer utilities {
   [data-rmiz-modal-overlay="visible"] {
     @apply !bg-background;

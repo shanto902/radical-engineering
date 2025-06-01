@@ -28,7 +28,6 @@ export default function ContactForm() {
           icon: Mail,
           message: "Your message has been sent!",
           id: `mail-sent`,
-          iconClass: "text-green-500",
         });
         setForm({ name: "", phone: "", email: "", message: "" });
       }
@@ -37,7 +36,6 @@ export default function ContactForm() {
         icon: CircleAlert,
         message: "Product Not Available",
         id: `form-error`,
-        iconClass: "text-red-500",
       });
       console.error("Form error:", err);
     } finally {

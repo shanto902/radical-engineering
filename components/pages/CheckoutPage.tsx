@@ -62,7 +62,6 @@ export default function CheckoutPage() {
         icon: ShoppingCart,
         message: "Your cart is empty. Please add products before checking out",
         id: `empty`,
-        iconClass: "text-red-500",
       });
       return;
     }
@@ -72,7 +71,6 @@ export default function CheckoutPage() {
         icon: CircleAlert,
         message: "Please fill out all fields.",
         id: `form-error`,
-        iconClass: "text-red-500",
       });
       return;
     }

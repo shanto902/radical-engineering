@@ -120,7 +120,6 @@ const WishlistPage = () => {
                         icon: ShoppingCart,
                         message: "Product added to cart!",
                         id: `cart-add-${product.id}`,
-                        iconClass: "text-green-500",
                       });
                     }
                   }}

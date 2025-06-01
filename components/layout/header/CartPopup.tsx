@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCart, Trash } from "lucide-react";
+import { MinusIcon, PlusIcon, ShoppingCart, Trash } from "lucide-react";
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Link from "next/link";
@@ -86,9 +86,9 @@ const CartPopup = () => {
                         <button
                           aria-label="Quantity Decrement"
                           onClick={() => dispatch(decrementQuantity(item.id))}
-                          className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary text-background hover:text-foreground"
+                          className=" rounded-full bg-primary  text-sm hover:bg-secondary p-1 text-background hover:text-foreground"
                         >
-                          −
+                          <MinusIcon size={15} />
                         </button>
                         <span className="text-sm w-6 text-center">
                           {item.quantity}
@@ -96,9 +96,9 @@ const CartPopup = () => {
                         <button
                           aria-label="Quantity Increment"
                           onClick={() => dispatch(incrementQuantity(item.id))}
-                          className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary text-background hover:text-foreground"
+                          className="rounded-full bg-primary  text-sm hover:bg-secondary p-1 text-background hover:text-foreground"
                         >
-                          +
+                          <PlusIcon size={15} />
                         </button>
                       </div>
                       <p className="text-xs  mt-1">

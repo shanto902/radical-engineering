@@ -374,7 +374,6 @@ export default function SolarSystemBuilder() {
                 icon: ShoppingCart,
                 message: "All selected products added to cart!",
                 id: `added-to-cart`,
-                iconClass: "text-green-500",
               });
             }}
             className="mt-4 sm:mt-0 px-6 py-2 bg-primary text-background rounded hover:bg-secondary"

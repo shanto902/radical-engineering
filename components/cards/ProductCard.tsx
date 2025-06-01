@@ -48,7 +48,6 @@ const ProductCard = ({ product }: { product: TProduct }) => {
       icon: ShoppingBag,
       message: "Product added to cart!",
       id: `cart-add-${product.id}`,
-      iconClass: "text-green-500",
     });
   };
   const handleBuyNow = () => {
@@ -63,8 +62,6 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         icon: HeartCrack,
         message: "Removed from Wishlist",
         id: `wishlist-remove-${product.id}`,
-
-        iconClass: "text-red-500",
       });
     } else {
       dispatch(
@@ -86,8 +83,6 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         icon: Heart,
         message: "Added to Wishlist",
         id: `wishlist-add-${product.id}`,
-
-        iconClass: "text-green-500",
       });
     }
   };
@@ -214,7 +209,6 @@ const ProductCard = ({ product }: { product: TProduct }) => {
                     icon: CircleAlert,
                     message: "Product Not Available",
                     id: `cart-not-${product.id}`,
-                    iconClass: "text-red-500",
                   })
             }
             className="w-full bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
@@ -231,7 +225,6 @@ const ProductCard = ({ product }: { product: TProduct }) => {
                     icon: CircleAlert,
                     message: "Product Not Available",
                     id: `buy-not-${product.id}`,
-                    iconClass: "text-red-500",
                   })
             }
             className="w-full bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"

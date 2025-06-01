@@ -21,6 +21,7 @@ import {
   Plus,
   Minus,
   CircleAlert,
+  ShoppingBag,
 } from "lucide-react";
 
 import { AppDispatch, RootState } from "@/store";
@@ -68,6 +69,11 @@ export default function ProductPage({ product }: { product: TProduct }) {
         },
       })
     );
+    showCustomToast({
+      icon: ShoppingBag,
+      message: "Product added to cart!",
+      id: `cart-add-${product.id}`,
+    });
   };
 
   const handleBuyNow = () => {
@@ -205,7 +211,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                     aria-label="Quantity Decrement"
                     type="button"
                     onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                    className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
+                    className="bg-primary hover:secondary text-background hover:bg-secondary hover:text-foreground font-bold py-2 px-2 rounded-full"
                   >
                     <Minus size={16} />
                   </button>
@@ -217,14 +223,14 @@ export default function ProductPage({ product }: { product: TProduct }) {
                     onChange={(e) =>
                       setQuantity(Math.max(1, Number(e.target.value)))
                     }
-                    className="w-16 text-center accent-primary border bg-background border-gray-300 py-1 rounded-full text-base font-semibold"
+                    className="w-16 text-center accent-primary border bg-background border-foreground py-1 rounded-full text-base font-semibold"
                   />
 
                   <button
                     aria-label="Quantity Increment"
                     type="button"
                     onClick={() => setQuantity((prev) => prev + 1)}
-                    className="bg-primary hover:secondary text-background hover:text-foreground font-bold py-2 px-3 rounded"
+                    className="bg-primary hover:secondary text-background hover:bg-secondary hover:text-foreground font-bold py-2 px-2 rounded-full"
                   >
                     <Plus size={16} />
                   </button>
@@ -241,7 +247,6 @@ export default function ProductPage({ product }: { product: TProduct }) {
                           icon: CircleAlert,
                           message: "Product Not Available",
                           id: `cart-not-${product.id}`,
-                          iconClass: "text-red-500",
                         })
                   }
                   className="md:w-fit w-full px-5 bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
@@ -257,7 +262,6 @@ export default function ProductPage({ product }: { product: TProduct }) {
                           icon: CircleAlert,
                           message: "Product Not Available",
                           id: `cart-not-${product.id}`,
-                          iconClass: "text-red-500",
                         })
                   }
                   className="md:w-fit w-full px-5  bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
