@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 };
 const page = async () => {
   const projects = await fetchProjects();
-  console.log(projects);
+
   return (
     <PaddingContainer className="py-5">
       <div className="grid gap-5  grid-cols-1 pb-10 mx-auto md:grid-cols-2 w-full">

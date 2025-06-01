@@ -14,7 +14,7 @@ const FeaturedProductsBlock = async ({
   if (block.item.option === "manual") {
     products = block.item.products
       .filter((item) => item.products_id !== null)
-      .map((item) => item.products_id);
+      ?.map((item) => item.products_id);
   } else {
     products = await fetchProductsWithLimitAndSorting(
       block.item.limit || 8,
@@ -30,7 +30,7 @@ const FeaturedProductsBlock = async ({
           {block.item.header_text || "Featured Products"}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
-          {products.map((product) => (
+          {products?.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

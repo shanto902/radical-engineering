@@ -2,8 +2,7 @@
 import { TProject } from "@/interfaces";
 import Image from "next/image";
 import React from "react";
-
-import moment from "moment";
+import { format, parseISO } from "date-fns";
 
 import Link from "next/link";
 
@@ -32,7 +31,7 @@ const ProjectCard = ({ project }: { project: TProject }) => {
         <p className="line-clamp-4 text-sm">{project.short_description}</p>
         <div className="py-2 gap-2 text-sm items-center flex   flex-wrap">
           {project.tags &&
-            project.tags.map((tag, i) => (
+            project.tags?.map((tag, i) => (
               <div
                 className="bg-transparent text-xs w-fit border border-primary  font-bold px-2 text-foreground rounded-lg py-1"
                 key={i}
@@ -41,9 +40,10 @@ const ProjectCard = ({ project }: { project: TProject }) => {
               </div>
             ))}
         </div>
-        <p className="text-sm font-semibold">{`Published on: ${moment(
-          project.date_created
-        ).format("MMM DD, YYYY")}`}</p>
+        <p className="text-sm font-semibold">{`Published on: ${format(
+          parseISO(project.date_created),
+          "MMM dd, yyyy"
+        )}`}</p>
       </div>
     </div>
   );

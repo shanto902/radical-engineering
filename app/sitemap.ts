@@ -66,13 +66,13 @@ export const fetchProductPages = cache(async (): Promise<TProduct[]> => {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = await fetchPages();
 
-  const pageEntries: MetadataRoute.Sitemap = pages.map((page) => ({
+  const pageEntries: MetadataRoute.Sitemap = pages?.map((page) => ({
     url: `${process.env.NEXT_PUBLIC_SITE_URL}${page.permalink}`,
     lastModified: page.date_updated ? page.date_updated : page.date_created,
   }));
 
   const products = await fetchProductPages();
-  const product: MetadataRoute.Sitemap = products.map((product) => ({
+  const product: MetadataRoute.Sitemap = products?.map((product) => ({
     url: `${process.env.NEXT_PUBLIC_SITE_URL}categories/${product.category.slug}/${product.slug}`,
     lastModified: product.date_updated
       ? product.date_updated
@@ -80,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const categories = await fetchCategories();
-  const categoriesEntries: MetadataRoute.Sitemap = categories.map(
+  const categoriesEntries: MetadataRoute.Sitemap = categories?.map(
     (category) => ({
       url: `${process.env.NEXT_PUBLIC_SITE_URL}categories/${category.slug}`,
       lastModified: category.date_updated

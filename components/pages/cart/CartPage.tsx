@@ -37,7 +37,7 @@ const CartPage = () => {
       {/* Show skeletons during SSR hydration */}
       {!hasMounted ? (
         <div className="space-y-8">
-          {Array.from({ length: 3 }).map((_, i) => (
+          {Array.from({ length: 3 })?.map((_, i) => (
             <CartCard key={i} />
           ))}
         </div>
@@ -55,7 +55,7 @@ const CartPage = () => {
       ) : (
         <>
           <div className="space-y-8">
-            {items.map((item) => (
+            {items?.map((item) => (
               <CartCard
                 cart={item}
                 handleQuantityChange={handleQuantityChange}

@@ -64,7 +64,7 @@ export const generateStaticParams = async () => {
       })
     );
 
-    return (result as TProduct[]).map((item) => ({
+    return (result as TProduct[])?.map((item) => ({
       slug: item.category.slug,
       product_slug: item.slug,
       permalink: "categories",

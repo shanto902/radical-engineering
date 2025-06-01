@@ -31,7 +31,7 @@ export default function Footer({ settings }: { settings: TSettings }) {
         <div>
           <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
           <ul className="space-y-2 text-sm text-background">
-            {settings.quick_links.map((link, i) => (
+            {settings.quick_links?.map((link, i) => (
               <li key={i}>
                 <Link href={`${link.link}`} className="hover:underline">
                   {link.label}

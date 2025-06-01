@@ -22,7 +22,6 @@ const iconMap: Record<string, React.ElementType> = {
 export function SocialIconLink({ icon, link }: { icon: string; link: string }) {
   const Icon = iconMap[icon.toLowerCase()] || Globe;
 
-  console.log(link);
   return (
     <Link
       aria-label={`Go to ${icon}`}

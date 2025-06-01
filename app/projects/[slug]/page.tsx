@@ -2,8 +2,7 @@ import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
 import Image from "next/image";
 import React from "react";
-
-import moment from "moment";
+import { format, parseISO } from "date-fns";
 
 import { Metadata, ResolvingMetadata } from "next";
 import { getProjectData } from "@/helper/fetchFromDirectus";
@@ -124,7 +123,7 @@ const page = async ({ params }: PageProps) => {
             <div className="flex justify-between px-5 py-3">
               <div className="pb-5  gap-2 text-sm items-center flex flex-wrap">
                 {projectsData.tags &&
-                  projectsData.tags.map((tag, i) => (
+                  projectsData.tags?.map((tag, i) => (
                     <div
                       className="bg-primary  w-fit font-bold px-3 text-background  rounded-full py-1"
                       key={i}
@@ -132,10 +131,17 @@ const page = async ({ params }: PageProps) => {
                       {tag}
                     </div>
                   ))}
-                <p className=" text-sm">{`Updated: ${
+
+                <p className="text-sm">{`Updated: ${
                   projectsData?.date_updated
-                    ? moment(projectsData.date_updated).format("MMM DD, YYYY")
-                    : moment(projectsData.date_created).format("MMM DD, YYYY")
+                    ? format(
+                        parseISO(projectsData.date_updated),
+                        "MMM dd, yyyy"
+                      )
+                    : format(
+                        parseISO(projectsData.date_created),
+                        "MMM dd, yyyy"
+                      )
                 }`}</p>
               </div>
               <div className="text-white text-sm md:flex items-center gap-2 hidden ">

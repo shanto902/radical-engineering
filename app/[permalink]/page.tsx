@@ -85,7 +85,7 @@ export async function generateMetadata(
 export async function generateStaticParams() {
   try {
     const pages = await fetchPages();
-    return pages.map((page) => ({
+    return pages?.map((page) => ({
       permalink: page.permalink,
     }));
   } catch (error) {

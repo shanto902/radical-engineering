@@ -190,7 +190,7 @@ export default function InvoicePage() {
             </tr>
           </thead>
           <tbody>
-            {order.order_items.map((item) => (
+            {order.order_items?.map((item) => (
               <tr key={item.id}>
                 <td className="border border-gray-700 p-2">
                   {item.product.name}
@@ -208,7 +208,7 @@ export default function InvoicePage() {
             ))}
 
             {order.extra_charges &&
-              order.extra_charges.map((item, i) => (
+              order.extra_charges?.map((item, i) => (
                 <tr key={i}>
                   <td className="border border-black dark:border-white p-2">
                     {item.name}

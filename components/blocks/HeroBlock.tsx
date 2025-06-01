@@ -73,12 +73,12 @@ const HeroBlock = ({ block }: { block: THeroBlock }) => {
       {isClient ? (
         <>
           <div ref={sliderRef} className="keen-slider h-full">
-            {block.item.sliders.map((slide, idx) => renderSlide(slide, idx))}
+            {block.item.sliders?.map((slide, idx) => renderSlide(slide, idx))}
           </div>
 
           {/* Pagination */}
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
-            {block.item.sliders.map((_, idx) => (
+            {block.item.sliders?.map((_, idx) => (
               <button
                 aria-label={`Pagination Dot ${idx + 1}`}
                 key={idx}

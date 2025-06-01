@@ -61,7 +61,7 @@ const CartPopup = () => {
             {cartItems.length === 0 ? (
               <p className="text-sm ">Cart is empty.</p>
             ) : (
-              cartItems.map((item) => (
+              cartItems?.map((item) => (
                 <div key={item.id} className="flex gap-3 items-start">
                   <Link href={`/categories/${item.category.slug}/${item.slug}`}>
                     <Image

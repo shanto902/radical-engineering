@@ -96,7 +96,7 @@ export default function CheckoutPage() {
           body: JSON.stringify({
             title: `🛒 New Order from ${form.name}`,
             message: `Order of ${items.length} item(s):\n${items
-              .map((item) => `${item.name} x${item.quantity}`)
+              ?.map((item) => `${item.name} x${item.quantity}`)
               .join(", ")}\nTotal: ${total.toLocaleString()} BDT\nPhone: ${
               form.phone
             }`,
@@ -204,7 +204,7 @@ export default function CheckoutPage() {
 
         <div className="space-y-4 min-h-[200px] flex flex-col justify-center">
           {!hasMounted ? (
-            Array.from({ length: 3 }).map((_, i) => (
+            Array.from({ length: 3 })?.map((_, i) => (
               <div
                 key={i}
                 className="flex items-center gap-4 border-b pb-4 animate-pulse"
@@ -232,7 +232,7 @@ export default function CheckoutPage() {
               </Link>
             </div>
           ) : (
-            items.map((item) => (
+            items?.map((item) => (
               <div
                 key={item.id}
                 className="flex flex-row items-center gap-4 border-b pb-4"

@@ -123,8 +123,6 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   const theme = useSelector((state: RootState) => state.theme.mode);
   const filteredSuggestions = products;
 
-  console.log(filteredSuggestions);
-
   useEffect(() => {
     setActiveIndex(-1);
   }, [query]);
@@ -135,7 +133,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
     );
 
     if (isDynamicCategoryMenu) {
-      return categories.map((cat, i) => (
+      return categories?.map((cat, i) => (
         <Link
           key={i}
           aria-label="Go to products page"
@@ -175,7 +173,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   return (
     <>
       <div
-        className={`w-full text-sm text-center transition-all duration-300 ${
+        className={`w-full safe-top text-sm text-center transition-all duration-300 ${
           hideTopBar
             ? "-translate-y-full opacity-0"
             : "translate-y-0 opacity-100"
@@ -254,7 +252,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                   </div>
                 ) : filteredSuggestions.length > 0 ? (
                   <>
-                    {filteredSuggestions.slice(0, 5).map((item, idx) => (
+                    {filteredSuggestions.slice(0, 5)?.map((item, idx) => (
                       <Link
                         aria-label={`Go to ${item.name} Product Page`}
                         key={idx}
@@ -469,7 +467,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                 <div className="absolute top-full border left-0 right-0 bg-background mt-1 rounded-lg  z-10">
                   {filteredSuggestions.length > 0 ? (
                     <>
-                      {filteredSuggestions.slice(0, 5).map((item, idx) => (
+                      {filteredSuggestions.slice(0, 5)?.map((item, idx) => (
                         <Link
                           key={idx}
                           aria-label={`Got to ${item.name} Product Page`}
@@ -510,12 +508,12 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
             </div>
 
             <div className="overflow-y-auto max-h-[calc(100vh-200px)] mb-4">
-              {settings.menu.map((navItem, i) => {
+              {settings.menu?.map((navItem, i) => {
                 const isDynamicCategoryMenu = navItem.sub_menu?.some(
                   (s) => s.categories === true
                 );
                 const submenuItems = isDynamicCategoryMenu
-                  ? categories.map((cat) => ({
+                  ? categories?.map((cat) => ({
                       label: cat.name,
                       link: `/categories/${cat.slug}`,
                     }))

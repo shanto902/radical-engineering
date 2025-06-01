@@ -66,7 +66,7 @@ export const generateStaticParams = async () => {
       })
     );
 
-    return (result as { slug: string }[]).map((item) => ({
+    return (result as { slug: string }[])?.map((item) => ({
       slug: item.slug,
       permalink: "categories",
     }));

@@ -39,7 +39,7 @@ export default function ShopPage({
 
   const maxAvailablePrice = useMemo(() => {
     if (products.length === 0) return 1000; // fallback
-    return Math.max(...products.map((p) => parseFloat(p.price)));
+    return Math.max(...products?.map((p) => parseFloat(p.price)));
   }, [products]);
 
   const [priceRange, setPriceRange] = useState<[number, number]>([MIN, 100]);
@@ -102,7 +102,7 @@ export default function ShopPage({
     new Set(
       products
         .filter((p) => p.category?.slug === categorySlug && p.sub_category)
-        .map((p) => p.sub_category!)
+        ?.map((p) => p.sub_category!)
     )
   );
   const brands = Array.from(
@@ -122,7 +122,7 @@ export default function ShopPage({
 
           return matchCategory && matchSub && matchPrice;
         })
-        .map((p) => p.brand?.name)
+        ?.map((p) => p.brand?.name)
         .filter(Boolean)
     )
   );
@@ -155,7 +155,7 @@ export default function ShopPage({
         >
           All
         </button>
-        {categories.map((cat) => (
+        {categories?.map((cat) => (
           <button
             aria-label="Category link button"
             key={cat.slug}
@@ -179,7 +179,7 @@ export default function ShopPage({
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-4">Subcategories</h3>
               <div className="space-y-2">
-                {subcategories.map((sub) => (
+                {subcategories?.map((sub) => (
                   <label
                     key={sub}
                     className="flex items-center space-x-2 text-sm"
@@ -243,7 +243,7 @@ export default function ShopPage({
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-4">Brands</h3>
               <div className="space-y-2">
-                {brands.map((brand) => (
+                {brands?.map((brand) => (
                   <label
                     key={brand}
                     className="flex items-center space-x-2 text-sm"
@@ -266,7 +266,7 @@ export default function ShopPage({
         <main>
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-              {Array.from({ length: 8 }).map((_, i) => (
+              {Array.from({ length: 8 })?.map((_, i) => (
                 <ProductCardSkeleton key={i} />
               ))}
             </div>
@@ -283,7 +283,7 @@ export default function ShopPage({
           ) : (
             <div>
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-                {paginatedProducts.map((product) => (
+                {paginatedProducts?.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
@@ -304,7 +304,7 @@ export default function ShopPage({
                       length: Math.ceil(
                         filteredProducts.length / PRODUCTS_PER_PAGE
                       ),
-                    }).map((_, idx) => (
+                    })?.map((_, idx) => (
                       <button
                         aria-label="Pagination button"
                         key={idx}

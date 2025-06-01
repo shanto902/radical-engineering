@@ -125,7 +125,7 @@ export default function SolarSystemBuilder() {
 
   const updateSelectedProductQty = (id: string, delta: number) => {
     setSelectedProducts((prev) =>
-      prev.map((p) =>
+      prev?.map((p) =>
         p.id === id ? { ...p, quantity: Math.max(1, p.quantity + delta) } : p
       )
     );
@@ -154,7 +154,7 @@ export default function SolarSystemBuilder() {
         <span className="text-right">Action</span>
       </div>
 
-      {loads.map((load, i) => (
+      {loads?.map((load, i) => (
         <div
           key={i}
           className="grid grid-cols-6 items-center bg-background border-b p-2 text-sm"
@@ -172,7 +172,7 @@ export default function SolarSystemBuilder() {
               }
             }}
           >
-            {loadOptions.map((opt) => (
+            {loadOptions?.map((opt) => (
               <option key={opt.label} value={opt.label}>
                 {opt.label}
               </option>
@@ -292,7 +292,7 @@ export default function SolarSystemBuilder() {
               ?.toLowerCase()
               .includes(selectedCategory.toLowerCase())
           )
-          .map((product) => {
+          ?.map((product) => {
             const isSelected = selectedProducts.find(
               (p) => p.id === product.id
             );

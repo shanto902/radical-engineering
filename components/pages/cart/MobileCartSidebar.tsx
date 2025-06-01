@@ -62,7 +62,7 @@ const MobileCartSidebar = () => {
           {cartItems.length === 0 ? (
             <p className="text-sm text-foreground">Your cart is empty.</p>
           ) : (
-            cartItems.map((item) => (
+            cartItems?.map((item) => (
               <div key={item.id} className="flex items-start gap-3 mb-4">
                 <Image
                   src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=50&height=50`}

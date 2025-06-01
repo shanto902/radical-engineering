@@ -113,7 +113,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
           </div>
 
           <div className="flex gap-3 overflow-x-auto p-1">
-            {images.map((imgId, idx) => (
+            {images?.map((imgId, idx) => (
               <button
                 aria-label="Image Thumbnail"
                 key={idx}

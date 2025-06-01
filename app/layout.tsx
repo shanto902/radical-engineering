@@ -13,6 +13,8 @@ import ReduxProvider from "@/components/ReduxProvider";
 import ThemeWrapper from "@/components/layout/ThemeWrapper";
 import FaviconSwitcher from "@/components/layout/FaviconSwitcher";
 import MobileCartSidebar from "@/components/pages/cart/MobileCartSidebar";
+import StatusBarControl from "@/components/common/StatusBarControl";
+import BackButtonHandler from "@/components/BackButtonHandler";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -41,6 +43,7 @@ export default async function RootLayout({
         <ReduxProvider>
           <FaviconSwitcher />
           <ThemeWrapper>
+            <StatusBarControl />
             <Toaster position="top-right" />
             <Navbar settings={settings} />
             <main className="min-h-[80vh] relative dark:bg-darkBG ">
@@ -48,6 +51,7 @@ export default async function RootLayout({
             </main>
             <MobileCartSidebar />
             <Footer settings={settings} />
+            <BackButtonHandler />
           </ThemeWrapper>
         </ReduxProvider>
       </body>

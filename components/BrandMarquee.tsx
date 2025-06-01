@@ -18,7 +18,7 @@ const BrandMarquee = ({ brands }: { brands: TBrand[] }) => {
     >
       {brands
         ?.filter((brand) => brand.logo) // ✅ Skip brands without logos
-        .map((brand, i) => (
+        ?.map((brand, i) => (
           <div key={i} className="mx-8 cursor-pointer">
             <Link
               href={brand.link}

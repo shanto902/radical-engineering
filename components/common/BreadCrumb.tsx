@@ -25,7 +25,7 @@ export default function BreadcrumbBanner() {
 
   if (pathname === "/" || pathname === "/home") return null;
 
-  const breadcrumb = segments.map((segment, index) => {
+  const breadcrumb = segments?.map((segment, index) => {
     // Try to match product
     const matchedProduct = products.find((p) => p.slug === segment);
 
@@ -61,7 +61,7 @@ export default function BreadcrumbBanner() {
           <Link href="/" className="hover:underline">
             Home
           </Link>
-          {breadcrumb.map((item, i) => {
+          {breadcrumb?.map((item, i) => {
             const isLast = i === breadcrumb.length - 1;
             return (
               <div key={i} className="flex items-center gap-2">

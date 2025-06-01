@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
     await directus.request(
       createItems(
         "order_items",
-        validItems.map((item) => ({
+        validItems?.map((item) => ({
           order: createdOrder.id,
           product: item.id,
           quantity: item.quantity,

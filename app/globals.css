@@ -10,6 +10,14 @@
   --secondary: #fcb974; /* 🔥 Best contrast and brand match */
 }
 
+/* Add to global CSS (e.g. globals.css) */
+.safe-top {
+  padding-top: env(
+    safe-area-inset-top,
+    24px
+  ); /* fallback to 24px for Android */
+}
+
 .dark {
   --background: #181818; /* Slightly softer than #121212, easier on the eyes */
   --foreground: #f0f0f0; /* Slightly warmer white for more comfortable reading */

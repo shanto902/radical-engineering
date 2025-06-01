@@ -18,7 +18,7 @@ const FeaturedCategoriesBlock = ({
           {block.item.header_text || "Featured Categories"}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6  gap-3 md:gap-6">
-          {block.item.categories.map((cat) => (
+          {block.item?.categories?.map((cat) => (
             <Link
               href={`/categories/${cat.categories_id.slug}`}
               key={cat.categories_id.id}
