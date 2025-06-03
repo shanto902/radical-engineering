@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
 import "keen-slider/keen-slider.min.css";
 import Footer from "@/components/layout/Footer";
 import { readSingleton } from "@directus/sdk";
@@ -9,14 +8,13 @@ import directus from "@/lib/directus";
 import { TSettings } from "@/interfaces";
 import { Toaster } from "react-hot-toast";
 import ReduxProvider from "@/components/ReduxProvider";
-
 import ThemeWrapper from "@/components/layout/ThemeWrapper";
 import FaviconSwitcher from "@/components/layout/FaviconSwitcher";
 import MobileCartSidebar from "@/components/pages/cart/MobileCartSidebar";
 import StatusBarControl from "@/components/common/StatusBarControl";
 import BackButtonHandler from "@/components/BackButtonHandler";
-import MobileNavbar from "@/components/common/MobileNavbar";
-import { isNativeApp } from "@/components/common/isNativeApp";
+import TopLoader from "@/components/layout/TopLoader";
+import PlatformNavbar from "@/components/layout/PlatformNavbar";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -46,8 +44,9 @@ export default async function RootLayout({
           <FaviconSwitcher />
           <ThemeWrapper>
             <StatusBarControl />
+            <TopLoader />
             <Toaster position="top-right" />
-            {isNativeApp() ? <MobileNavbar /> : <Navbar settings={settings} />}
+            {<PlatformNavbar settings={settings} />}
             <main className="min-h-[80vh] relative dark:bg-darkBG ">
               {children}
             </main>

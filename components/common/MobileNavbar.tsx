@@ -2,15 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ShoppingBag,
-  Heart,
-  Menu,
-  Package,
-  Search,
-  X,
-} from "lucide-react";
+import { ArrowLeft, ShoppingBag, Heart, Menu, Search, X } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
 import { openCartSidebar } from "@/store/cartUISlice";
@@ -33,7 +25,6 @@ export default function MobileNavbar() {
   const [loading, setLoading] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // 🔍 fetch suggestions
   useEffect(() => {
     if (!debouncedQuery.trim()) {
       setProducts([]);
@@ -58,22 +49,16 @@ export default function MobileNavbar() {
 
   return (
     <>
+      {/* 🔝 Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-b shadow-sm flex items-center justify-between px-4">
-        {/* Back or Menu */}
         {showBack ? (
           <button onClick={() => router.back()} aria-label="Go back">
             <ArrowLeft className="h-6 w-6 text-primary" />
           </button>
         ) : (
-          <button
-            onClick={() => router.push("/categories")}
-            aria-label="Browse categories"
-          >
-            <Menu className="h-6 w-6 text-primary" />
-          </button>
+          <div className="w-6" /> // spacer
         )}
 
-        {/* Logo or Search Icon */}
         {searchOpen ? (
           <div className="flex-1 mx-2">
             <input
@@ -101,27 +86,10 @@ export default function MobileNavbar() {
               <Search className="w-6 h-6 text-primary" />
             )}
           </button>
-
-          <Link href="/track-order" aria-label="Track Order">
-            <Package className="h-6 w-6 text-primary" />
-          </Link>
-          <Link href="/wishlist" aria-label="Wishlist">
-            <Heart className="h-6 w-6 text-primary" />
-          </Link>
-          <button onClick={() => dispatch(openCartSidebar())} aria-label="Cart">
-            <div className="relative">
-              <ShoppingBag className="h-6 w-6 text-primary" />
-              {cartItems.length > 0 && (
-                <span className="absolute -top-2 left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartItems.length}
-                </span>
-              )}
-            </div>
-          </button>
         </div>
       </div>
 
-      {/* Search Suggestions Dropdown */}
+      {/* 🔍 Search Dropdown */}
       {searchOpen && query && (
         <div className="fixed top-14 left-0 right-0 bg-background z-40 border-b max-h-[60vh] overflow-y-auto shadow">
           {loading ? (
@@ -154,6 +122,31 @@ export default function MobileNavbar() {
           )}
         </div>
       )}
+
+      {/* ⬇️ Bottom Navbar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
+        <button
+          onClick={() => router.push("/categories")} // Or open sidebar here
+          aria-label="Categories"
+        >
+          <Menu className="h-6 w-6 text-primary" />
+        </button>
+
+        <Link href="/wishlist" aria-label="Wishlist">
+          <Heart className="h-6 w-6 text-primary" />
+        </Link>
+
+        <button onClick={() => dispatch(openCartSidebar())} aria-label="Cart">
+          <div className="relative">
+            <ShoppingBag className="h-6 w-6 text-primary" />
+            {cartItems.length > 0 && (
+              <span className="absolute -top-2 left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {cartItems.length}
+              </span>
+            )}
+          </div>
+        </button>
+      </div>
     </>
   );
 }

@@ -249,7 +249,7 @@ export default function CheckoutPage() {
                 <div className="flex-1">
                   <Link
                     href={`/categories/${item.category.slug}/${item.slug}`}
-                    className="font-medium text-base hover:underline underline-offset-2 text-primary"
+                    className="font-medium text-base hover:underline underline-offset-4 text-primary"
                   >
                     {item.name}
                   </Link>
