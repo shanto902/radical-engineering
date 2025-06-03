@@ -2,9 +2,12 @@
 
 import { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import { Capacitor } from "@capacitor/core";
 
 export default function StatusBarControl() {
   useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
     const applyStatusBar = async (isDark: boolean) => {
       try {
         await StatusBar.show();
@@ -21,11 +24,11 @@ export default function StatusBarControl() {
     const match = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = (e: MediaQueryListEvent) => applyStatusBar(e.matches);
 
-    applyStatusBar(match.matches); // Initial apply
+    applyStatusBar(match.matches);
     match.addEventListener("change", handleChange);
 
     return () => {
-      match.removeEventListener("change", handleChange); // ✅ properly remove
+      match.removeEventListener("change", handleChange);
     };
   }, []);
 

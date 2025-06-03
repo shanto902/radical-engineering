@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useEffect, useState } from "react";
+
+import { AppDispatch, RootState } from "@/store";
 import { addToCart } from "@/store/cartSlice";
 import Image from "next/image";
 import {
@@ -19,6 +19,8 @@ import {
 
 import PaddingContainer from "@/components/common/PaddingContainer";
 import { showCustomToast } from "@/lib/showCustomToast";
+import { fetchProducts } from "@/store/productSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 type LoadType = "Light" | "Fan" | "TV" | "Computer" | "Printer" | "Custom";
 
@@ -68,16 +70,39 @@ const getBestTwoPanelCombo = (
 };
 
 export default function SolarSystemBuilder() {
-  const dispatch = useDispatch();
-  const products = useSelector((state: RootState) => state.products.items);
+  const dispatch = useDispatch<AppDispatch>();
+  const [selectedCategory, setSelectedCategory] = useState<"Battery" | "Panel">(
+    "Battery"
+  );
 
+  const itemsByCategory = useSelector(
+    (state: RootState) => state.products.itemsByCategory
+  );
+
+  const allProducts = Object.values(itemsByCategory).flat();
+
+  const products = allProducts.filter((p) =>
+    p.category?.name?.toLowerCase().includes(selectedCategory.toLowerCase())
+  );
+
+  useEffect(() => {
+    const categoriesToFetch = [
+      "battery",
+      "solar-panels",
+      "Inverter",
+      "Controller",
+    ];
+    categoriesToFetch.forEach((cat) => {
+      if (!itemsByCategory[cat]) {
+        dispatch(fetchProducts(cat));
+      }
+    });
+  }, [dispatch, itemsByCategory]);
   const [loads, setLoads] = useState<LoadItem[]>([
     { type: "Light", watt: 5, quantity: 4, hour: 6 },
     { type: "Fan", watt: 15, quantity: 1, hour: 8 },
   ]);
-  const [selectedCategory, setSelectedCategory] = useState<"Battery" | "Panel">(
-    "Battery"
-  );
+
   const [selectedProducts, setSelectedProducts] = useState<
     { id: string; quantity: number }[]
   >([]);

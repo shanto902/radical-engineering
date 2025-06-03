@@ -25,12 +25,15 @@ export default function ShopPage({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const categorySlug = pathname?.split("/")[2] || null;
+  const categorySlug: string | undefined = pathname?.split("/")[2] || undefined;
 
   const dispatch = useDispatch<AppDispatch>();
-  const { items: products, loading } = useSelector(
-    (state: RootState) => state.products
+  const products = useSelector(
+    (state: RootState) =>
+      state.products.itemsByCategory[categorySlug || "all"] || []
   );
+
+  const loading = useSelector((state: RootState) => state.products.loading);
 
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
     []
@@ -54,11 +57,11 @@ export default function ShopPage({
   // in ShopPage.tsx
   useEffect(() => {
     if (initialProducts.length > 0) {
-      dispatch(setProducts(initialProducts)); // ← dispatch to redux on first load
+      dispatch(setProducts({ slug: categorySlug, products: initialProducts }));
     } else {
-      dispatch(fetchProducts(categorySlug || undefined)); // fallback
+      dispatch(fetchProducts(categorySlug));
     }
-  }, [dispatch, categorySlug]);
+  }, [dispatch, categorySlug, initialProducts]);
 
   // ─── Filter Logic ──────────────────────────────────────────────
   useEffect(() => {

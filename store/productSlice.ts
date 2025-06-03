@@ -1,40 +1,48 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { TProduct } from "@/interfaces";
 
+// ─── Types ────────────────────────────────────────────────────────────────
 interface ProductState {
-  items: TProduct[];
+  itemsByCategory: {
+    [slug: string]: TProduct[];
+  };
   loading: boolean;
   error: string | null;
 }
 
+// ─── Initial State ────────────────────────────────────────────────────────
 const initialState: ProductState = {
-  items: [],
+  itemsByCategory: {},
   loading: false,
   error: null,
 };
 
-export const fetchProducts = createAsyncThunk<TProduct[], string | undefined>(
-  "products/fetchProducts",
-  async (categorySlug, thunkAPI) => {
-    try {
-      const res = await fetch(
-        `/api/products${categorySlug ? `?category=${categorySlug}` : ""}`
-      );
-      const data = await res.json();
-      return data;
-    } catch (error) {
-      console.error(error);
-      return thunkAPI.rejectWithValue("Failed to fetch products");
-    }
+// ─── Async Thunk for Fetching Products ────────────────────────────────────
+export const fetchProducts = createAsyncThunk<
+  { slug: string; products: TProduct[] },
+  string | undefined
+>("products/fetchProducts", async (slug, thunkAPI) => {
+  try {
+    const url = slug ? `/api/products?category=${slug}` : `/api/products`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return { slug: slug || "all", products: data };
+  } catch (err) {
+    return thunkAPI.rejectWithValue(`Failed to fetch products, Error: ${err}`);
   }
-);
+});
 
+// ─── Slice ────────────────────────────────────────────────────────────────
 const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    setProducts: (state, action: PayloadAction<TProduct[]>) => {
-      state.items = action.payload;
+    setProducts: (
+      state,
+      action: PayloadAction<{ slug?: string; products: TProduct[] }>
+    ) => {
+      const slug = action.payload.slug || "all";
+      state.itemsByCategory[slug] = action.payload.products;
       state.loading = false;
       state.error = null;
     },
@@ -45,8 +53,10 @@ const productSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
+        const { slug, products } = action.payload;
+        state.itemsByCategory[slug] = products;
         state.loading = false;
-        state.items = action.payload;
+        state.error = null;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
@@ -55,5 +65,6 @@ const productSlice = createSlice({
   },
 });
 
+// ─── Exports ──────────────────────────────────────────────────────────────
 export const { setProducts } = productSlice.actions;
 export default productSlice.reducer;

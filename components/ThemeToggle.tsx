@@ -1,6 +1,6 @@
 "use client";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleTheme } from "@/store/themeSlice";
+import { setTheme, toggleTheme } from "@/store/themeSlice";
 import { RootState } from "@/store";
 import { useEffect } from "react";
 import { MoonIcon, SunIcon } from "lucide-react";
@@ -10,12 +10,17 @@ export const ThemeToggle = () => {
   const mode = useSelector((state: RootState) => state.theme.mode);
 
   useEffect(() => {
-    if (mode) {
-      document.documentElement.classList.add("dark");
+    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+
+    if (savedTheme === "light" || savedTheme === "dark") {
+      dispatch(setTheme(savedTheme));
     } else {
-      document.documentElement.classList.remove("dark");
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      dispatch(setTheme(prefersDark ? "dark" : "light"));
     }
-  }, [mode]);
+  }, []);
 
   return (
     <button

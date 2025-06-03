@@ -15,6 +15,8 @@ import FaviconSwitcher from "@/components/layout/FaviconSwitcher";
 import MobileCartSidebar from "@/components/pages/cart/MobileCartSidebar";
 import StatusBarControl from "@/components/common/StatusBarControl";
 import BackButtonHandler from "@/components/BackButtonHandler";
+import MobileNavbar from "@/components/common/MobileNavbar";
+import { isNativeApp } from "@/components/common/isNativeApp";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -45,7 +47,7 @@ export default async function RootLayout({
           <ThemeWrapper>
             <StatusBarControl />
             <Toaster position="top-right" />
-            <Navbar settings={settings} />
+            {isNativeApp() ? <MobileNavbar /> : <Navbar settings={settings} />}
             <main className="min-h-[80vh] relative dark:bg-darkBG ">
               {children}
             </main>

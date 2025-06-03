@@ -7,23 +7,19 @@
   --foreground: #1a0a00;
   --primary: #3c1100;
   --gradient-color: #f4f1ec;
-  --secondary: #fcb974; /* 🔥 Best contrast and brand match */
-}
-
-/* Add to global CSS (e.g. globals.css) */
-.safe-top {
-  padding-top: env(
-    safe-area-inset-top,
-    24px
-  ); /* fallback to 24px for Android */
+  --secondary: #fcb974;
 }
 
 .dark {
-  --background: #181818; /* Slightly softer than #121212, easier on the eyes */
-  --foreground: #f0f0f0; /* Slightly warmer white for more comfortable reading */
-  --primary: #ff8533; /* Softer than #ff7a33, still vibrant and brand-aligned */
-  --secondary: #e26a00; /* Rich warm orange, good contrast and harmony */
-  --gradient-color: #1f1f1f; /* Slightly textured dark, good for subtle gradients */
+  --background: #181818;
+  --foreground: #f0f0f0;
+  --primary: #ff8533;
+  --secondary: #e26a00;
+  --gradient-color: #1f1f1f;
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 24px);
 }
 
 ::selection {

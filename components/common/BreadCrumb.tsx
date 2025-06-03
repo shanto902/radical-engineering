@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import PaddingContainer from "./PaddingContainer";
@@ -11,12 +11,19 @@ import { fetchProjects } from "@/store/projectSlice";
 export default function BreadcrumbBanner() {
   const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
-  const { items: products } = useSelector((state: RootState) => state.products);
-  const { items: projects } = useSelector((state: RootState) => state.projects);
-
   const segments = pathname.split("/").filter(Boolean);
 
-  // 🔁 Only fetch projects if on `/project/...`
+  const projects = useSelector((state: RootState) => state.projects.items);
+  const itemsByCategory = useSelector(
+    (state: RootState) => state.products.itemsByCategory
+  );
+
+  // Combine all products from all categories
+  const allProducts = useMemo(() => {
+    return Object.values(itemsByCategory).flat();
+  }, [itemsByCategory]);
+
+  // 🔁 Fetch projects only if needed
   useEffect(() => {
     if (segments[0] === "projects" && projects.length === 0) {
       dispatch(fetchProjects());
@@ -25,19 +32,13 @@ export default function BreadcrumbBanner() {
 
   if (pathname === "/" || pathname === "/home") return null;
 
-  const breadcrumb = segments?.map((segment, index) => {
-    // Try to match product
-    const matchedProduct = products.find((p) => p.slug === segment);
-
-    // Try to match category from products
-    const matchedCategory = products.find(
+  const breadcrumb = segments.map((segment, index) => {
+    const matchedProduct = allProducts.find((p) => p.slug === segment);
+    const matchedCategory = allProducts.find(
       (p) => p.category?.slug === segment
     )?.category;
-
-    // Try to match project
     const matchedProject = projects.find((proj) => proj.slug === segment);
 
-    // Fallback: prettify the segment
     const name =
       matchedProduct?.name ||
       matchedCategory?.name ||
@@ -57,14 +58,14 @@ export default function BreadcrumbBanner() {
   return (
     <div className="sticky top-[72px] z-40 backdrop-blur-lg bg-backgroundLight/80 dark:bg-backgroundDark/80 transition-all duration-300">
       <PaddingContainer className="relative w-full">
-        <nav className="text-xs md:text-sm flex items-center border-t border-b gap-2 py-2">
-          <Link href="/" className="hover:underline">
+        <nav className="text-xs md:text-sm flex items-center border-t border-b gap-2 py-2 overflow-x-auto">
+          <Link href="/" className="hover:underline shrink-0">
             Home
           </Link>
-          {breadcrumb?.map((item, i) => {
+          {breadcrumb.map((item, i) => {
             const isLast = i === breadcrumb.length - 1;
             return (
-              <div key={i} className="flex items-center gap-2">
+              <div key={i} className="flex items-center gap-2 shrink-0">
                 <span>&gt;</span>
                 <Link
                   href={item.slug}
