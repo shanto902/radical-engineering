@@ -40,13 +40,13 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState<number>(-1); // -1 means nothing selected
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const [hasMounted, setHasMounted] = useState(false);
+
   const [hideTopBar, setHideTopBar] = useState(false);
   const [products, setProducts] = useState<TProduct[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
 
   const debouncedQuery = useDebounce(query, 300);
-
+  const [hasMounted, setHasMounted] = useState(false);
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -187,11 +187,13 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
       <nav className="backdrop-blur-lg bg-backgroundLight/80 h-[72px] dark:bg-backgroundDark/80    sticky top-0 transition-all duration-300 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/home">
-            <Image
-              src={theme === "light" ? logo : logoDark}
-              alt="Logo"
-              className="h-12 object-contain w-fit rounded-md"
-            />
+            {hasMounted && (
+              <Image
+                src={theme === "light" ? logo : logoDark}
+                alt="Logo"
+                className="h-12 object-contain w-fit rounded-md"
+              />
+            )}
           </Link>
 
           {/* Searchbar */}

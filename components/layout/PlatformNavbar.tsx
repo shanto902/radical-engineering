@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import Navbar from "@/components/layout/Navbar";
 import { TSettings } from "@/interfaces";
 
-const MobileNavbar = dynamic(() => import("@/components/common/MobileNavbar"), {
+const MobileNavbar = dynamic(() => import("@/components/layout/MobileNavbar"), {
   ssr: false,
 });
 

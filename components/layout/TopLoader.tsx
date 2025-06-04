@@ -1,14 +1,21 @@
-// components/layout/TopLoader.tsx
 "use client";
 
 import { RootState } from "@/store";
 import NextTopLoader from "nextjs-toploader";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 export default function TopLoader() {
   const theme = useSelector((state: RootState) => state.theme.mode);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  const color = theme === "dark" ? "#ff8533" : "#3c1100"; // Example: yellow for dark, blue for light
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted) return null;
+
+  const color = theme === "dark" ? "#ff8533" : "#3c1100";
 
   return (
     <NextTopLoader

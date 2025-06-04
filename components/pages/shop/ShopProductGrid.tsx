@@ -1,4 +1,5 @@
 "use client";
+
 import ProductCard from "@/components/cards/ProductCard";
 import ProductCardSkeleton from "@/components/cards/ProductCardSkeleton";
 import { isNativeApp } from "@/components/common/isNativeApp";
@@ -43,10 +44,12 @@ const ProductGrid = ({
     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 mb-20">
       {products.map((product, index) => {
         const isLast = index === products.length - 1;
+        const shouldAttachRef = isLast && isNativeApp();
+
         return (
           <div
             key={product.id}
-            ref={isLast && isNativeApp() ? lastItemRef : undefined}
+            {...(shouldAttachRef ? { ref: lastItemRef } : {})}
           >
             <ProductCard product={product} />
           </div>

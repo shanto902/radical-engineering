@@ -14,7 +14,10 @@ import { isNativeApp } from "../common/isNativeApp";
 export default function Footer({ settings }: { settings: TSettings }) {
   const theme = useSelector((state: RootState) => state.theme.mode);
   const [hideFooter, setHideFooter] = useState(false);
-
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
   useEffect(() => {
     if (isNativeApp()) {
       setHideFooter(true);
@@ -28,11 +31,13 @@ export default function Footer({ settings }: { settings: TSettings }) {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Logo & Tagline */}
         <div>
-          <Image
-            src={theme === "light" ? logo : logoDark}
-            alt="Logo"
-            className=" object-contain w-fit h-28"
-          />
+          {hasMounted && (
+            <Image
+              src={theme === "light" ? logo : logoDark}
+              alt="Logo"
+              className=" object-contain w-fit h-28"
+            />
+          )}
           <p className="mt-3 ml-1 text-sm text-background">
             Powering your home with trusted solar and battery solutions.
           </p>

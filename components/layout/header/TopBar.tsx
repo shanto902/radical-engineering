@@ -9,7 +9,7 @@ const TopBar = ({ settings }: { settings: TSettings }) => {
         <div className=" w-full  flex justify-between items-center h-full">
           <p className=" text-sm  flex items-center gap-2">
             <span className="font-normal ">Hotline :</span>{" "}
-            <div className="flex flex-wrap">
+            <span className="flex flex-wrap">
               {settings.phone_numbers &&
                 settings.phone_numbers.map((number, i) => (
                   <span key={i} className="flex  items-center gap-1">
@@ -22,7 +22,7 @@ const TopBar = ({ settings }: { settings: TSettings }) => {
                     </a>
                   </span>
                 ))}
-            </div>
+            </span>
           </p>
           <Link
             href={"/builder"}

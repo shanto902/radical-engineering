@@ -66,13 +66,10 @@ export default function FilterSidebar({
       </div>
 
       {/* 🖥️ Desktop Sidebar */}
-      <aside className="hidden md:block px-4 space-y-6">
+      <aside className="hidden md:block  space-y-6">
         <div className={""}>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-bold">Filters</h3>
-            <button onClick={() => setIsOpen(false)}>
-              <X className="w-6 h-6 text-foreground" />
-            </button>
           </div>
 
           <FilterContent
@@ -186,12 +183,16 @@ function FilterContent({
               {children}
             </div>
           )}
-          renderThumb={({ props }) => (
-            <div
-              {...props}
-              className="w-3 h-3 bg-primary rounded-full shadow"
-            />
-          )}
+          renderThumb={({ props }) => {
+            const { key, ...rest } = props;
+            return (
+              <div
+                key={key}
+                {...rest}
+                className="w-3 h-3 bg-primary rounded-full shadow"
+              />
+            );
+          }}
         />
       </div>
 
