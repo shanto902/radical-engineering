@@ -1,10 +1,12 @@
 import PaddingContainer from "@/components/common/PaddingContainer";
 import { TSettings } from "@/interfaces";
 import Link from "next/link";
+import NoticeBar from "./NoticeBar";
 
 const TopBar = ({ settings }: { settings: TSettings }) => {
   return (
     <div className="hidden md:block w-full h-12 bg-background ">
+      <NoticeBar />
       <PaddingContainer className="flex  h-full">
         <div className=" w-full  flex justify-between items-center h-full">
           <p className=" text-sm  flex items-center gap-2">
