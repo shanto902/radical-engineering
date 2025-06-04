@@ -5,6 +5,8 @@ import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
 
 import { fetchCategoryData } from "@/helper/fetchFromDirectus";
+import directus from "@/lib/directus";
+import { readItems } from "@directus/sdk";
 
 interface PageProps {
   params: Promise<{
@@ -67,6 +69,27 @@ export async function generateMetadata(
     };
   }
 }
+
+export const generateStaticParams = async () => {
+  try {
+    const result = await directus.request(
+      readItems("categories", {
+        fields: ["slug"],
+      })
+    );
+
+    const params = (result as { slug: string }[]).map((item) => ({
+      slug: item.slug,
+      permalink: "categories",
+    }));
+
+    // Add 'all' route explicitly
+    return [{ slug: "all", permalink: "categories" }, ...params];
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw new Error("Error generating static params");
+  }
+};
 
 const page = async ({ params }: PageProps) => {
   const { slug } = await params;

@@ -1,5 +1,6 @@
 import ProductPage from "@/components/pages/shop/ProductDetails";
 import { fetchProductData } from "@/helper/fetchFromDirectus";
+import { TProduct } from "@/interfaces";
 
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
@@ -23,10 +24,11 @@ export async function generateMetadata(
     const previousImages = (await parent).openGraph?.images || [];
 
     if (product !== null) {
-      const categoryName = product.category?.name || "All Products";
       return {
-        title: `${product.name} | ${categoryName} | Radical Engineering`,
-        description: product.description || "Product not found",
+        title:
+          `${product.name} | ${product.category.name} | Radical Engineering` ||
+          "Product not found | Radical Engineering",
+        description: `${product.description}` || "Product not found ",
         openGraph: {
           images: product.image
             ? [
@@ -39,12 +41,15 @@ export async function generateMetadata(
       };
     }
 
+    // Default metadata if the page is not found
     return {
-      title: "Product not Found",
-      description: "This product does not exist.",
+      title: "Category not Found",
+      description: "This page does not exist.",
     };
   } catch (error) {
     console.error("Error fetching page metadata:", error);
+
+    // Return default metadata in case of error
     return {
       title: "Error",
       description: "Failed to fetch page metadata.",
@@ -55,24 +60,21 @@ export async function generateMetadata(
 export const generateStaticParams = async () => {
   try {
     const result = await directus.request(
-      readItems("categories", {
-        fields: ["slug"],
+      readItems("products", {
+        fields: ["slug", "category.slug"],
       })
     );
 
-    const params = (result as { slug: string }[]).map((item) => ({
-      slug: item.slug,
+    return (result as TProduct[])?.map((item) => ({
+      slug: item.category.slug,
+      product_slug: item.slug,
       permalink: "categories",
     }));
-
-    // Add 'all' route explicitly
-    return [{ slug: "all", permalink: "categories" }, ...params];
   } catch (error) {
-    console.error("Error fetching categories:", error);
+    console.error("Error fetching products:", error);
     throw new Error("Error generating static params");
   }
 };
-
 const page = async ({ params }: PageProps) => {
   const { product_slug } = await params;
   const product = await fetchProductData(product_slug);

@@ -102,13 +102,6 @@ export default function ShopPage({
 
   useScrollRestore("shop", [filteredProducts.length]);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      sessionStorage.removeItem("shop-scroll-y");
-    }, 1000);
-    return () => clearTimeout(timeout);
-  }, [categorySlug]);
-
   const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * PRODUCTS_PER_PAGE,
     currentPage * PRODUCTS_PER_PAGE
