@@ -16,6 +16,7 @@ import BackButtonHandler from "@/components/BackButtonHandler";
 import TopLoader from "@/components/layout/TopLoader";
 import PlatformNavbar from "@/components/layout/PlatformNavbar";
 import AppInit from "@/components/AppInt";
+import NoticeBar from "@/components/layout/header/NoticeBar";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -59,6 +60,7 @@ export default async function RootLayout({
       </head>
       <body className={`${lato.variable} antialiased `}>
         <ReduxProvider>
+          <NoticeBar />
           <FaviconSwitcher />
           <ThemeWrapper>
             <AppInit />
