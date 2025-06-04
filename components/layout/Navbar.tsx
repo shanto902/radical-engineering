@@ -29,6 +29,7 @@ import BreadcrumbBanner from "../common/BreadCrumb";
 import { openCartSidebar } from "@/store/cartUISlice";
 import TopBar from "./header/TopBar";
 import PaddingContainer from "../common/PaddingContainer";
+import NoticeBar from "./header/NoticeBar";
 const Navbar = ({ settings }: { settings: TSettings }) => {
   const pathname = usePathname();
   const router = useRouter();
@@ -574,6 +575,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
         )}
       </nav>
       <BreadcrumbBanner />
+      <NoticeBar />
     </>
   );
 };
