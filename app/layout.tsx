@@ -60,7 +60,6 @@ export default async function RootLayout({
       </head>
       <body className={`${lato.variable} antialiased `}>
         <ReduxProvider>
-          <NoticeBar />
           <FaviconSwitcher />
           <ThemeWrapper>
             <AppInit />
@@ -68,6 +67,7 @@ export default async function RootLayout({
             <TopLoader />
             <Toaster position="top-right" />
             {<PlatformNavbar settings={settings} />}
+            <NoticeBar />
             <main className="min-h-[80vh] relative dark:bg-darkBG ">
               {children}
             </main>
