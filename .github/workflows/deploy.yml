@@ -24,7 +24,7 @@ jobs:
             source "$NVM_DIR/nvm.sh"
             nvm use 22
             cd /var/www/radicalengineering.com.bd/html
-            git pull origin main
+            git pull https://shanto902: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@github.com/shanto902/radical-engineering.git
             npm install
             npm run build
             pm2 reload frontend-radical-engineering || pm2 start npm --name "frontend-radical-engineering" -- start
