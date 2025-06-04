@@ -4,11 +4,12 @@ import wishlistReducer from "./wishlistSlice";
 import productReducer from "./productSlice";
 import projectReducer from "./projectSlice";
 import themeReducer from "./themeSlice";
+import cartUIReducer from "./cartUISlice";
+import categoryReducer from "./categorySlice";
 import { loadFromLocalStorage, saveToLocalStorage } from "./persistConfig";
 import type { CartState } from "./cartSlice";
 import type { WishlistState } from "./wishlistSlice";
 import type { ThemeState } from "./themeSlice";
-import cartUIReducer from "./cartUISlice";
 const preloadedState: {
   cart: CartState;
   wishlist: WishlistState;
@@ -27,6 +28,7 @@ export const store = configureStore({
     theme: themeReducer,
     cartUI: cartUIReducer,
     projects: projectReducer,
+    categories: categoryReducer,
   },
   preloadedState,
 });

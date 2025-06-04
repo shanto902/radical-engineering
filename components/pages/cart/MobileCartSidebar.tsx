@@ -31,21 +31,18 @@ const MobileCartSidebar = () => {
   );
 
   return (
-    <div
-      className={`fixed inset-0 z-50 transform transition-transform backdrop-blur-sm duration-300 ${
-        isOpen ? "translate-x-0" : "translate-x-full"
-      }`}
-    >
-      {/* Backdrop */}
+    <>
       <div
-        className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => dispatch(closeCartSidebar())}
       />
-
-      {/* Sidebar */}
-      <div className="absolute right-0 top-0 h-full w-80 max-w-[90%] bg-background shadow-xl border-l border-gray-200 z-50 flex flex-col">
+      <div
+        className={`fixed top-0 right-0 h-full w-80 max-w-[90%] bg-background shadow-xl border-l border-gray-200 z-50 transform transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-lg font-bold">Your Cart</h2>
@@ -136,7 +133,7 @@ const MobileCartSidebar = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

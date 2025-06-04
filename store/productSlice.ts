@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { TProduct } from "@/interfaces";
 
 // ─── Types ────────────────────────────────────────────────────────────────
@@ -8,6 +8,7 @@ interface ProductState {
   };
   loading: boolean;
   error: string | null;
+  loadedSlugs: string[]; // ✅ NEW
 }
 
 // ─── Initial State ────────────────────────────────────────────────────────
@@ -15,6 +16,7 @@ const initialState: ProductState = {
   itemsByCategory: {},
   loading: false,
   error: null,
+  loadedSlugs: [], // ✅ NEW
 };
 
 // ─── Async Thunk for Fetching Products ────────────────────────────────────
@@ -37,14 +39,12 @@ const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    setProducts: (
-      state,
-      action: PayloadAction<{ slug?: string; products: TProduct[] }>
-    ) => {
+    setProducts: (state, action) => {
       const slug = action.payload.slug || "all";
       state.itemsByCategory[slug] = action.payload.products;
-      state.loading = false;
-      state.error = null;
+      if (!state.loadedSlugs.includes(slug)) {
+        state.loadedSlugs.push(slug); // ✅ track loaded slugs
+      }
     },
   },
   extraReducers: (builder) => {
@@ -55,6 +55,9 @@ const productSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         const { slug, products } = action.payload;
         state.itemsByCategory[slug] = products;
+        if (!state.loadedSlugs.includes(slug)) {
+          state.loadedSlugs.push(slug); // ✅ Mark as loaded
+        }
         state.loading = false;
         state.error = null;
       })

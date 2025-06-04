@@ -10,6 +10,18 @@
   --secondary: #fcb974;
 }
 
+@layer utilities {
+  .animate-fade-in {
+    @apply opacity-0 animate-[fadeIn_0.3s_ease-out_forwards];
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+}
+
 .dark {
   --background: #181818;
   --foreground: #f0f0f0;
@@ -116,15 +128,15 @@ html {
   }
 
   .rich-text colgroup {
-    @apply md:table-column-group flex border;
+    @apply table-column-group;
   }
 
   .rich-text tbody {
-    @apply md:table-header-group flex flex-col;
+    @apply table-header-group;
   }
 
   .rich-text tr {
-    @apply md:table-row flex flex-col gap-4;
+    @apply table-row  gap-4;
   }
 
   .rich-text ol {
@@ -212,4 +224,42 @@ body {
   background-color: var(--background, pink); /* fallback to pink */
   color: var(--foreground, red);
   transition: all 0.3s ease, color 0.3s ease;
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out forwards;
+}
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out forwards;
 }

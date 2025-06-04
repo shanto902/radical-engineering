@@ -1,6 +1,7 @@
 "use client";
 
 import { Body } from "@/components/common/Body";
+import { isNativeApp } from "@/components/common/isNativeApp";
 import { getImageUrl } from "@/utils/image-url";
 import { useState } from "react";
 
@@ -32,7 +33,7 @@ const ProductTabs = ({
   if (!hasDetails && !hasPdf && !hasManual) return null;
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 mb-10 ">
       {/* Tabs header */}
       <div className="flex  overflow-hidden justify-center ">
         {hasDetails && (
@@ -83,13 +84,24 @@ const ProductTabs = ({
         typeof productDetails === "string" ? (
           <Body className="rich-text  sm:p-2 md:p-4">{productDetails}</Body>
         ) : activeTab === "pdf" && hasPdf ? (
-          <div className="w-full h-[600px]">
-            <iframe
-              src={getImageUrl(pdfUrl)}
-              className="w-full h-full rounded-md border"
-              loading="lazy"
-            />
-          </div>
+          isNativeApp() ? (
+            <div className="text-center py-8">
+              <button
+                onClick={() => window.open(getImageUrl(pdfUrl!), "_blank")}
+                className="px-4 py-2 text-white bg-primary rounded font-semibold"
+              >
+                Open Data Sheet
+              </button>
+            </div>
+          ) : (
+            <div className="w-full h-[600px]">
+              <iframe
+                src={getImageUrl(pdfUrl!)}
+                className="w-full h-full rounded-md border"
+                loading="lazy"
+              />
+            </div>
+          )
         ) : activeTab === "manual" && hasManual ? (
           <div className="w-full h-[600px]">
             <iframe

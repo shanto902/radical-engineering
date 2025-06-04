@@ -21,6 +21,7 @@ import { useHasMounted } from "@/hooks/useHasMounted";
 import { useRouter } from "next/navigation";
 
 import { showCustomToast } from "@/lib/showCustomToast";
+import { isNativeApp } from "../common/isNativeApp";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
   const hasMounted = useHasMounted();
@@ -116,12 +117,21 @@ const ProductCard = ({ product }: { product: TProduct }) => {
       <div>
         <Link
           href={`/categories/${product.category.slug}/${product.slug}`}
+          onClick={() => {
+            if (isNativeApp()) {
+              sessionStorage.setItem(
+                "shop-scroll-y",
+                window.scrollY.toString()
+              );
+            }
+          }}
           className="relative block aspect-square"
         >
           <Image
             src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?height=200`}
             alt={product.name}
             width={200}
+            loading="lazy"
             height={200}
             placeholder="blur"
             blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=10&quality=1`}
@@ -153,7 +163,17 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           )}
         </button>
 
-        <Link href={`/categories/${product.category.slug}/${product.slug}`}>
+        <Link
+          href={`/categories/${product.category.slug}/${product.slug}`}
+          onClick={() => {
+            if (isNativeApp()) {
+              sessionStorage.setItem(
+                "shop-scroll-y",
+                window.scrollY.toString()
+              );
+            }
+          }}
+        >
           <div className="px-4 pt-2">
             <h3 className="text-base font-bold mb-1 line-clamp-2">
               {product.name}

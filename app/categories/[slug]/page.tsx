@@ -1,13 +1,11 @@
 import ShopPage from "@/components/pages/shop/ShopPage";
-import {
-  fetchCategories,
-  fetchCategoryData,
-  fetchProducts,
-} from "@/helper/fetchFromDirectus";
-import directus from "@/lib/directus";
-import { readItems } from "@directus/sdk";
+import { fetchCategories, fetchProducts } from "@/helper/fetchFromDirectus";
+
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
+
+import { fetchCategoryData } from "@/helper/fetchFromDirectus";
+
 interface PageProps {
   params: Promise<{
     permalink: string;
@@ -24,57 +22,52 @@ export async function generateMetadata(
     const category = await fetchCategoryData(slug);
     const previousImages = (await parent).openGraph?.images || [];
 
-    if (category !== null) {
+    if (!category) {
       return {
-        title:
-          `${category.name} | Category | Radical Engineering` ||
-          "Category not found | Radical Engineering",
-        description: `${category.description}` || "Category not found ",
-        openGraph: {
-          images: category.image
-            ? [
-                {
-                  url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${category.image}`,
-                },
-              ]
-            : [...previousImages],
-        },
+        title: "Category Not Found | Radical Engineering",
+        description: "This category does not exist.",
       };
     }
 
-    // Default metadata if the page is not found
+    const categoryName = category.name || "All Products";
+    const description =
+      category.description ||
+      `Browse products in the ${categoryName} category.`;
+
     return {
-      title: "Category not Found",
-      description: "This page does not exist.",
+      title: `${categoryName} | Category | Radical Engineering`,
+      description,
+      openGraph: {
+        title: `${categoryName} | Radical Engineering`,
+        description,
+        images: category.image
+          ? [
+              {
+                url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${category.image}`,
+                alt: `${categoryName} Category Image`,
+              },
+            ]
+          : previousImages,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${categoryName} | Radical Engineering`,
+        description,
+        images: category.image
+          ? [`${process.env.NEXT_PUBLIC_ASSETS_URL}${category.image}`]
+          : [],
+      },
     };
   } catch (error) {
-    console.error("Error fetching page metadata:", error);
+    console.error("Error generating category metadata:", error);
 
-    // Return default metadata in case of error
     return {
-      title: "Error",
-      description: "Failed to fetch page metadata.",
+      title: "Error | Radical Engineering",
+      description: "Failed to generate metadata for this category.",
     };
   }
 }
 
-export const generateStaticParams = async () => {
-  try {
-    const result = await directus.request(
-      readItems("categories", {
-        fields: ["slug"],
-      })
-    );
-
-    return (result as { slug: string }[])?.map((item) => ({
-      slug: item.slug,
-      permalink: "categories",
-    }));
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    throw new Error("Error generating static params");
-  }
-};
 const page = async ({ params }: PageProps) => {
   const { slug } = await params;
   const products = await fetchProducts(slug);

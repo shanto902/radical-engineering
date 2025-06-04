@@ -5,11 +5,13 @@ const config: CapacitorConfig = {
   appName: "Radical Engineering",
   webDir: "public",
   server: {
-    url: "https://radical-engineering.vercel.app/home",
+    // url: "https://radical-engineering.vercel.app/home",
+    url: "http://192.168.0.220:3000",
     cleartext: true,
   },
   plugins: {
     SplashScreen: {
+      splashImmersive: true,
       launchShowDuration: 3000,
       launchAutoHide: true,
       androidScaleType: "CENTER_CROP",

@@ -1,35 +1,87 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { App as CapacitorApp } from "@capacitor/app";
+import { isNativeApp } from "@/components/common/isNativeApp";
 import { usePathname } from "next/navigation";
 
 export default function BackButtonHandler() {
   const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+  const [showDialog, setShowDialog] = useState(false);
 
+  // Keep latest pathname
   useEffect(() => {
-    let removeListener: (() => void) | null = null;
+    pathnameRef.current = pathname;
+  }, [pathname]);
+
+  // Setup native back button handling
+  useEffect(() => {
+    if (!isNativeApp()) return;
 
     const setupListener = async () => {
       const listener = await CapacitorApp.addListener("backButton", () => {
-        if (pathname === "/" || pathname === "/home") {
-          // 🟢 Exit the app if on home page
-          CapacitorApp.exitApp();
+        const currentPath = pathnameRef.current;
+
+        if (currentPath === "/" || currentPath === "/home") {
+          setShowDialog(true);
         } else {
-          // 🔙 Go back if on any other page
+          // Save scroll for /shop before going back
+          if (currentPath.startsWith("/categories/all")) {
+            sessionStorage.setItem("shop-scroll-y", window.scrollY.toString());
+          }
+
           window.history.back();
         }
       });
 
-      removeListener = () => listener.remove();
+      return () => {
+        listener.remove();
+      };
     };
 
-    setupListener();
+    const cleanupPromise = setupListener();
 
     return () => {
-      if (removeListener) removeListener();
+      cleanupPromise.then((remove) => remove?.());
     };
-  }, [pathname]);
+  }, []);
 
-  return null;
+  // Handle exit
+  const confirmExit = () => {
+    CapacitorApp.exitApp();
+  };
+
+  const cancelExit = () => {
+    setShowDialog(false);
+  };
+
+  return (
+    <>
+      {showDialog && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+          <div className="bg-white dark:bg-darkBG rounded-xl shadow-lg p-6 w-80 text-center">
+            <h2 className="text-lg font-semibold mb-4">Exit App?</h2>
+            <p className="text-sm mb-6 text-muted-foreground">
+              Are you sure you want to close the app?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={cancelExit}
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmExit}
+                className="px-4 py-2 bg-red-600 text-white rounded font-semibold"
+              >
+                Exit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }

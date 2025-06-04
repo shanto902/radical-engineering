@@ -3,17 +3,28 @@
 import { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Capacitor } from "@capacitor/core";
+import { App as CapacitorApp } from "@capacitor/app";
 
 export default function StatusBarControl() {
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    const applyStatusBar = async (isDark: boolean) => {
+    const applyStatusBar = async () => {
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+
+      // Update html class manually here (since ThemeWrapper may not update fast enough)
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(prefersDark ? "dark" : "light");
+
       try {
         await StatusBar.show();
-        await StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
+        await StatusBar.setStyle({
+          style: prefersDark ? Style.Dark : Style.Light,
+        });
         await StatusBar.setBackgroundColor({
-          color: isDark ? "#181818" : "#f6f2ed",
+          color: prefersDark ? "#181818" : "#f6f2ed",
         });
         await StatusBar.setOverlaysWebView({ overlay: false });
       } catch (err) {
@@ -21,14 +32,20 @@ export default function StatusBarControl() {
       }
     };
 
-    const match = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) => applyStatusBar(e.matches);
+    // Initial theme match
+    applyStatusBar();
 
-    applyStatusBar(match.matches);
-    match.addEventListener("change", handleChange);
+    // On theme change while app is open
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => applyStatusBar();
+    media.addEventListener("change", onChange);
+
+    // ✅ Force apply on resume with fresh prefers-color-scheme
+    const resumeHandler = CapacitorApp.addListener("resume", applyStatusBar);
 
     return () => {
-      match.removeEventListener("change", handleChange);
+      media.removeEventListener("change", onChange);
+      resumeHandler.then((handle) => handle.remove());
     };
   }, []);
 

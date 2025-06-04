@@ -82,10 +82,10 @@ export default function ProductPage({ product }: { product: TProduct }) {
   };
 
   return (
-    <PaddingContainer className="py-10">
+    <PaddingContainer className=" md:pt-5 pb-10">
       <div className=" grid grid-cols-1 md:grid-cols-3 md:gap-10 space-y-5 md:space-y-0 content-center">
         {/* Image Panel */}
-        <div className="">
+        <div className="order-2 md:order-1 mt-5 md:mt-0">
           <div className="flex relative justify-center items-center  rounded-xl mb-4 bg-background overflow-hidden">
             {hasMounted && (
               <div key={selectedImage}>
@@ -100,7 +100,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
               </div>
             )}
             {product.discounted_price && (
-              <span className="absolute top-4 right-4 bg-primary text-background px-2 py-1 rounded text-xs font-semibold z-10">
+              <span className="absolute top-4 left-4 bg-primary text-background px-2 py-1 rounded text-sm font-semibold z-10">
                 {Math.round(
                   ((parseFloat(product.price) -
                     parseFloat(product.discounted_price)) /
@@ -112,13 +112,19 @@ export default function ProductPage({ product }: { product: TProduct }) {
             )}
           </div>
 
-          <div className="flex gap-3 overflow-x-auto p-1">
+          <div
+            className={`flex flex-warp gap-3 overflow-x-auto ${
+              product.description || product.datasheet || product.user_manual
+                ? ""
+                : "mb-10"
+            } md:mb-0 p-1`}
+          >
             {images?.map((imgId, idx) => (
               <button
                 aria-label="Image Thumbnail"
                 key={idx}
                 onClick={() => setSelectedImage(imgId)}
-                className={`border rounded overflow-hidden ${
+                className={`border rounded-lg overflow-hidden ${
                   selectedImage === imgId ? "ring-2 ring-primary" : ""
                 }`}
               >
@@ -129,7 +135,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   alt={`Thumbnail ${idx}`}
                   width={80}
                   height={80}
-                  className="w-20 h-20 p-2 object-cover bg-background"
+                  className="w-20 h-20 p-2 rounded-md object-cover bg-background"
                 />
               </button>
             ))}
@@ -137,7 +143,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
         </div>
 
         {/* Info Panel */}
-        <div className="bg-background rounded-xl p-6 shadow-sm border col-span-2 flex flex-col justify-between">
+        <div className="bg-background rounded-xl p-6 shadow-sm border col-span-2  flex flex-col justify-between order-1 md:order-2">
           <div>
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>

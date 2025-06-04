@@ -80,7 +80,7 @@ export const fetchProducts = async (
       fields: ["*", "category.*", "brand.*"],
     };
 
-    if (categorySlug) {
+    if (categorySlug && categorySlug !== "all") {
       options.filter = {
         category: {
           slug: {
@@ -147,7 +147,7 @@ export const fetchCategories = async (): Promise<TCategory[]> => {
   try {
     const result = await directus.request(
       readItems("categories", {
-        fields: ["*", "image.*", "slug"],
+        fields: ["*", "image", "slug"],
       })
     );
     return result as TCategory[];
