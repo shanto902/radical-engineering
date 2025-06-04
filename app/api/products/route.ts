@@ -11,7 +11,16 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get("category");
 
     const options: any = {
-      fields: ["name", "slug", "category.name", "category.slug"],
+      fields: [
+        "name",
+        "image",
+        "id",
+        "price",
+        "discounted_price",
+        "slug",
+        "category.name",
+        "category.slug",
+      ],
     };
 
     if (category) {

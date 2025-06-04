@@ -148,6 +148,9 @@ export type TSettings = {
     icon: string;
     link: string;
   }[];
+  phone_numbers?: {
+    number: string;
+  }[];
 };
 
 export type TProject = {

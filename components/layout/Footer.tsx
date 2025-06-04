@@ -56,24 +56,27 @@ export default function Footer({ settings }: { settings: TSettings }) {
         <div>
           <h3 className="text-lg font-semibold mb-3">Contact</h3>
           <ul className="space-y-2 text-sm text-background">
+            {settings.phone_numbers &&
+              settings.phone_numbers.map((number, i) => (
+                <li key={i} className="hover:underline underline-offset-4">
+                  <a
+                    href={`tel:+88${number.number}`}
+                    className="flex items-center gap-2"
+                  >
+                    <Phone className="w-4 h-4" /> {number.number}
+                  </a>
+                </li>
+              ))}
             <li className="hover:underline underline-offset-4">
               <a
-                href={`tel:+88${settings.phone}`}
+                href={`mailto:${settings.email}`}
                 className="flex items-center gap-2"
               >
-                <Phone className="w-4 h-4" /> {settings.phone}
-              </a>
-            </li>
-            <li className="hover:underline underline-offset-4">
-              <a
-                href="mailto:support@radicalengineering.com"
-                className="flex items-center gap-2"
-              >
-                <Mail className="w-4 h-4" /> support@radicalengineering.com
+                <Mail className="w-4 h-4" /> {settings.email}
               </a>
             </li>
             <li className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" /> Dhaka, Bangladesh
+              <MapPin className="w-4 h-4" /> {settings.address}
             </li>
           </ul>
         </div>
@@ -91,7 +94,8 @@ export default function Footer({ settings }: { settings: TSettings }) {
 
       {/* Bottom Bar */}
       <div className="border-t border-background mt-10 pt-4 text-center text-sm text-background">
-        © {new Date().getFullYear()} Radical Engineering. All rights reserved.
+        © {new Date().getFullYear()} Radical Engineering. All rights reserved.{" "}
+        <br />
         Developed By Ashik Ali Shanto
       </div>
     </footer>
