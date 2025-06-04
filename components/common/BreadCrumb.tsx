@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import PaddingContainer from "./PaddingContainer";
 import { fetchProjects } from "@/store/projectSlice";
+import { fetchProducts } from "@/store/productSlice";
 
 export default function BreadcrumbBanner() {
   const pathname = usePathname();
@@ -29,6 +30,13 @@ export default function BreadcrumbBanner() {
       dispatch(fetchProjects());
     }
   }, [segments, projects.length, dispatch]);
+
+  // 🔁 Fetch all products if not already loaded (e.g. on direct slug page)
+  useEffect(() => {
+    if (Object.keys(itemsByCategory).length === 0) {
+      dispatch(fetchProducts()); // fetch all products
+    }
+  }, [itemsByCategory, dispatch]);
 
   if (pathname === "/" || pathname === "/home") return null;
 

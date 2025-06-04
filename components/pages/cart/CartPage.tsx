@@ -25,7 +25,7 @@ const CartPage = () => {
   );
 
   return (
-    <div className="max-w-7xl min-h-[60vh] mx-auto px-4 mt-16 py-12">
+    <div className="max-w-7xl min-h-[60vh] mx-auto px-4  py-12">
       <h1 className="md:text-3xl text-xl uppercase font-bold mb-12 text-center flex items-center justify-center gap-2">
         {" "}
         <span>
@@ -77,7 +77,7 @@ const CartPage = () => {
           <div className="mt-12  w-full flex justify-end">
             {/*  Total + Checkout */}
             <div className=" space-y-4 shadow-sm">
-              <div className="flex justify-between text-lg md:text-xl  font-bold">
+              <div className="flex justify-between text-foreground text-lg md:text-xl  font-bold">
                 <span>Total:</span>
                 <span>{total.toLocaleString()} BDT</span>
               </div>

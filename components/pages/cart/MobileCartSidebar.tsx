@@ -39,7 +39,7 @@ const MobileCartSidebar = () => {
         onClick={() => dispatch(closeCartSidebar())}
       />
       <div
-        className={`fixed top-0 right-0 h-full w-80 max-w-[90%] bg-background shadow-xl border-l border-gray-200 z-50 transform transition-transform duration-300 ${
+        className={`fixed top-0 right-0 h-full w-80 max-w-[90%] bg-background shadow-xl border-l border-gray-200 z-50 transform transition-transform duration-300 flex flex-col ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

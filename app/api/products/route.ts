@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get("category");
 
     const options: any = {
-      fields: ["*", "category.*", "brand.*"],
+      fields: ["name", "slug", "category.name", "category.slug"],
     };
 
     if (category) {

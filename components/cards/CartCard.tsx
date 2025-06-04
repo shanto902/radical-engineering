@@ -111,7 +111,7 @@ const CartCard = ({
             </div>
 
             {/* Total (below qty) */}
-            <div className="text-right text-sm font-semibold text-white">
+            <div className="text-right text-sm font-semibold text-foreground">
               Total: ৳{" "}
               {(Number(cart.price) * Number(cart.quantity)).toLocaleString()}
             </div>

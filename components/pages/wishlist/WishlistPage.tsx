@@ -39,13 +39,13 @@ const WishlistPage = () => {
   }
 
   return (
-    <PaddingContainer className="py-20">
+    <PaddingContainer className="py-10">
       <h1 className="md:text-3xl text-xl uppercase font-bold mb-12 text-center flex items-center justify-center gap-2">
         <Heart className="size-10 text-primary" />
         Your Wishlist
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-2  lg:grid-cols-4 gap-8">
         {items?.map((product) => {
           const showDiscount =
             product.discounted_price &&

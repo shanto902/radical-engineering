@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
-import { RootState, AppDispatch } from "@/store";
-import { fetchProducts, setProducts } from "@/store/productSlice";
 import { TCategory, TProduct } from "@/interfaces";
 
 import PaddingContainer from "@/components/common/PaddingContainer";
@@ -29,16 +26,8 @@ export default function ShopPage({
   const pathname = usePathname();
   const categorySlug = pathname?.split("/")[2] || "all";
 
-  const dispatch = useDispatch<AppDispatch>();
+  const productsRaw = useMemo(() => initialProducts, [initialProducts]);
 
-  const productsRaw = useSelector(
-    (state: RootState) => state.products.itemsByCategory[categorySlug] || []
-  );
-
-  const reduxProducts = useMemo(() => productsRaw, [productsRaw]);
-  const loading = useSelector((state: RootState) => state.products.loading);
-
-  const [shouldRender, setShouldRender] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<TProduct[]>([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
     []
@@ -47,38 +36,25 @@ export default function ShopPage({
   const [currentPage, setCurrentPage] = useState(1);
 
   const maxAvailablePrice = useMemo(() => {
-    if (productsRaw.length === 0) return 500;
+    if (productsRaw.length === 0) return 100;
     const prices = productsRaw
       .map((p) => parseFloat(p.price))
       .filter((p) => !isNaN(p));
-    return prices.length ? Math.max(...prices) : 500;
+    return prices.length ? Math.max(...prices) : 100;
   }, [productsRaw]);
 
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    MIN,
-    maxAvailablePrice,
-  ]);
+  const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
 
   useEffect(() => {
-    setPriceRange([MIN, maxAvailablePrice]);
+    if (maxAvailablePrice > 0) {
+      setPriceRange([MIN, maxAvailablePrice]);
+    }
   }, [maxAvailablePrice]);
 
   useEffect(() => {
-    if (initialProducts.length > 0) {
-      dispatch(setProducts({ slug: categorySlug, products: initialProducts }));
-    } else {
-      dispatch(fetchProducts(categorySlug));
-    }
-  }, [dispatch, categorySlug, initialProducts]);
+    if (priceRange === null) return;
 
-  useEffect(() => {
-    if (initialProducts.length > 0 || reduxProducts.length > 0) {
-      setShouldRender(true);
-    }
-  }, [initialProducts.length, reduxProducts.length]);
-
-  useEffect(() => {
-    const filtered = reduxProducts.filter((p) => {
+    const filtered = productsRaw.filter((p) => {
       const matchCategory =
         categorySlug === "all" ? true : p.category?.slug === categorySlug;
       const matchSub = selectedSubcategories.length
@@ -87,16 +63,15 @@ export default function ShopPage({
       const matchBrand = selectedBrands.length
         ? selectedBrands.includes(p.brand?.name || "")
         : true;
-      const matchPrice =
-        parseFloat(p.price) >= priceRange[0] &&
-        parseFloat(p.price) <= priceRange[1];
+      const price = parseFloat(p.price);
+      const matchPrice = price >= priceRange[0] && price <= priceRange[1];
       return matchCategory && matchSub && matchBrand && matchPrice;
     });
 
     setFilteredProducts(filtered);
     setCurrentPage(1);
   }, [
-    reduxProducts,
+    productsRaw,
     categorySlug,
     selectedSubcategories,
     selectedBrands,
@@ -113,33 +88,18 @@ export default function ShopPage({
   const subcategories = useMemo(() => {
     return Array.from(
       new Set(
-        reduxProducts
+        productsRaw
           .filter((p) => p.category?.slug === categorySlug && p.sub_category)
           .map((p) => p.sub_category!)
       )
     );
-  }, [reduxProducts, categorySlug]);
+  }, [productsRaw, categorySlug]);
 
   const brands = useMemo(() => {
     return Array.from(
-      new Set(
-        reduxProducts
-          .filter((p) => {
-            const matchCategory =
-              categorySlug === "all" ? true : p.category?.slug === categorySlug;
-            const matchSub = selectedSubcategories.length
-              ? selectedSubcategories.includes(p.sub_category || "")
-              : true;
-            const matchPrice =
-              parseFloat(p.price) >= priceRange[0] &&
-              parseFloat(p.price) <= priceRange[1];
-            return matchCategory && matchSub && matchPrice;
-          })
-          .map((p) => p.brand?.name)
-          .filter(Boolean)
-      )
+      new Set(productsRaw.map((p) => p.brand?.name).filter(Boolean))
     );
-  }, [reduxProducts, categorySlug, selectedSubcategories, priceRange]);
+  }, [productsRaw]);
 
   const handleBrandChange = (brand: string) => {
     setSelectedBrands((prev) =>
@@ -155,7 +115,7 @@ export default function ShopPage({
     );
   };
 
-  if (!shouldRender) {
+  if (priceRange === null) {
     return (
       <PaddingContainer>
         <CategoryTabs categories={categories} />
@@ -167,7 +127,6 @@ export default function ShopPage({
   return (
     <PaddingContainer>
       <CategoryTabs categories={categories} />
-
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
         <aside>
           <FilterSidebar
@@ -183,10 +142,9 @@ export default function ShopPage({
             maxPrice={maxAvailablePrice}
           />
         </aside>
-
         <main>
           <ProductGrid
-            loading={loading}
+            loading={false}
             products={isNativeApp() ? filteredProducts : paginatedProducts}
             totalProducts={filteredProducts.length}
           />

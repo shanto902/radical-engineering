@@ -15,6 +15,7 @@ import StatusBarControl from "@/components/common/StatusBarControl";
 import BackButtonHandler from "@/components/BackButtonHandler";
 import TopLoader from "@/components/layout/TopLoader";
 import PlatformNavbar from "@/components/layout/PlatformNavbar";
+import AppInit from "@/components/AppInt";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -60,6 +61,7 @@ export default async function RootLayout({
         <ReduxProvider>
           <FaviconSwitcher />
           <ThemeWrapper>
+            <AppInit />
             <StatusBarControl />
             <TopLoader />
             <Toaster position="top-right" />
