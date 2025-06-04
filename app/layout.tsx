@@ -16,7 +16,6 @@ import BackButtonHandler from "@/components/BackButtonHandler";
 import TopLoader from "@/components/layout/TopLoader";
 import PlatformNavbar from "@/components/layout/PlatformNavbar";
 import AppInit from "@/components/AppInt";
-import NoticeBar from "@/components/layout/header/NoticeBar";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -67,11 +66,12 @@ export default async function RootLayout({
             <TopLoader />
             <Toaster position="top-right" />
             {<PlatformNavbar settings={settings} />}
-            <NoticeBar />
             <main className="min-h-[80vh] relative dark:bg-darkBG ">
               {children}
             </main>
+
             <MobileCartSidebar />
+
             <Footer settings={settings} />
             <BackButtonHandler />
           </ThemeWrapper>

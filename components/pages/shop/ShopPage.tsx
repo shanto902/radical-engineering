@@ -12,6 +12,7 @@ import ProductGrid from "./ShopProductGrid";
 
 import { isNativeApp } from "@/components/common/isNativeApp";
 import useScrollRestore from "@/hooks/useScrollRestore";
+import NoticeBar from "@/components/layout/header/NoticeBar";
 
 const PRODUCTS_PER_PAGE = 8;
 const MIN = 0;
@@ -127,6 +128,7 @@ export default function ShopPage({
   return (
     <PaddingContainer>
       <CategoryTabs categories={categories} />
+      <NoticeBar />
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
         <aside>
           <FilterSidebar
