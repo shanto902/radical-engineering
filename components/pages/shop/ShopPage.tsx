@@ -47,9 +47,12 @@ export default function ShopPage({
   const [currentPage, setCurrentPage] = useState(1);
 
   const maxAvailablePrice = useMemo(() => {
-    if (reduxProducts.length === 0) return 500;
-    return Math.max(...reduxProducts.map((p) => parseFloat(p.price)));
-  }, [reduxProducts]);
+    if (productsRaw.length === 0) return 500;
+    const prices = productsRaw
+      .map((p) => parseFloat(p.price))
+      .filter((p) => !isNaN(p));
+    return prices.length ? Math.max(...prices) : 500;
+  }, [productsRaw]);
 
   const [priceRange, setPriceRange] = useState<[number, number]>([
     MIN,
