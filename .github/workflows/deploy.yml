@@ -22,6 +22,7 @@ jobs:
           script: |
             cd /var/www/radicalengineering.com.bd/html
             git pull origin main
+            nvm use 22
             npm install
             npm run build
             pm2 reload frontend-radical-engineering || pm2 start npm --name "frontend-radical-engineering" -- start
