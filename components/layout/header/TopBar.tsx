@@ -1,5 +1,6 @@
 import PaddingContainer from "@/components/common/PaddingContainer";
 import { TSettings } from "@/interfaces";
+import { Heart } from "lucide-react";
 import Link from "next/link";
 
 const TopBar = ({ settings }: { settings: TSettings }) => {
@@ -24,6 +25,11 @@ const TopBar = ({ settings }: { settings: TSettings }) => {
                 ))}
             </span>
           </p>
+          <span className="flex gap-2 items-center">
+            {" "}
+            🚧 Our shop is still under development. Thank you{" "}
+            <Heart size={15} />
+          </span>
           <Link
             href={"/builder"}
             className="w-fit  bg-primary hover:bg-secondary px-4  text-background hover:text-foreground text-xs font-bold py-2 rounded-lg transition"

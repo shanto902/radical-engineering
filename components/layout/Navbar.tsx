@@ -574,6 +574,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
           </div>
         )}
       </nav>
+
       <BreadcrumbBanner />
     </>
   );

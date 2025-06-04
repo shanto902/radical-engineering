@@ -64,8 +64,11 @@ export default async function RootLayout({
             <AppInit />
             <StatusBarControl />
             <TopLoader />
+
             <Toaster position="top-right" />
+
             {<PlatformNavbar settings={settings} />}
+
             <main className="min-h-[80vh] relative dark:bg-darkBG ">
               {children}
             </main>
