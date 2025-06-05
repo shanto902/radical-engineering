@@ -24,6 +24,28 @@ export async function generateMetadata(
     const category = await fetchCategoryData(slug);
     const previousImages = (await parent).openGraph?.images || [];
 
+    if (slug === "all") {
+      const title = "All Products | Radical Engineering";
+      const description =
+        "Browse all available products from Radical Engineering.";
+
+      return {
+        title,
+        description,
+        openGraph: {
+          title,
+          description,
+          images: previousImages,
+        },
+        twitter: {
+          card: "summary_large_image",
+          title,
+          description,
+          images: [],
+        },
+      };
+    }
+
     if (!category) {
       return {
         title: "Category Not Found | Radical Engineering",
@@ -31,7 +53,7 @@ export async function generateMetadata(
       };
     }
 
-    const categoryName = category.name || "All Products";
+    const categoryName = category.name || "Unnamed Category";
     const description =
       category.description ||
       `Browse products in the ${categoryName} category.`;
