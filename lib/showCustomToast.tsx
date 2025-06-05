@@ -1,5 +1,6 @@
 import { toast } from "react-hot-toast";
 import { Toast } from "@capacitor/toast";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { LucideIcon } from "lucide-react";
 import { isNativeApp } from "@/components/common/isNativeApp";
 
@@ -10,20 +11,23 @@ interface ShowCustomToastProps {
   duration?: number;
 }
 
-export const showCustomToast = ({
+export const showCustomToast = async ({
   icon: Icon,
   message,
   id,
   duration = 2000,
 }: ShowCustomToastProps) => {
   if (isNativeApp()) {
-    // Use Capacitor native toast
-    Toast.show({
+    // Trigger light haptic feedback
+    await Haptics.impact({ style: ImpactStyle.Light });
+
+    // Show native toast
+    await Toast.show({
       text: message,
-      duration: "short", // 'short' or 'long'
+      duration: "short",
     });
   } else {
-    // Use web toast
+    // Web toast fallback
     toast.custom(
       (t) => (
         <div
