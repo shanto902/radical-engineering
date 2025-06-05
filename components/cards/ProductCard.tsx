@@ -116,6 +116,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
     >
       <div>
         <Link
+          rel="canonical"
           href={`/categories/${product.category.slug}/${product.slug}`}
           onClick={() => {
             if (isNativeApp()) {
@@ -164,6 +165,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         </button>
 
         <Link
+          rel="canonical"
           href={`/categories/${product.category.slug}/${product.slug}`}
           onClick={() => {
             if (isNativeApp()) {

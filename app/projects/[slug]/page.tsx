@@ -28,6 +28,9 @@ export async function generateMetadata(
       return {
         title: `${project.title} | Projects | Radical Engineering`,
         description: `${project.short_description}` || "",
+        alternates: {
+          canonical: `https://radicalengineering.com.bd/projects/${project.slug}`,
+        },
         openGraph: {
           images: project.image
             ? [

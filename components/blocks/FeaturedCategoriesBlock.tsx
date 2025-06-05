@@ -20,6 +20,7 @@ const FeaturedCategoriesBlock = ({
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6  gap-3 md:gap-6">
           {block.item?.categories?.map((cat) => (
             <Link
+              rel="canonical"
               href={`/categories/${cat.categories_id.slug}`}
               key={cat.categories_id.id}
               className="group text-center hover:bg-primary transition-all duration-200 hover:shadow-lg rounded-lg p-2"

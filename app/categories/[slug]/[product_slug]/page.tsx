@@ -29,6 +29,9 @@ export async function generateMetadata(
           `${product.name} | ${product.category.name} | Radical Engineering` ||
           "Product not found | Radical Engineering",
         description: `${product.description}` || "Product not found ",
+        alternates: {
+          canonical: `https://radicalengineering.com.bd/categories/${product.category.slug}/${product.slug}`,
+        },
         openGraph: {
           images: product.image
             ? [

@@ -61,6 +61,9 @@ export async function generateMetadata(
     return {
       title: `${categoryName} | Category | Radical Engineering`,
       description,
+      alternates: {
+        canonical: `https://radicalengineering.com.bd/categories/${category.slug}/`,
+      },
       openGraph: {
         title: `${categoryName} | Radical Engineering`,
         description,

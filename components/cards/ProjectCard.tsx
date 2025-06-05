@@ -9,7 +9,11 @@ import Link from "next/link";
 const ProjectCard = ({ project }: { project: TProject }) => {
   return (
     <div className="mb-0 border border-primary w-full p-3 rounded-lg flex flex-col lg:grid grid-cols-3 overflow-hidden shadow-none my-5 hover:shadow-2xl transition-all duration-300">
-      <Link className="h-full w-full p-2  " href={`/projects/${project.slug}`}>
+      <Link
+        rel="canonical"
+        className="h-full w-full p-2  "
+        href={`/projects/${project.slug}`}
+      >
         <Image
           src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${project.image}`}
           width={300}
@@ -23,6 +27,7 @@ const ProjectCard = ({ project }: { project: TProject }) => {
 
       <div className="p-4 col-span-2 flex flex-col gap-2 justify-center">
         <Link
+          rel="canonical"
           href={`/projects/${project.slug}`}
           className="text-xl font-bold  transition-all duration-300 line-clamp-2"
         >
