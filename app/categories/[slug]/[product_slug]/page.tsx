@@ -1,7 +1,7 @@
 import ProductPage from "@/components/pages/shop/ProductDetails";
 import { fetchProductData } from "@/helper/fetchFromDirectus";
 import { TProduct } from "@/interfaces";
-
+import Script from "next/script";
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
 import { Metadata, ResolvingMetadata } from "next";
@@ -81,10 +81,51 @@ const page = async ({ params }: PageProps) => {
   if (!product) {
     return <div>Product not found</div>;
   }
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: [
+      `${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`,
+      ...product.image_gallery.map(
+        (img) =>
+          `${process.env.NEXT_PUBLIC_ASSETS_URL}/assets/${img.directus_files_id}`
+      ),
+    ],
+    description: product.short_description || "",
+    brand: {
+      "@type": "Brand",
+      name: product.brand?.name || "Radical Engineering",
+    },
+    sku: product.slug,
+    category: product.category.name,
+    offers: {
+      "@type": "Offer",
+      url: `https://radicalengineering.com.bd/categories/${product.category.slug}/${product.slug}`,
+      priceCurrency: "BDT",
+      price: product.discounted_price || product.price,
+      itemCondition: "https://schema.org/NewCondition",
+      availability:
+        product.status === "in-stock"
+          ? "https://schema.org/InStock"
+          : product.status === "pre-order"
+          ? "https://schema.org/PreOrder"
+          : "https://schema.org/OutOfStock",
+    },
+  };
   return (
-    <div>
+    <>
+      <Script
+        id="product-json-ld"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productSchema),
+        }}
+      />
       <ProductPage product={product} />
-    </div>
+    </>
   );
 };
 
