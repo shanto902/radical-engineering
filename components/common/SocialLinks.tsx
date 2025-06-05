@@ -25,7 +25,7 @@ export function SocialIconLink({ icon, link }: { icon: string; link: string }) {
   return (
     <Link
       aria-label={`Go to ${icon}`}
-      href={`/${link}`}
+      href={`${link}`}
       target="_blank"
       rel="noopener noreferrer"
       className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition"
