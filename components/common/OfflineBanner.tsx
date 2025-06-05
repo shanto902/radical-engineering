@@ -38,7 +38,7 @@ export default function OfflineBanner() {
   if (!offline) return null;
 
   return (
-    <div className="fixed inset-0 bg-red-700 text-white z-[9999] flex flex-col items-center justify-center text-center p-6">
+    <div className="fixed inset-0 bg-background text-red-600 text-xl z-[9999] flex flex-col items-center justify-center text-center p-6">
       <h2 className="text-2xl font-bold mb-2">You&apos;re Offline</h2>
       <p className="text-sm opacity-80">
         Please check your internet connection
