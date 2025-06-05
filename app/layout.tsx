@@ -16,6 +16,7 @@ import BackButtonHandler from "@/components/BackButtonHandler";
 import TopLoader from "@/components/layout/TopLoader";
 import PlatformNavbar from "@/components/layout/PlatformNavbar";
 import AppInit from "@/components/AppInt";
+import OfflineBanner from "@/components/common/OfflineBanner";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -76,6 +77,7 @@ export default async function RootLayout({
             <MobileCartSidebar />
 
             <Footer settings={settings} />
+            <OfflineBanner />
             <BackButtonHandler />
           </ThemeWrapper>
         </ReduxProvider>
