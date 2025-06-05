@@ -126,10 +126,11 @@ export default function InvoicePage() {
         className="border rounded shadow p-6 bg-white text-black"
         id="invoice"
       >
-        <div className="flex items-start flex-row-reverse justify-between">
+        <div className="flex  items-start flex-row-reverse justify-between">
           <Image
             height={100}
             width={140}
+            className="h-[100px] w-[140px]"
             src={logo}
             alt="Radical Engineering"
           />
