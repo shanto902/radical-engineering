@@ -1,4 +1,8 @@
-import { fetchCategories, fetchPages } from "@/helper/fetchFromDirectus";
+import {
+  fetchCategories,
+  fetchPages,
+  fetchProjects,
+} from "@/helper/fetchFromDirectus";
 import { TProduct } from "@/interfaces";
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
@@ -71,6 +75,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: page.date_updated ? page.date_updated : page.date_created,
   }));
 
+  const projects = await fetchProjects();
+
+  const projectEntries: MetadataRoute.Sitemap = projects?.map((project) => ({
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}projects/${project.slug}`,
+    lastModified: project.date_updated
+      ? project.date_updated
+      : project.date_created,
+  }));
+
   const products = await fetchProductPages();
   const product: MetadataRoute.Sitemap = products?.map((product) => ({
     url: `${process.env.NEXT_PUBLIC_SITE_URL}categories/${product.category.slug}/${product.slug}`,
@@ -92,7 +105,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Manually add extra static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}categories`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}categories/all`,
       lastModified: new Date().toISOString(),
     },
     {
@@ -101,6 +114,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${process.env.NEXT_PUBLIC_SITE_URL}invoice`,
+      lastModified: new Date().toISOString(),
+    },
+    {
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}projects`,
       lastModified: new Date().toISOString(),
     },
     {
@@ -132,6 +149,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticPages,
     ...pageEntries,
     ...product,
+    ...projectEntries,
     ...categoriesEntries,
   ];
 }
