@@ -26,11 +26,7 @@ export const metadata: Metadata = {
 };
 const page = () => {
   return (
-<<<<<<< Updated upstream
     <PaddingContainer>
-=======
-    <PaddingContainer className="">
->>>>>>> Stashed changes
       <CheckoutPage />
     </PaddingContainer>
   );
