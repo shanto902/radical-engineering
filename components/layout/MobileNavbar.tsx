@@ -11,6 +11,14 @@ import { useDebounce } from "@/hooks/useDebounce";
 import Image from "next/image";
 import { TProduct } from "@/interfaces";
 import { fetchCategories } from "@/store/categorySlice";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { isNativeApp } from "@/components/common/isNativeApp";
+
+const triggerHaptic = async (style: ImpactStyle = ImpactStyle.Medium) => {
+  if (isNativeApp()) {
+    await Haptics.impact({ style });
+  }
+};
 
 export default function MobileNavbar() {
   const pathname = usePathname();
@@ -99,7 +107,10 @@ export default function MobileNavbar() {
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setSearchOpen((p) => !p)}
+              onClick={async () => {
+                await triggerHaptic(ImpactStyle.Light);
+                setSearchOpen((p) => !p);
+              }}
               aria-label="Search"
             >
               {searchOpen ? (
@@ -122,7 +133,8 @@ export default function MobileNavbar() {
               <Link
                 key={item.slug}
                 href={`/categories/${item.category.slug}/${item.slug}`}
-                onClick={() => {
+                onClick={async () => {
+                  await triggerHaptic(ImpactStyle.Light);
                   setQuery("");
                   setSearchOpen(false);
                 }}
@@ -147,25 +159,27 @@ export default function MobileNavbar() {
       )}
 
       {/* 📂 Categories List Drawer */}
-      {/* Category Drawer Overlay */}
       {showCategories && (
         <>
-          {/* Backdrop */}
           <div
-            onClick={() => setShowCategories(false)}
-            className="fixed inset-0  bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300"
+            onClick={async () => {
+              await triggerHaptic(ImpactStyle.Light);
+              setShowCategories(false);
+            }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300"
           />
 
-          {/* Category Drawer */}
           <div className="fixed bottom-0 pb-20 left-0 right-0 bg-background z-50 border-t shadow-md px-4 py-4 animate-slide-up">
             <h3 className="text-lg font-semibold mb-3 text-center">
               Categories
             </h3>
 
-            {/* All Products Link */}
             <Link
               href="/categories"
-              onClick={() => setShowCategories(false)}
+              onClick={async () => {
+                await triggerHaptic();
+                setShowCategories(false);
+              }}
               className="mb-3 block rounded-lg border px-3 py-2 text-center text-sm font-medium hover:bg-secondary"
             >
               🛒 All Products
@@ -176,7 +190,10 @@ export default function MobileNavbar() {
                 <Link
                   href={`/categories/${cat.slug}`}
                   key={cat.slug}
-                  onClick={() => setShowCategories(false)}
+                  onClick={async () => {
+                    await triggerHaptic();
+                    setShowCategories(false);
+                  }}
                   className="flex items-center gap-3 px-3 py-2 rounded-lg border hover:bg-secondary"
                 >
                   <div className="w-8 h-8 bg-white border rounded-full flex items-center justify-center">
@@ -199,7 +216,10 @@ export default function MobileNavbar() {
       {/* ⬇️ Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
         <button
-          onClick={() => setShowCategories((prev) => !prev)}
+          onClick={async () => {
+            await triggerHaptic();
+            setShowCategories((prev) => !prev);
+          }}
           aria-label="Categories"
         >
           <Menu className="h-6 w-6 text-primary" />
@@ -209,7 +229,13 @@ export default function MobileNavbar() {
           <Heart className="h-6 w-6 text-primary" />
         </Link>
 
-        <button onClick={() => dispatch(openCartSidebar())} aria-label="Cart">
+        <button
+          onClick={async () => {
+            await triggerHaptic(ImpactStyle.Light);
+            dispatch(openCartSidebar());
+          }}
+          aria-label="Cart"
+        >
           <div className="relative">
             <ShoppingBag className="h-6 w-6 text-primary" />
             {cartItems.length > 0 && (

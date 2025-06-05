@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { App as CapacitorApp } from "@capacitor/app";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { isNativeApp } from "@/components/common/isNativeApp";
 import { usePathname } from "next/navigation";
 
@@ -20,20 +21,26 @@ export default function BackButtonHandler() {
     if (!isNativeApp()) return;
 
     const setupListener = async () => {
-      const listener = await CapacitorApp.addListener("backButton", () => {
-        const currentPath = pathnameRef.current;
+      const listener = await CapacitorApp.addListener(
+        "backButton",
+        async () => {
+          const currentPath = pathnameRef.current;
 
-        if (currentPath === "/" || currentPath === "/home") {
-          setShowDialog(true);
-        } else {
-          // Save scroll for /shop before going back
-          if (currentPath.startsWith("/categories/all")) {
-            sessionStorage.setItem("shop-scroll-y", window.scrollY.toString());
+          if (currentPath === "/" || currentPath === "/home") {
+            await Haptics.impact({ style: ImpactStyle.Medium });
+            setShowDialog(true);
+          } else {
+            if (currentPath.startsWith("/categories/all")) {
+              sessionStorage.setItem(
+                "shop-scroll-y",
+                window.scrollY.toString()
+              );
+            }
+
+            window.history.back();
           }
-
-          window.history.back();
         }
-      });
+      );
 
       return () => {
         listener.remove();
@@ -48,11 +55,13 @@ export default function BackButtonHandler() {
   }, []);
 
   // Handle exit
-  const confirmExit = () => {
+  const confirmExit = async () => {
+    await Haptics.impact({ style: ImpactStyle.Heavy });
     CapacitorApp.exitApp();
   };
 
-  const cancelExit = () => {
+  const cancelExit = async () => {
+    await Haptics.impact({ style: ImpactStyle.Light });
     setShowDialog(false);
   };
 
