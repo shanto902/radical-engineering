@@ -44,69 +44,57 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <Script
-          id="gtag-consent-mode"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      
-      gtag('consent', 'default', {
-        ad_storage: 'denied',
-        analytics_storage: 'denied',
-      });
-    `,
-          }}
-        />
-        <Script
-          id="gtm-script"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-52BGCSCX');
-    `,
-          }}
-        />
+        <head>
+          {/* Theme first */}
+          <Script
+            id="theme-init"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+        (function () {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const isNative = /android|iphone|ipad/.test(navigator.userAgent.toLowerCase());
+          const storedTheme = localStorage.getItem('theme');
+          const theme = isNative
+            ? (prefersDark ? 'dark' : 'light')
+            : (storedTheme || (prefersDark ? 'dark' : 'light'));
+          document.documentElement.classList.add(theme);
+        })();
+      `,
+            }}
+          />
 
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-FG05LZW031"
-          strategy="afterInteractive"
-        />
-        <Script
-          id="ga4-init"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-FG05LZW031', {
-        page_path: window.location.pathname,
-      });
-    `,
-          }}
-        />
+          {/* GTM */}
+          <Script
+            id="gtm-script"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-52BGCSCX');
+      `,
+            }}
+          />
 
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-      (function () {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const isNative = /android|iphone|ipad/.test(navigator.userAgent.toLowerCase());
-        const storedTheme = localStorage.getItem('theme');
-        const theme = isNative
-          ? (prefersDark ? 'dark' : 'light')
-          : (storedTheme || (prefersDark ? 'dark' : 'light'));
-        document.documentElement.classList.add(theme);
-      })();
-    `,
-          }}
-        />
+          {/* Optional: Consent mode */}
+          <Script
+            id="gtag-consent-mode"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', {
+          ad_storage: 'denied',
+          analytics_storage: 'denied',
+        });
+      `,
+            }}
+          />
+        </head>
       </head>
       <body className={`${lato.variable} antialiased `}>
         <noscript>
