@@ -66,7 +66,7 @@ export default async function RootLayout({
             <StatusBarControl />
             <TopLoader />
 
-            <Toaster position="top-right" />
+            <Toaster position="bottom-center" />
 
             {<PlatformNavbar settings={settings} />}
 
