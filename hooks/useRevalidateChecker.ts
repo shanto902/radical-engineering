@@ -26,16 +26,11 @@ export function useRevalidateChecker() {
         );
 
         if (lastRevalidateTime > lastSeen) {
-          console.log(
-            "New revalidate detected → clearing cache & refreshing page..."
-          );
           router.refresh();
           localStorage.setItem(
             "lastSeenRevalidate",
             String(lastRevalidateTime)
           );
-        } else {
-          console.log("Revalidate unchanged → site is fresh");
         }
       } catch (error) {
         console.error("Error checking revalidate status:", error);

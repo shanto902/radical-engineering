@@ -66,7 +66,7 @@ export const fetchPages = async (): Promise<TPageBlock[]> => {
     );
     return result as TPageBlock[];
   } catch (error) {
-    console.error("Error generating sitemaps:", error);
+    "Error generating sitemaps:", error;
     throw new Error("Failed to fetch all pages for sitemaps.");
   }
 };
@@ -138,7 +138,7 @@ export const fetchProductsWithLimitAndSorting = async (
 
     return result as TProduct[];
   } catch (error) {
-    console.error("Error fetching products", error);
+    "Error fetching products", error;
     throw new Error("Failed to fetch products");
   }
 };

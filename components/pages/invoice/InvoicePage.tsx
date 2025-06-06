@@ -54,8 +54,7 @@ export default function InvoicePage() {
         return res.json();
       })
       .then(setOrder)
-      .catch((err) => {
-        console.error("Fetch failed", err);
+      .catch(() => {
         router.replace("/");
       });
   }, [id, router]);
