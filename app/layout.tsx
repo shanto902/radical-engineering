@@ -18,6 +18,7 @@ import PlatformNavbar from "@/components/layout/PlatformNavbar";
 import AppInit from "@/components/AppInt";
 import OfflineBanner from "@/components/common/OfflineBanner";
 import Script from "next/script";
+import CookieBanner from "@/components/common/CookieBanner";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -43,6 +44,21 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <Script
+          id="gtag-consent-mode"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+      });
+    `,
+          }}
+        />
         <Script
           id="gtm-script"
           strategy="afterInteractive"
@@ -123,6 +139,7 @@ export default async function RootLayout({
             <BackButtonHandler />
           </ThemeWrapper>
         </ReduxProvider>
+        <CookieBanner />
       </body>
     </html>
   );
