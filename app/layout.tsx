@@ -17,6 +17,7 @@ import TopLoader from "@/components/layout/TopLoader";
 import PlatformNavbar from "@/components/layout/PlatformNavbar";
 import AppInit from "@/components/AppInt";
 import OfflineBanner from "@/components/common/OfflineBanner";
+import Script from "next/script";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -42,6 +43,24 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-0B8QYN6WLM"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="ga4-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-0B8QYN6WLM', {
+          page_path: window.location.pathname,
+        });
+      `,
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
