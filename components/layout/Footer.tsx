@@ -80,8 +80,8 @@ export default function Footer({ settings }: { settings: TSettings }) {
                 <Mail className="w-4 h-4" /> {settings.email}
               </a>
             </li>
-            <li className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" /> {settings.address}
+            <li className="flex gap-1 items-start justify-start">
+              <MapPin className="w-fit size-10" /> {settings.address}
             </li>
           </ul>
         </div>
