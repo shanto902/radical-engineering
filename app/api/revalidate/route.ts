@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
   revalidatePath("/", "layout");
 
-  const now = new Date().toISOString();
+  const now = new Date();
 
   await directus.request(
     updateSingleton("settings", {
