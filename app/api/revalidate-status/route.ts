@@ -4,7 +4,6 @@ import directus from "@/lib/directus"; // your existing Directus client with .wi
 
 export async function GET() {
   try {
-    // Read the singleton "global_settings"
     const settings = await directus.request(readSingleton("settings"));
 
     return NextResponse.json({

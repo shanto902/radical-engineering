@@ -552,6 +552,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                       <Link
                         className="block pl-4 py-2 text-base text-foreground hover:text-primary"
                         href={"/categories"}
+                        onClick={() => setIsOpen(false)}
                       >
                         View All Products
                       </Link>

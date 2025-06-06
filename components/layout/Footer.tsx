@@ -39,7 +39,7 @@ export default function Footer({ settings }: { settings: TSettings }) {
             />
           )}
           <p className="mt-3 ml-1 text-sm text-background">
-            Powering your home with trusted solar and battery solutions.
+            {settings.short_description}
           </p>
         </div>
 
