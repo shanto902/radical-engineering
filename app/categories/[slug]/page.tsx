@@ -37,7 +37,7 @@ export async function generateMetadata(
           description,
           images: [
             {
-              url: "/og/products.jpg", // Ensure this path is public (inside the `public` directory)
+              url: `${process.env.NEXT_PUBLIC_SITE_URL}og/products.jpg`, // Ensure this path is public (inside the `public` directory)
               width: 1200,
               height: 630,
               alt: "Checkout Cover - Radical Engineering",
@@ -48,7 +48,7 @@ export async function generateMetadata(
           card: "summary_large_image",
           title,
           description,
-          images: [`/og/products.jpg`],
+          images: [`${process.env.NEXT_PUBLIC_SITE_URL}og/products.jpg`],
         },
       };
     }
