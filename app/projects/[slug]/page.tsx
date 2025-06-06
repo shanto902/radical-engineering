@@ -26,8 +26,11 @@ export async function generateMetadata(
     const previousImages = (await parent).openGraph?.images || [];
     if (project !== null) {
       return {
-        title: `${project.title} | Projects | Radical Engineering`,
-        description: `${project.short_description}` || "",
+        title: `${
+          project.seo.title || project.title
+        } | Projects | Radical Engineering`,
+        description:
+          `${project.seo.meta_description || project.short_description}` || "",
         alternates: {
           canonical: `https://radicalengineering.com.bd/projects/${project.slug}`,
         },

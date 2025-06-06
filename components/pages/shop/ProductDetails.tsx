@@ -11,9 +11,7 @@ import "react-inner-image-zoom/lib/styles.min.css";
 
 import {
   Facebook,
-  Twitter,
   X,
-  Linkedin,
   Heart,
   CheckCircle,
   XCircle,
@@ -53,6 +51,13 @@ export default function ProductPage({ product }: { product: TProduct }) {
   useEffect(() => {
     setHasMounted(true);
   }, []);
+
+  const currentURL = `${process.env.NEXT_PUBLIC_SITE_URL}categories/${product.category.slug}/${product.slug}`;
+
+  // Facebook share URL
+  const facebookShareURL = `https://www.facebook.com/sharer/sharer.php?u=${currentURL}`;
+
+  const xShareURL = `https://twitter.com/intent/tweet?url=${currentURL}&text=${`Check out this Product: ${product.name}`}`;
 
   const handleAddToCart = () => {
     dispatch(
@@ -306,18 +311,22 @@ export default function ProductPage({ product }: { product: TProduct }) {
               </button>
 
               <div className="flex gap-3">
-                <Link href="/#" className="hover:text-primary">
+                <a
+                  href={facebookShareURL}
+                  target="_blank"
+                  aria-label="Facebook Share Button"
+                  className="hover:text-primary"
+                >
                   <Facebook size={16} />
-                </Link>
-                <Link href="/#" className="hover:text-primary">
-                  <Twitter size={16} />
-                </Link>
-                <Link href="/#" className="hover:text-primary">
+                </a>
+
+                <a
+                  href={xShareURL}
+                  aria-label="X Share Button"
+                  className="hover:text-primary"
+                >
                   <X size={16} />
-                </Link>
-                <Link href="/#" className="hover:text-primary">
-                  <Linkedin size={16} />
-                </Link>
+                </a>
               </div>
             </div>
           </div>

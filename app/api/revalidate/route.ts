@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
   await directus.request(
     updateSingleton("settings", {
-      last_revalidate_time: now, // ✅ This is correct here
+      last_revalidate_time: now,
     })
   );
 
