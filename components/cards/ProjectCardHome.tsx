@@ -14,7 +14,7 @@ const ProjectCardHome = ({ project }: { project: TProject }) => {
         className="flex-shrink-0 block w-full aspect-auto rounded-lg overflow-hidden col-span-1"
       >
         <Image
-          src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${project.image}`}
+          src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${project.image}?width=400&height=300`}
           width={400}
           height={300}
           alt={project.title}
