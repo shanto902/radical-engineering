@@ -74,7 +74,7 @@ export default async function RootLayout({
         />
 
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-0B8QYN6WLM"
+          src="https://www.googletagmanager.com/gtag/js?id=G-FG05LZW031"
           strategy="afterInteractive"
         />
         <Script
@@ -82,15 +82,16 @@ export default async function RootLayout({
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-0B8QYN6WLM', {
-          page_path: window.location.pathname,
-        });
-      `,
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG05LZW031', {
+        page_path: window.location.pathname,
+      });
+    `,
           }}
         />
+
         <script
           dangerouslySetInnerHTML={{
             __html: `
