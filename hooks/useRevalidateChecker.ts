@@ -1,0 +1,52 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export function useRevalidateChecker() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkRevalidate = async () => {
+      try {
+        const res = await fetch("/api/revalidate-status", {
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          console.error("Failed to fetch revalidate status");
+          return;
+        }
+
+        const data = await res.json();
+        const lastRevalidateTime = new Date(data.lastRevalidateTime).getTime();
+
+        const lastSeen = Number(
+          localStorage.getItem("lastSeenRevalidate") || "0"
+        );
+
+        if (lastRevalidateTime > lastSeen) {
+          console.log(
+            "New revalidate detected → clearing cache & refreshing page..."
+          );
+          router.refresh();
+          localStorage.setItem(
+            "lastSeenRevalidate",
+            String(lastRevalidateTime)
+          );
+        } else {
+          console.log("Revalidate unchanged → site is fresh");
+        }
+      } catch (error) {
+        console.error("Error checking revalidate status:", error);
+      }
+    };
+
+    // Call on first load
+    checkRevalidate();
+
+    // Optional: you can also poll every X seconds if you want live updates:
+    // const interval = setInterval(checkRevalidate, 5000);
+    // return () => clearInterval(interval);
+  }, [router]);
+}

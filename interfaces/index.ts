@@ -103,6 +103,10 @@ export type TProduct = {
   datasheet?: string | null;
 };
 
+export type TGlobalSettings = {
+  last_revalidate_time: string;
+};
+
 type TSlider = {
   sliders_id: {
     image: string;
@@ -151,6 +155,7 @@ export type TSettings = {
   phone_numbers?: {
     number: string;
   }[];
+  last_revalidate_time: string;
 };
 
 export type TProject = {

@@ -1,13 +1,23 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
+import directus from "@/lib/directus"; // your existing Directus SDK client
+import { updateSingleton } from "@directus/sdk";
 
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token");
-  // If there is no token, return a 401
+
   if (!token || token !== process.env.SECRET_TOKEN)
     return NextResponse.json({ error: "Not authorized" }, { status: 401 });
 
   revalidatePath("/", "layout");
 
-  return NextResponse.json({ revalidated: true, now: Date.now() });
+  const now = new Date().toISOString();
+
+  await directus.request(
+    updateSingleton("settings", {
+      last_revalidate_time: now, // ✅ This is correct here
+    })
+  );
+
+  return NextResponse.json({ revalidated: true, now });
 }
