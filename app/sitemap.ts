@@ -13,11 +13,6 @@ export const fetchProductPages = cache(async (): Promise<TProduct[]> => {
   try {
     const result = await directus.request(
       readItems("products", {
-        filter: {
-          status: {
-            _eq: "in-stock",
-          },
-        },
         fields: ["category.slug", "slug", "date_updated", "date_created"],
       })
     );
@@ -25,47 +20,9 @@ export const fetchProductPages = cache(async (): Promise<TProduct[]> => {
     return result as TProduct[];
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    throw new Error("Failed to fetch project pages for sitemaps.");
+    throw new Error("Failed to fetch product pages for sitemaps.");
   }
 });
-
-// export const fetchBlogPages = cache(async (): Promise<TBlog[]> => {
-//   try {
-//     const result = await directus.request(
-//       readItems("blogs", {
-//         filter: {
-//           status: {
-//             _eq: "published",
-//           },
-//         },
-//         fields: ["slug", "date_created", "date_updated"],
-//       })
-//     );
-//     return result as TBlog[];
-//     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//   } catch (error) {
-//     throw new Error("Failed to fetch blog pages for sitemaps.");
-//   }
-// });
-
-// export const fetchLocationPages = cache(async (): Promise<TLocation[]> => {
-//   try {
-//     const result = await directus.request(
-//       readItems("locations", {
-//         filter: {
-//           status: {
-//             _eq: "published",
-//           },
-//         },
-//         fields: ["slug", "date_created", "date_updated"],
-//       })
-//     );
-//     return result as TLocation[];
-//     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//   } catch (error) {
-//     throw new Error("Failed to fetch location pages for sitemaps.");
-//   }
-// });
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = await fetchPages();
