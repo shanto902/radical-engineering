@@ -19,6 +19,7 @@ import AppInit from "@/components/AppInt";
 import OfflineBanner from "@/components/common/OfflineBanner";
 import Script from "next/script";
 import CookieBanner from "@/components/common/CookieBanner";
+import RevalidateChecker from "@/components/RevalidateChecker";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -136,6 +137,7 @@ export default async function RootLayout({
             <Footer settings={settings} />
             <OfflineBanner />
             <BackButtonHandler />
+            <RevalidateChecker />
           </ThemeWrapper>
         </ReduxProvider>
         <CookieBanner />
