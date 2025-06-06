@@ -132,9 +132,7 @@ export default async function RootLayout({
             <main className="min-h-[80vh] relative dark:bg-darkBG ">
               {children}
             </main>
-
             <MobileCartSidebar />
-
             <Footer settings={settings} />
             <OfflineBanner />
             <BackButtonHandler />
