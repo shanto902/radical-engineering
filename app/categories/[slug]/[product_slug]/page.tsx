@@ -92,8 +92,7 @@ const page = async ({ params }: PageProps) => {
     image: [
       `${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`,
       ...product.image_gallery.map(
-        (img) =>
-          `${process.env.NEXT_PUBLIC_ASSETS_URL}/assets/${img.directus_files_id}`
+        (img) => `${process.env.NEXT_PUBLIC_ASSETS_URL}${img.directus_files_id}`
       ),
     ],
     description: product.short_description || "",
