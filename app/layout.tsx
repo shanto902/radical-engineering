@@ -23,7 +23,7 @@ import CookieBanner from "@/components/common/CookieBanner";
 const lato = Lato({
   variable: "--font-lato",
   subsets: ["latin"],
-  weight: ["400", "700"], // optional: add other weights if needed
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -44,59 +44,81 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <head>
-          {/* Theme first */}
-          <Script
-            id="theme-init"
-            strategy="beforeInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-        (function () {
-          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const isNative = /android|iphone|ipad/.test(navigator.userAgent.toLowerCase());
-          const storedTheme = localStorage.getItem('theme');
-          const theme = isNative
-            ? (prefersDark ? 'dark' : 'light')
-            : (storedTheme || (prefersDark ? 'dark' : 'light'));
-          document.documentElement.classList.add(theme);
-        })();
-      `,
-            }}
-          />
+        {/* Preconnect fonts and GTM domains */}
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preconnect"
+          href="https://www.googletagmanager.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preconnect"
+          href="https://www.google-analytics.com"
+          crossOrigin="anonymous"
+        />
 
-          {/* GTM */}
-          <Script
-            id="gtm-script"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-52BGCSCX');
-      `,
-            }}
-          />
+        {/* Theme script → first to prevent FOUC */}
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isNative = /android|iphone|ipad/.test(navigator.userAgent.toLowerCase());
+                const storedTheme = localStorage.getItem('theme');
+                const theme = isNative
+                  ? (prefersDark ? 'dark' : 'light')
+                  : (storedTheme || (prefersDark ? 'dark' : 'light'));
+                document.documentElement.classList.add(theme);
+              })();
+            `,
+          }}
+        />
 
-          {/* Optional: Consent mode */}
-          <Script
-            id="gtag-consent-mode"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('consent', 'default', {
-          ad_storage: 'denied',
-          analytics_storage: 'denied',
-        });
-      `,
-            }}
-          />
-        </head>
+        {/* GTM script */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','GTM-52BGCSCX');
+            `,
+          }}
+        />
+
+        {/* Consent mode (optional) */}
+        <Script
+          id="gtag-consent-mode"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                ad_storage: 'denied',
+                analytics_storage: 'denied',
+              });
+            `,
+          }}
+        />
       </head>
-      <body className={`${lato.variable} antialiased `}>
+
+      <body className={`${lato.variable} antialiased`}>
+        {/* GTM noscript fallback */}
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-52BGCSCX"
@@ -112,20 +134,20 @@ export default async function RootLayout({
             <AppInit />
             <StatusBarControl />
             <TopLoader />
-
             <Toaster position="bottom-center" />
-
             {<PlatformNavbar settings={settings} />}
 
             <main className="min-h-[80vh] relative dark:bg-darkBG ">
               {children}
             </main>
+
             <MobileCartSidebar />
             <Footer settings={settings} />
             <OfflineBanner />
             <BackButtonHandler />
           </ThemeWrapper>
         </ReduxProvider>
+
         <CookieBanner />
       </body>
     </html>
