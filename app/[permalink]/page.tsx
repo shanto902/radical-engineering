@@ -3,6 +3,7 @@ import BrandBlock from "@/components/blocks/BrandBlock";
 import FeaturedCategoriesBlock from "@/components/blocks/FeaturedCategoriesBlock";
 import FeaturedProductsBlock from "@/components/blocks/FeaturedProductsBlock";
 import HeroBlock from "@/components/blocks/HeroBlock";
+import ProjectsBlock from "@/components/blocks/ProjectsBlock";
 import { fetchPage, fetchPages } from "@/helper/fetchFromDirectus";
 import {
   TBannerBlock,
@@ -135,12 +136,12 @@ const renderBlock = (block: TBlock) => {
           <BrandBlock key={block.id} />
         </Suspense>
       );
-    // case "block_two_columns":
-    //   return (
-    //     <Suspense key={block.id}>
-    //       <TwoColumnBlock key={block.id} block={block as TTwoColumnBlock} />
-    //     </Suspense>
-    //   );
+    case "block_projects":
+      return (
+        <Suspense key={block.id}>
+          <ProjectsBlock key={block.id} block={block} />
+        </Suspense>
+      );
     // case "block_two_columns":
     //   return (
     //     <Suspense key={block.id}>

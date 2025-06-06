@@ -79,12 +79,34 @@ html {
   }
 }
 
+@keyframes toast-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-leave {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
 .animate-enter {
-  animation: toast-enter-top-right 300ms ease-out forwards;
+  animation: toast-enter 300ms ease-out forwards;
 }
 
 .animate-leave {
-  animation: toast-leave-top-right 300ms ease-in forwards;
+  animation: toast-leave 300ms ease-in forwards;
 }
 
 @layer utilities {

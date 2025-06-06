@@ -42,6 +42,7 @@ export const fetchPage = async (
                     "category.slug",
                   ],
                   block_brands: ["title"],
+                  block_projects: ["limit", "header_text"],
                 },
               },
             ],
@@ -119,7 +120,16 @@ export const fetchProductsWithLimitAndSorting = async (
         };
       };
     } = {
-      fields: ["*", "category.*", "brand.*"],
+      fields: [
+        "id",
+        "name",
+        "price",
+        "discounted_price",
+        "status",
+        "image",
+        "category.slug",
+        "category.name",
+      ],
       limit,
       sort: sortField,
     };
@@ -216,7 +226,42 @@ export const fetchProjects = async (): Promise<TProject[]> => {
   try {
     const result = await directus.request(
       readItems("projects", {
+        filter: {
+          status: {
+            _eq: "published",
+          },
+        },
         fields: ["*"],
+      })
+    );
+    return result as TProject[];
+  } catch (error) {
+    console.error("Error fetch projects", error);
+    throw new Error("Failed to fetch projects");
+  }
+};
+
+export const fetchBlockProjects = async (
+  limit: number
+): Promise<TProject[]> => {
+  try {
+    const result = await directus.request(
+      readItems("projects", {
+        filter: {
+          status: {
+            _eq: "published",
+          },
+        },
+        fields: [
+          "id",
+          "date_updated",
+          "date_created",
+          "image",
+          "title",
+          "slug",
+        ],
+        sort: ["-date_created"],
+        limit: limit || 0,
       })
     );
     return result as TProject[];

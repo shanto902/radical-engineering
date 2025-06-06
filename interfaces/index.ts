@@ -3,7 +3,8 @@ export type TBlock =
   | TFeaturedCategoriesBlock
   | TBannerBlock
   | TBrandBlock
-  | TFeaturedProductsBlock;
+  | TFeaturedProductsBlock
+  | TProjectsBlock;
 
 export type THeroBlock = {
   collection: "block_hero";
@@ -22,6 +23,15 @@ export type TBannerBlock = {
   id: string;
   item: {
     banners: TBanner[];
+  };
+};
+
+export type TProjectsBlock = {
+  collection: "block_projects";
+  id: string;
+  item: {
+    limit: number;
+    header_text: string;
   };
 };
 export type TBrandBlock = {

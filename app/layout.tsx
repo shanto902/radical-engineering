@@ -137,9 +137,7 @@ export default async function RootLayout({
             <Toaster position="bottom-center" />
             {<PlatformNavbar settings={settings} />}
 
-            <main className="min-h-[80vh] relative dark:bg-darkBG ">
-              {children}
-            </main>
+            <main className="relative">{children}</main>
 
             <MobileCartSidebar />
             <Footer settings={settings} />
