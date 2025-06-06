@@ -12,6 +12,7 @@ import ProductGrid from "./ShopProductGrid";
 
 import { isNativeApp } from "@/components/common/isNativeApp";
 import useScrollRestore from "@/hooks/useScrollRestore";
+import { useRevalidateChecker } from "@/hooks/useRevalidateChecker";
 
 const PRODUCTS_PER_PAGE = 8;
 const MIN = 0;
@@ -26,7 +27,7 @@ export default function ShopPage({
   const pathname = usePathname();
   const categorySlug = pathname?.split("/")[2] || "all";
   const productsRaw = useMemo(() => initialProducts, [initialProducts]);
-
+  useRevalidateChecker();
   const [filteredProducts, setFilteredProducts] = useState<TProduct[]>([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
     []
