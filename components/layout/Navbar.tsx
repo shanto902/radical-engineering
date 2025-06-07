@@ -419,17 +419,19 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
               aria-label="Open Cart Sidebar"
               onClick={() => dispatch(openCartSidebar())}
             >
-              <div className="relative">
-                <ShoppingBag />
-                {cartItems.length > 0 && (
-                  <span
-                    className="absolute -top-2 
- left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center "
-                  >
-                    {cartItems.length}
-                  </span>
-                )}
-              </div>
+              {hasMounted && (
+                <div className="relative">
+                  <ShoppingBag />
+                  {cartItems.length > 0 && (
+                    <span
+                      className="absolute -top-2 
+left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center "
+                    >
+                      {cartItems.length}
+                    </span>
+                  )}
+                </div>
+              )}
             </button>
             <ThemeToggle />
             <button
