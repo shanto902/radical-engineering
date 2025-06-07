@@ -23,39 +23,62 @@ export async function generateMetadata(
     const product = await fetchProductData(product_slug);
     const previousImages = (await parent).openGraph?.images || [];
 
-    if (product !== null) {
+    // If product is found
+    if (product) {
+      const title = `${product.name} | ${product.category.name} | Radical Engineering`;
+      const description =
+        product.description ||
+        `Buy ${product.name} from Radical Engineering. High quality ${product.category.name} product with fast delivery & warranty in Bangladesh.`;
+
+      // Prepare OG image object array
+      const ogImageObject = product.image
+        ? [
+            {
+              url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`,
+              alt: `${product.name} Image`,
+            },
+          ]
+        : previousImages;
+
+      // Prepare twitter image string array
+      const twitterImages = product.image
+        ? [`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`]
+        : (previousImages as Array<{ url: string } | string>).map((img) =>
+            typeof img === "string" ? img : img.url
+          );
+
       return {
-        title:
-          `${product.name} | ${product.category.name} | Radical Engineering` ||
-          "Product not found | Radical Engineering",
-        description: `${product.description}` || "Product not found ",
+        title,
+        description,
         alternates: {
-          canonical: `https://radicalengineering.com.bd/categories/${product.category.slug}/${product.slug}`,
+          canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/categories/${product.category.slug}/${product.slug}`,
         },
         openGraph: {
-          images: product.image
-            ? [
-                {
-                  url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`,
-                },
-              ]
-            : [...previousImages],
+          title,
+          description,
+          images: ogImageObject,
+        },
+        twitter: {
+          card: "summary_large_image",
+          title,
+          description,
+          images: twitterImages,
         },
       };
     }
 
-    // Default metadata if the page is not found
+    // Default metadata if product not found
     return {
-      title: "Category not Found",
-      description: "This page does not exist.",
+      title: "Product Not Found | Radical Engineering",
+      description: "This product does not exist.",
     };
   } catch (error) {
-    console.error("Error fetching page metadata:", error);
+    console.error("Error generating product metadata:", error);
 
     // Return default metadata in case of error
     return {
-      title: "Error",
-      description: "Failed to fetch page metadata.",
+      title: "Error | Radical Engineering",
+      description: "Failed to fetch product metadata.",
     };
   }
 }

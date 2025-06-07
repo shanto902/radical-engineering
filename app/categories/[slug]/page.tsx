@@ -24,10 +24,12 @@ export async function generateMetadata(
     const category = await fetchCategoryData(slug);
     const previousImages = (await parent).openGraph?.images || [];
 
+    // "All" Products Page
     if (slug === "all") {
-      const title = "All Products | Radical Engineering";
+      const title =
+        "Shop Solar Panels, Batteries, Inverters, IPS & Accessories | Radical Engineering Bangladesh";
       const description =
-        "Browse all available products from Radical Engineering.";
+        "Browse all products at Radical Engineering: solar panels, batteries, inverters, IPS, and accessories. Affordable prices & fast delivery across Bangladesh.";
 
       return {
         title,
@@ -37,10 +39,10 @@ export async function generateMetadata(
           description,
           images: [
             {
-              url: `${process.env.NEXT_PUBLIC_SITE_URL}og/products.jpg`, // Ensure this path is public (inside the `public` directory)
+              url: `${process.env.NEXT_PUBLIC_SITE_URL}/og/products.jpg`,
               width: 1200,
               height: 630,
-              alt: "Checkout Cover - Radical Engineering",
+              alt: "All Products - Radical Engineering",
             },
           ],
         },
@@ -48,11 +50,12 @@ export async function generateMetadata(
           card: "summary_large_image",
           title,
           description,
-          images: [`${process.env.NEXT_PUBLIC_SITE_URL}og/products.jpg`],
+          images: [`${process.env.NEXT_PUBLIC_SITE_URL}/og/products.jpg`],
         },
       };
     }
 
+    // Invalid Category Case
     if (!category) {
       return {
         title: "Category Not Found | Radical Engineering",
@@ -60,36 +63,45 @@ export async function generateMetadata(
       };
     }
 
+    // Dynamic Category Page
     const categoryName = category.name || "Unnamed Category";
     const description =
       category.description ||
-      `Browse products in the ${categoryName} category.`;
+      `Shop ${categoryName} at Radical Engineering. Trusted quality, great prices & fast delivery across Bangladesh. Warranty included.`;
+
+    // Prepare OG image object array
+    const ogImageObject = category.image
+      ? [
+          {
+            url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${category.image}`,
+            alt: `${categoryName} Category Image`,
+          },
+        ]
+      : previousImages;
+
+    // Prepare twitter image string array
+    const twitterImages = category.image
+      ? [`${process.env.NEXT_PUBLIC_ASSETS_URL}${category.image}`]
+      : (previousImages as Array<{ url: string } | string>).map((img) =>
+          typeof img === "string" ? img : img.url
+        );
 
     return {
-      title: `${categoryName} | Category | Radical Engineering`,
+      title: `Buy ${categoryName} Online in Bangladesh | Radical Engineering`,
       description,
       alternates: {
-        canonical: `https://radicalengineering.com.bd/categories/${category.slug}/`,
+        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/categories/${category.slug}/`,
       },
       openGraph: {
-        title: `${categoryName} | Radical Engineering`,
+        title: `Buy ${categoryName} Online in Bangladesh | Radical Engineering`,
         description,
-        images: category.image
-          ? [
-              {
-                url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${category.image}`,
-                alt: `${categoryName} Category Image`,
-              },
-            ]
-          : previousImages,
+        images: ogImageObject,
       },
       twitter: {
         card: "summary_large_image",
-        title: `${categoryName} | Radical Engineering`,
+        title: `Buy ${categoryName} Online in Bangladesh | Radical Engineering`,
         description,
-        images: category.image
-          ? [`${process.env.NEXT_PUBLIC_ASSETS_URL}${category.image}`]
-          : [],
+        images: twitterImages,
       },
     };
   } catch (error) {
