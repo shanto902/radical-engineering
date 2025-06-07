@@ -4,7 +4,7 @@ import { TProduct } from "@/interfaces";
 import Script from "next/script";
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
-import { Metadata, ResolvingMetadata } from "next";
+import { Metadata } from "next";
 import React from "react";
 interface PageProps {
   params: Promise<{
@@ -14,14 +14,12 @@ interface PageProps {
   }>;
 }
 
-export async function generateMetadata(
-  { params }: PageProps,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   try {
     const { product_slug } = await params;
     const product = await fetchProductData(product_slug);
-    const previousImages = (await parent).openGraph?.images || [];
 
     // If product is found
     if (product) {
@@ -31,21 +29,7 @@ export async function generateMetadata(
         `Buy ${product.name} from Radical Engineering. High quality ${product.category.name} product with fast delivery & warranty in Bangladesh.`;
 
       // Prepare OG image object array
-      const ogImageObject = product.image
-        ? [
-            {
-              url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`,
-              alt: `${product.name} Image`,
-            },
-          ]
-        : previousImages;
-
-      // Prepare twitter image string array
-      const twitterImages = product.image
-        ? [`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}`]
-        : (previousImages as Array<{ url: string } | string>).map((img) =>
-            typeof img === "string" ? img : img.url
-          );
+      const ogImageUrl = `${process.env.NEXT_PUBLIC_SITE_URL}categories/${product.category.slug}/${product.slug}/opengraph-image`;
 
       return {
         title,
@@ -56,13 +40,13 @@ export async function generateMetadata(
         openGraph: {
           title,
           description,
-          images: ogImageObject,
+          images: ogImageUrl,
         },
         twitter: {
           card: "summary_large_image",
           title,
           description,
-          images: twitterImages,
+          images: [ogImageUrl],
         },
       };
     }
@@ -90,7 +74,6 @@ export const generateStaticParams = async () => {
         fields: ["slug", "category.slug"],
       })
     );
-
     return (result as TProduct[])?.map((item) => ({
       slug: item.category.slug,
       product_slug: item.slug,

@@ -190,7 +190,13 @@ export const fetchProductData = cache(
             slug,
           },
           sort: ["sort"],
-          fields: ["*", "category.name", "image_gallery.*", "brand.*"],
+          fields: [
+            "*",
+            "category.name",
+            "category.slug",
+            "image_gallery.*",
+            "brand.*",
+          ],
         })
       );
 
