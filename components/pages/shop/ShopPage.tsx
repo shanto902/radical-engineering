@@ -14,7 +14,7 @@ import { isNativeApp } from "@/components/common/isNativeApp";
 import useScrollRestore from "@/hooks/useScrollRestore";
 import { useRevalidateChecker } from "@/hooks/useRevalidateChecker";
 
-const PRODUCTS_PER_PAGE = 8;
+const PRODUCTS_PER_PAGE = 16;
 const MIN = 0;
 
 export default function ShopPage({
