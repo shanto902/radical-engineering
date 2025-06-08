@@ -151,7 +151,10 @@ export default function ProductPage({ product }: { product: TProduct }) {
         <div className="bg-background rounded-xl p-6 shadow-sm border col-span-2  flex flex-col justify-between order-1 md:order-2">
           <div>
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
+              <div>
+                <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
+                <span>{`SKU: ${product.sku}`}</span>
+              </div>
               {product?.brand?.logo && (
                 <Link href={`${product.brand.link}`} target="_blank">
                   <Image

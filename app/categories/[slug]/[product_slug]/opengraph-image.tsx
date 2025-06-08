@@ -27,7 +27,6 @@ export default async function Image({
 
   // 🛑 Replace this with your API or CMS call
   const product = await fetchProductData(params.product_slug);
-  console.log(product);
   return new ImageResponse(
     (
       <div

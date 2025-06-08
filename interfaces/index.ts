@@ -111,6 +111,7 @@ export type TProduct = {
     directus_files_id: string;
   }[];
   datasheet?: string | null;
+  sku: string;
 };
 
 export type TGlobalSettings = {

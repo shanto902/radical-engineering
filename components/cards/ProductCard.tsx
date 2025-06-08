@@ -129,11 +129,11 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           className="relative block aspect-square"
         >
           <Image
-            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?height=200`}
+            src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?height=500&quality=100`}
             alt={product.name}
-            width={200}
+            width={500}
             loading="lazy"
-            height={200}
+            height={500}
             placeholder="blur"
             blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=10&quality=1`}
             className="w-full bg-imageBgPrimary/20 dark:bg-imageBgPrimaryDark/20  object-contain aspect-square "
@@ -186,6 +186,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           </div>
         </Link>
       </div>
+      <p className="text-xs px-4 pb-2"> {`SKU: ${product.sku}`}</p>
       <div className="px-4 pb-4">
         <p className="text-sm font-semibold mb-1">
           {product.status === "in-stock" && (
@@ -218,6 +219,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
             {product.discounted_price
               ? Number(product.discounted_price).toLocaleString()
               : Number(product.price || 0).toLocaleString()}
+            ৳
           </span>
         </div>
 
