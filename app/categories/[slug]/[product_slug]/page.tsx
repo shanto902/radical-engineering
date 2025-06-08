@@ -25,7 +25,7 @@ export async function generateMetadata({
     if (product) {
       const title = `${product.name} | ${product.category.name} | Radical Engineering`;
       const description =
-        product.description ||
+        product.short_description ||
         `Buy ${product.name} from Radical Engineering. High quality ${product.category.name} product with fast delivery & warranty in Bangladesh.`;
 
       // Prepare OG image object array
