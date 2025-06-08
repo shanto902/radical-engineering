@@ -139,7 +139,7 @@ export default async function RootLayout({
             <Toaster position="bottom-center" />
             {<PlatformNavbar settings={settings} />}
 
-            <main className="relative">{children}</main>
+            <main className="relative md:min-h-[80vh]">{children}</main>
 
             <MobileCartSidebar />
             <Footer settings={settings} />
