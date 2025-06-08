@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const ProjectCardHome = ({ project }: { project: TProject }) => {
   return (
-    <div className="group border border-primary w-full p-4 rounded-xl grid grid-cols-3  gap-4 overflow-hidden shadow-none my-5 hover:shadow-xl transition-shadow duration-300">
+    <div className="group border border-primary w-full p-4 rounded-xl grid grid-cols-3  gap-4 overflow-hidden shadow-none hover:shadow-xl transition-shadow duration-300">
       <Link
         rel="canonical"
         href={`/projects/${project.slug}`}

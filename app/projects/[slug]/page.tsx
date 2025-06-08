@@ -9,6 +9,7 @@ import { getProjectData } from "@/helper/fetchFromDirectus";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import { Facebook, Twitter } from "lucide-react";
 import PostBody from "@/components/common/PostBody";
+import VideoGrid from "@/components/pages/projects/VideoGrid";
 interface PageProps {
   params: Promise<{
     slug: string;
@@ -194,6 +195,7 @@ const page = async ({ params }: PageProps) => {
 
       <article className="relative max-w-screen-xl mx-auto px-5 py-10">
         <PostBody body={projectsData.body} />
+        {projectsData.videos && <VideoGrid videos={projectsData.videos} />}
       </article>
     </main>
   );

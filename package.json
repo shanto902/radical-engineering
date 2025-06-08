@@ -42,6 +42,7 @@
     "react-medium-image-zoom": "^5.2.14",
     "react-range": "^1.10.0",
     "react-redux": "^9.2.0",
+    "react-youtube": "^10.1.0",
     "reselect": "^5.1.1",
     "tailwind-merge": "^3.3.0"
   },

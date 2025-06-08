@@ -11,12 +11,16 @@ import {
 import { closeCartSidebar } from "@/store/cartUISlice";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const MobileCartSidebar = () => {
   const dispatch = useDispatch<AppDispatch>();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const isOpen = useSelector((state: RootState) => state.cartUI.isSidebarOpen);
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Prevent scrolling when sidebar is open
   useEffect(() => {
@@ -56,9 +60,10 @@ const MobileCartSidebar = () => {
 
         {/* Body */}
         <div className="flex-1 p-4 overflow-y-auto">
-          {cartItems.length === 0 ? (
+          {hasMounted && cartItems.length === 0 ? (
             <p className="text-sm text-foreground">Your cart is empty.</p>
           ) : (
+            hasMounted &&
             cartItems?.map((item) => (
               <div key={item.id} className="flex items-start gap-3 mb-4">
                 <Image
@@ -79,30 +84,32 @@ const MobileCartSidebar = () => {
                   >
                     {item.name}
                   </Link>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 mt-1">
-                      <button
-                        aria-label="Quantity Decrement"
-                        onClick={() => dispatch(decrementQuantity(item.id))}
-                        className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
-                      >
-                        −
-                      </button>
-                      <span className="text-sm w-6 text-center">
-                        {item.quantity}
-                      </span>
-                      <button
-                        aria-label="Quantity Increment"
-                        onClick={() => dispatch(incrementQuantity(item.id))}
-                        className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
-                      >
-                        +
-                      </button>
+                  {hasMounted && (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 mt-1">
+                        <button
+                          aria-label="Quantity Decrement"
+                          onClick={() => dispatch(decrementQuantity(item.id))}
+                          className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
+                        >
+                          −
+                        </button>
+                        <span className="text-sm w-6 text-center">
+                          {item.quantity}
+                        </span>
+                        <button
+                          aria-label="Quantity Increment"
+                          onClick={() => dispatch(incrementQuantity(item.id))}
+                          className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <p className="text-xs  mt-1">
+                        {(item.quantity * item.price).toLocaleString()} BDT
+                      </p>
                     </div>
-                    <p className="text-xs  mt-1">
-                      {(item.quantity * item.price).toLocaleString()} BDT
-                    </p>
-                  </div>
+                  )}
                 </div>
                 <button
                   aria-label="Remove From Cart"

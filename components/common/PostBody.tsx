@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import parse from "html-react-parser";
-
 import ZoomImage from "./ZoomImage";
 
 interface PostBodyProps {
@@ -12,6 +11,7 @@ const PostBody = ({ body }: PostBodyProps) => {
   // Fetch blurData for each image asynchronously
   const options = {
     replace: (domNode: any) => {
+      // Optimize <img>
       if (domNode.name === "img") {
         const { src, alt } = domNode.attribs;
         const widthMatch = src.match(/width=(\d+)/);

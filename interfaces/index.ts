@@ -169,6 +169,7 @@ export type TSettings = {
 };
 
 export type TProject = {
+  videos?: { link: string }[];
   id: string;
   status: "published" | "draft" | "archived";
   title: string;
