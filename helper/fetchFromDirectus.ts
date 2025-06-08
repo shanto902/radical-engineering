@@ -122,6 +122,7 @@ export const fetchProductsWithLimitAndSorting = async (
     } = {
       fields: [
         "id",
+        "sku",
         "name",
         "slug",
         "price",
