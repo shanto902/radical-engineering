@@ -18,6 +18,7 @@ const MobileCartSidebar = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const isOpen = useSelector((state: RootState) => state.cartUI.isSidebarOpen);
   const [hasMounted, setHasMounted] = useState(false);
+
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -29,6 +30,7 @@ const MobileCartSidebar = () => {
       document.body.style.overflow = "auto";
     };
   }, [isOpen]);
+
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -47,98 +49,99 @@ const MobileCartSidebar = () => {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-bold">Your Cart</h2>
-          <button
-            aria-label="Close cart sidebar"
-            onClick={() => dispatch(closeCartSidebar())}
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="flex-1 p-4 overflow-y-auto">
-          {hasMounted && cartItems.length === 0 ? (
-            <p className="text-sm text-foreground">Your cart is empty.</p>
-          ) : (
-            hasMounted &&
-            cartItems?.map((item) => (
-              <div key={item.id} className="flex items-start gap-3 mb-4">
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=50&height=50`}
-                  placeholder="blur"
-                  blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=10&quality=1`}
-                  alt={item.name}
-                  width={50}
-                  onClick={() => dispatch(closeCartSidebar())}
-                  height={50}
-                  className="rounded border w-[50px] h-[50px] object-cover"
-                />
-                <div className="flex-1">
-                  <Link
-                    onClick={() => dispatch(closeCartSidebar())}
-                    href={`/categories/${item.category.slug}/${item.slug}`}
-                    className="text-sm font-medium line-clamp-2 text-primary hover:underline"
-                  >
-                    {item.name}
-                  </Link>
-                  {hasMounted && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 mt-1">
-                        <button
-                          aria-label="Quantity Decrement"
-                          onClick={() => dispatch(decrementQuantity(item.id))}
-                          className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
-                        >
-                          −
-                        </button>
-                        <span className="text-sm w-6 text-center">
-                          {item.quantity}
-                        </span>
-                        <button
-                          aria-label="Quantity Increment"
-                          onClick={() => dispatch(incrementQuantity(item.id))}
-                          className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
-                        >
-                          +
-                        </button>
-                      </div>
-                      <p className="text-xs  mt-1">
-                        {(item.quantity * item.price).toLocaleString()} BDT
-                      </p>
-                    </div>
-                  )}
-                </div>
-                <button
-                  aria-label="Remove From Cart"
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => dispatch(removeFromCart(item.id))}
-                >
-                  <Trash className="w-4 h-4" />
-                </button>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Footer */}
-        {cartItems.length > 0 && (
-          <div className="p-4 border-t space-y-2">
-            <div className="flex justify-between text-sm font-medium">
-              <span>Subtotal:</span>
-              <span>{subtotal.toLocaleString()} BDT</span>
+        {hasMounted ? (
+          <>
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-lg font-bold">Your Cart</h2>
+              <button
+                aria-label="Close cart sidebar"
+                onClick={() => dispatch(closeCartSidebar())}
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            <Link
-              href="/checkout"
-              className="block bg-primary text-background text-center rounded-md py-2 hover:bg-secondary hover:text-foreground transition"
-              onClick={() => dispatch(closeCartSidebar())}
-            >
-              Go to Checkout
-            </Link>
-          </div>
-        )}
+
+            {/* Body */}
+            <div className="flex-1 p-4 overflow-y-auto">
+              {cartItems.length === 0 ? (
+                <p className="text-sm text-foreground">Your cart is empty.</p>
+              ) : (
+                cartItems?.map((item) => (
+                  <div key={item.id} className="flex items-start gap-3 mb-4">
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=50&height=50`}
+                      placeholder="blur"
+                      blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${item.image}?width=10&quality=1`}
+                      alt={item.name}
+                      width={50}
+                      onClick={() => dispatch(closeCartSidebar())}
+                      height={50}
+                      className="rounded border w-[50px] h-[50px] object-cover"
+                    />
+                    <div className="flex-1">
+                      <Link
+                        onClick={() => dispatch(closeCartSidebar())}
+                        href={`/categories/${item.category.slug}/${item.slug}`}
+                        className="text-sm font-medium line-clamp-2 text-primary hover:underline"
+                      >
+                        {item.name}
+                      </Link>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 mt-1">
+                          <button
+                            aria-label="Quantity Decrement"
+                            onClick={() => dispatch(decrementQuantity(item.id))}
+                            className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
+                          >
+                            −
+                          </button>
+                          <span className="text-sm w-6 text-center">
+                            {item.quantity}
+                          </span>
+                          <button
+                            aria-label="Quantity Increment"
+                            onClick={() => dispatch(incrementQuantity(item.id))}
+                            className="w-6 h-6 rounded bg-primary text-sm font-bold hover:bg-secondary hover:text-foreground text-background"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <p className="text-xs  mt-1">
+                          {(item.quantity * item.price).toLocaleString()} BDT
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      aria-label="Remove From Cart"
+                      className="text-red-500 hover:text-red-700"
+                      onClick={() => dispatch(removeFromCart(item.id))}
+                    >
+                      <Trash className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            {cartItems.length > 0 && (
+              <div className="p-4 border-t space-y-2">
+                <div className="flex justify-between text-sm font-medium">
+                  <span>Subtotal:</span>
+                  <span>{subtotal.toLocaleString()} BDT</span>
+                </div>
+                <Link
+                  href="/checkout"
+                  className="block bg-primary text-background text-center rounded-md py-2 hover:bg-secondary hover:text-foreground transition"
+                  onClick={() => dispatch(closeCartSidebar())}
+                >
+                  Go to Checkout
+                </Link>
+              </div>
+            )}
+          </>
+        ) : null}
       </div>
     </>
   );
