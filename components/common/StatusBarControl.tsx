@@ -14,7 +14,7 @@ export default function StatusBarControl() {
         "(prefers-color-scheme: dark)"
       ).matches;
 
-      // Update html class manually here (since ThemeWrapper may not update fast enough)
+      // Update html class manually
       document.documentElement.classList.remove("light", "dark");
       document.documentElement.classList.add(prefersDark ? "dark" : "light");
 
@@ -32,19 +32,21 @@ export default function StatusBarControl() {
       }
     };
 
-    // Initial theme match
+    // Initial run
     applyStatusBar();
 
-    // On theme change while app is open
+    // On prefers-color-scheme change (browser level)
     const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => applyStatusBar();
-    media.addEventListener("change", onChange);
+    const onMediaChange = () => applyStatusBar();
+    media.addEventListener("change", onMediaChange);
 
-    // ✅ Force apply on resume with fresh prefers-color-scheme
-    const resumeHandler = CapacitorApp.addListener("resume", applyStatusBar);
+    // On app resume
+    const resumeHandler = CapacitorApp.addListener("resume", () =>
+      applyStatusBar()
+    );
 
     return () => {
-      media.removeEventListener("change", onChange);
+      media.removeEventListener("change", onMediaChange);
       resumeHandler.then((handle) => handle.remove());
     };
   }, []);

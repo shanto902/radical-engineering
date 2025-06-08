@@ -143,7 +143,7 @@ export default function ShopPage({
             maxPrice={maxAvailablePrice}
           />
         </aside>
-        <main>
+        <main className="mt-5 md:mt-0">
           <ProductGrid
             loading={false}
             products={isNativeApp() ? filteredProducts : paginatedProducts}
