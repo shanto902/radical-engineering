@@ -117,6 +117,25 @@ export default async function RootLayout({
             `,
           }}
         />
+
+        {/* Google Analytics 4 gtag.js */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-FG05LZW031"
+          strategy="afterInteractive"
+        ></Script>
+
+        <Script
+          id="gtag-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-FG05LZW031');
+            `,
+          }}
+        />
       </head>
 
       <body className={`${lato.variable} antialiased`}>
