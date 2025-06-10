@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
           "id",
           "name",
           "slug",
+          "sku",
           "short_description",
           "price",
           "discounted_price",
