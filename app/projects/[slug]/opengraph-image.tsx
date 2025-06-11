@@ -20,16 +20,22 @@ export default async function Image({ params }: { params: { slug: string } }) {
     join(process.cwd(), "assets/Lato-Regular.ttf")
   );
 
+  const banglaFont = await readFile(
+    join(process.cwd(), "assets/NotoSansBengali-Regular.ttf")
+  );
+
   const project = await getProjectData(params.slug);
 
   return new ImageResponse(
     (
       <div
         style={{
+          display: "flex", // required!
+          flexDirection: "column", // required!
           position: "relative",
           width: "100%",
           height: "100%",
-          fontFamily: "Inter",
+          fontFamily: '"Noto Sans Bengali", Lato', // fallback still here, but per element override below
         }}
       >
         {/* Main flex content */}
@@ -57,10 +63,10 @@ export default async function Image({ params }: { params: { slug: string } }) {
             }}
           >
             <img
-              src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${project.image}?format=png`}
+              src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${project.image}`}
+              width={500} // required!
+              height={500} // required!
               style={{
-                width: "500px",
-                height: "500px",
                 objectFit: "contain",
                 backgroundColor: "white",
                 borderRadius: "16px",
@@ -79,16 +85,20 @@ export default async function Image({ params }: { params: { slug: string } }) {
               paddingLeft: "40px",
             }}
           >
+            {/* Project title — force Bangla font */}
             <h1
               style={{
                 fontSize: "50px",
                 fontWeight: "bold",
                 margin: "0 0 20px 0",
                 lineHeight: 1.2,
+                fontFamily: "Noto Sans Bengali", // force here!
               }}
             >
               {project.title}
             </h1>
+
+            {/* Tags — force English font */}
             {project.tags && (
               <div
                 style={{
@@ -107,6 +117,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
                       backgroundColor: "#e5e7eb",
                       borderRadius: "6px",
                       color: "#374151",
+                      fontFamily: "Lato", // force English font for tags
                     }}
                   >
                     {tag}
@@ -114,6 +125,8 @@ export default async function Image({ params }: { params: { slug: string } }) {
                 ))}
               </div>
             )}
+
+            {/* Short description — force Bangla font */}
             <p
               style={{
                 fontSize: "20px",
@@ -123,6 +136,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
                 display: "-webkit-box",
                 WebkitLineClamp: "2",
                 WebkitBoxOrient: "vertical",
+                fontFamily: "Noto Sans Bengali", // force here!
               }}
             >
               {project.short_description}
@@ -136,15 +150,14 @@ export default async function Image({ params }: { params: { slug: string } }) {
             position: "absolute",
             top: "40px",
             right: "40px",
-            display: "flex", // required to satisfy next/og
+            display: "flex", // required for next/og
           }}
         >
           <img
             src={`${process.env.NEXT_PUBLIC_SITE_URL}logo-square.png`}
-            alt="Logo"
+            width={112} // required!
+            height={78} // required!
             style={{
-              width: "112px",
-              height: "78px",
               borderRadius: "5px",
             }}
           />
@@ -155,8 +168,14 @@ export default async function Image({ params }: { params: { slug: string } }) {
       ...size,
       fonts: [
         {
-          name: "Inter",
+          name: "Lato",
           data: latoRegular,
+          style: "normal",
+          weight: 400,
+        },
+        {
+          name: "Noto Sans Bengali",
+          data: banglaFont,
           style: "normal",
           weight: 400,
         },
