@@ -1,4 +1,3 @@
-// app/api/create-order/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import directus from "@/lib/directus";
 import { createItem, createItems } from "@directus/sdk";

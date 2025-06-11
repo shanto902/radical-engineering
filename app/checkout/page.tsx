@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     images: ["/og/checkout.jpg"],
   },
 };
-const page = () => {
+const PageCheckout = () => {
   return (
     <PaddingContainer>
       <CheckoutPage />
@@ -32,4 +32,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default PageCheckout;

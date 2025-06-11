@@ -1,4 +1,3 @@
-// app/api/contact/route.ts
 import { NextResponse } from "next/server";
 import directus from "@/lib/directus"; // adjust path if needed
 import { createItem } from "@directus/sdk";

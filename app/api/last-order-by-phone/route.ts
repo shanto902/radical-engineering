@@ -1,4 +1,3 @@
-// app/api/last-order-by-phone/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { readItems } from "@directus/sdk";
 import directus from "@/lib/directus";

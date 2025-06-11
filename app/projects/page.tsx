@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     images: ["/og/projects.jpg"],
   },
 };
-const page = async () => {
+const PageProject = async () => {
   const projects = await fetchProjects();
 
   return (
@@ -49,4 +49,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default PageProject;

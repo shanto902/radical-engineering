@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     images: ["/og/contact.jpg"],
   },
 };
-const page = () => {
+const PageContactUs = () => {
   return <ContactForm />;
 };
 
-export default page;
+export default PageContactUs;

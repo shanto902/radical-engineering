@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     images: ["/og/invoice.jpg"],
   },
 };
-const page = () => {
+const PageInvoice = () => {
   return (
     <Suspense>
       <InvoicePage />
@@ -31,4 +31,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default PageInvoice;

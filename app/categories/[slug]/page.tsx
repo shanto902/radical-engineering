@@ -135,7 +135,7 @@ export const generateStaticParams = async () => {
   }
 };
 
-const page = async ({ params }: PageProps) => {
+const PageShop = async ({ params }: PageProps) => {
   const { slug } = await params;
   const products = await fetchProducts(slug);
   const categories = await fetchCategories();
@@ -146,4 +146,4 @@ const page = async ({ params }: PageProps) => {
   );
 };
 
-export default page;
+export default PageShop;

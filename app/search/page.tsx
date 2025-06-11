@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     images: ["/og/search.jpg"],
   },
 };
-const page = () => {
+const PageSearch = () => {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <SearchPage />
@@ -33,4 +33,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default PageSearch;
