@@ -119,10 +119,13 @@ export default async function Image({
               fontSize: "20px",
               lineHeight: 1.5,
               color: "#374151",
-              lineClamp: "2",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
             }}
           >
-            {product.short_description}
+            {product.short_description.replace(/<[^>]+>/g, "")}
           </p>
         </div>
       </div>

@@ -31,6 +31,7 @@ import ProductTabs from "./ProductTabs";
 
 import { getImageUrl } from "@/utils/image-url";
 import { showCustomToast } from "@/lib/showCustomToast";
+import { Body } from "@/components/common/Body";
 
 export default function ProductPage({ product }: { product: TProduct }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -209,11 +210,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                 </span>
               </div>
             )}
-
-            <p className="text-base  mb-4 text-pretty text-justify">
-              {product.short_description ||
-                "This is a great product that you will love. It has many features and benefits that make it stand out from the competition."}
-            </p>
+            <Body className="rich-text mb-4">{product.short_description}</Body>
           </div>
 
           <div>
