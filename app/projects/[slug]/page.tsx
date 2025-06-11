@@ -4,7 +4,7 @@ import Image from "next/image";
 import React from "react";
 import { format, parseISO } from "date-fns";
 
-import { Metadata, ResolvingMetadata } from "next";
+import { Metadata } from "next";
 import { getProjectData } from "@/helper/fetchFromDirectus";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import { Facebook, Twitter } from "lucide-react";
@@ -15,16 +15,15 @@ interface PageProps {
     slug: string;
   }>;
 }
-
-export async function generateMetadata(
-  { params }: PageProps,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   try {
     const { slug } = await params;
     const project = await getProjectData(slug);
 
-    const previousImages = (await parent).openGraph?.images || [];
+    const ogImageUrl = `${process.env.NEXT_PUBLIC_SITE_URL}projects/${project.slug}/opengraph-image`;
+
     if (project !== null) {
       return {
         title: `${
@@ -36,13 +35,11 @@ export async function generateMetadata(
           canonical: `https://radicalengineering.com.bd/projects/${project.slug}`,
         },
         openGraph: {
-          images: project.image
-            ? [
-                {
-                  url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${project.image}`,
-                },
-              ]
-            : [...previousImages],
+          images: [
+            {
+              url: ogImageUrl,
+            },
+          ],
         },
       };
     }
@@ -62,6 +59,7 @@ export async function generateMetadata(
     };
   }
 }
+
 export const generateStaticParams = async () => {
   try {
     const result = await directus.request(
@@ -151,8 +149,8 @@ const page = async ({ params }: PageProps) => {
                       )
                 }`}</p>
               </div>
-              <div className="text-white text-sm md:flex items-center gap-2 hidden ">
-                <p className=" text-white text-sm">Share On: </p>
+              <div className="text-foreground text-sm md:flex items-center gap-2 hidden ">
+                <p className=" text-foreground text-sm">Share On: </p>
 
                 <a target="_blank" href={facebookShareURL}>
                   <Facebook className="bg-primary hover:bg-secondary hover:text-foreground text-background h-8 w-8 p-2 rounded-full transition-all duration-300" />

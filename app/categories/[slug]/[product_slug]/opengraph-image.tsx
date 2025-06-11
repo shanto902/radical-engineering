@@ -25,7 +25,6 @@ export default async function Image({
     join(process.cwd(), "assets/Lato-Regular.ttf")
   );
 
-  // 🛑 Replace this with your API or CMS call
   const product = await fetchProductData(params.product_slug);
   return new ImageResponse(
     (
