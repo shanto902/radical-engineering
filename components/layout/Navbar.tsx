@@ -562,6 +562,13 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
                   </div>
                 );
               })}
+              <Link
+                href={"/order-tracker"}
+                className="block py-2 text-base text-foreground hover:text-primary"
+                onClick={() => setIsOpen(false)}
+              >
+                Track Order
+              </Link>
             </div>
 
             <div className="flex items-center gap-4 w-full">

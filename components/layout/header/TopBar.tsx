@@ -24,13 +24,20 @@ const TopBar = ({ settings }: { settings: TSettings }) => {
                 ))}
             </span>
           </p>
-
-          <Link
-            href={"/builder"}
-            className="w-fit  bg-primary hover:bg-secondary px-4  text-background hover:text-foreground text-xs font-bold py-2 rounded-lg transition"
-          >
-            Solar IPS / IPS Builder
-          </Link>
+          <div className="space-x-2">
+            <Link
+              href={"/order-tracker"}
+              className="w-fit  px-4  hover:underline underline-offset-4 text-xs font-bold py-2 rounded-lg transition"
+            >
+              Track Order
+            </Link>
+            <Link
+              href={"/builder"}
+              className="w-fit  bg-primary hover:bg-secondary px-4  text-background hover:text-foreground text-xs font-bold py-2 rounded-lg transition"
+            >
+              Solar IPS / IPS Builder
+            </Link>
+          </div>
         </div>
       </PaddingContainer>
     </div>

@@ -169,6 +169,21 @@ export type TSettings = {
   last_revalidate_time: string;
 };
 
+export type TOrder = {
+  id: string;
+  order_id: string;
+  name: string;
+  status: string;
+  placed_at: string;
+  phone: string;
+  order_items: {
+    quantity: number;
+    product: TProduct;
+  }[];
+  total: number;
+  address: string;
+};
+
 export type TProject = {
   videos?: { link: string }[];
   id: string;
