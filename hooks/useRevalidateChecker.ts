@@ -56,7 +56,7 @@ export function useRevalidateChecker() {
           );
         }
       } catch (error) {
-        console.error("Error checking revalidate status:", error);
+        console.error("Error checking revalidate status: ", error);
       }
     };
 
