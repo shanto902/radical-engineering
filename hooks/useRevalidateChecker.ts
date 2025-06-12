@@ -1,14 +1,19 @@
 // hooks/useRevalidateChecker.ts
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 export function useRevalidateChecker() {
   const router = useRouter();
+  const hasRefreshed = useRef(false); // Prevent double refresh per visit
 
   useEffect(() => {
     const checkRevalidate = async () => {
+      console.log(
+        "%c[Revalidate] ⏳ Checking revalidate status...",
+        "color: gray;"
+      );
       try {
         const res = await fetch("/api/revalidate-status", {
           cache: "no-store",
@@ -31,11 +36,18 @@ export function useRevalidateChecker() {
             "%c[Revalidate] First visit - force refresh.",
             "color: blue; font-weight: bold;"
           );
-          router.refresh();
           localStorage.setItem(
             "lastSeenRevalidate",
             String(lastRevalidateTime)
           );
+          if (!hasRefreshed.current) {
+            hasRefreshed.current = true;
+            console.log(
+              "%c[Revalidate] ✅ Refreshing (first visit)",
+              "color: orange;"
+            );
+            router.refresh();
+          }
           return;
         }
 
@@ -47,11 +59,18 @@ export function useRevalidateChecker() {
             "Last seen:",
             lastSeen
           );
-          router.refresh();
           localStorage.setItem(
             "lastSeenRevalidate",
             String(lastRevalidateTime)
           );
+          if (!hasRefreshed.current) {
+            hasRefreshed.current = true;
+            console.log(
+              "%c[Revalidate] ✅ Refreshing (new revalidate time)",
+              "color: orange;"
+            );
+            router.refresh();
+          }
         } else {
           console.log(
             "%c[Revalidate] No refresh needed. Server:",
@@ -62,15 +81,14 @@ export function useRevalidateChecker() {
           );
         }
       } catch (error) {
-        console.error("Error checking revalidate status: ", error);
+        console.error("Error checking revalidate status:", error);
       }
     };
 
-    // Call on first load
     checkRevalidate();
 
-    // Optional: Poll every X seconds for live updates:
-    // const interval = setInterval(checkRevalidate, 10000); // every 10 sec
+    // Optional: if you want live check every X seconds:
+    // const interval = setInterval(checkRevalidate, 10000); // every 10s
     // return () => clearInterval(interval);
   }, [router]);
 }
