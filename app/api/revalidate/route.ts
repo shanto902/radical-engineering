@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
-import directus from "@/lib/directus"; // your existing Directus SDK client
+import directus from "@/lib/directus";
 import { updateSingleton } from "@directus/sdk";
 
 export async function GET(request: NextRequest) {
@@ -18,6 +18,8 @@ export async function GET(request: NextRequest) {
       last_revalidate_time: now,
     })
   );
+
+  console.log(`[REVALIDATE] last_revalidate_time updated to: ${now}`);
 
   return NextResponse.json({ revalidated: true, now });
 }

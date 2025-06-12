@@ -22,6 +22,7 @@ export function useRevalidateChecker() {
 
         // Safely handle null value
         if (!data.lastRevalidateTime) {
+          console.warn("No lastRevalidateTime found in API response");
           return;
         }
 
@@ -31,11 +32,27 @@ export function useRevalidateChecker() {
           localStorage.getItem("lastSeenRevalidate") || "0"
         );
 
-        if (lastRevalidateTime > lastSeen) {
+        // Only refresh if server time is newer by at least 500ms
+        if (lastRevalidateTime - lastSeen > 500) {
+          console.log(
+            "%c[Revalidate] Triggering refresh. Server:",
+            "color: orange; font-weight: bold;",
+            lastRevalidateTime,
+            "Last seen:",
+            lastSeen
+          );
           router.refresh();
           localStorage.setItem(
             "lastSeenRevalidate",
             String(lastRevalidateTime)
+          );
+        } else {
+          console.log(
+            "%c[Revalidate] No refresh needed. Server:",
+            "color: green;",
+            lastRevalidateTime,
+            "Last seen:",
+            lastSeen
           );
         }
       } catch (error) {

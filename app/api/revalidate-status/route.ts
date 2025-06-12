@@ -1,14 +1,12 @@
 import { readSingleton } from "@directus/sdk";
 import { NextResponse } from "next/server";
-import directus from "@/lib/directus"; // your existing Directus client with .with(rest())
+import directus from "@/lib/directus";
 
 export async function GET() {
   try {
     const settings = await directus.request(readSingleton("settings"));
 
-    const lastRevalidateTime = settings.last_revalidate_time
-      ? new Date(settings.last_revalidate_time).toISOString()
-      : null;
+    const lastRevalidateTime = settings.last_revalidate_time ?? null;
 
     return NextResponse.json({
       lastRevalidateTime,
