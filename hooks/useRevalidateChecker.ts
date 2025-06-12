@@ -1,3 +1,4 @@
+// hooks/useRevalidateChecker.ts
 "use client";
 
 import { useEffect } from "react";
@@ -20,19 +21,24 @@ export function useRevalidateChecker() {
 
         const data = await res.json();
 
-        // Safely handle null value
-        if (!data.lastRevalidateTime) {
-          console.warn("No lastRevalidateTime found in API response");
+        const lastRevalidateTime = Number(data.lastRevalidateTime);
+        const lastSeenStr = localStorage.getItem("lastSeenRevalidate");
+        const lastSeen = Number(lastSeenStr || "0");
+        const isFirstVisit = lastSeenStr === null;
+
+        if (isFirstVisit) {
+          console.log(
+            "%c[Revalidate] First visit - force refresh.",
+            "color: blue; font-weight: bold;"
+          );
+          router.refresh();
+          localStorage.setItem(
+            "lastSeenRevalidate",
+            String(lastRevalidateTime)
+          );
           return;
         }
 
-        const lastRevalidateTime = new Date(data.lastRevalidateTime).getTime();
-
-        const lastSeen = Number(
-          localStorage.getItem("lastSeenRevalidate") || "0"
-        );
-
-        // Only refresh if server time is newer by at least 500ms
         if (lastRevalidateTime - lastSeen > 500) {
           console.log(
             "%c[Revalidate] Triggering refresh. Server:",
@@ -63,8 +69,8 @@ export function useRevalidateChecker() {
     // Call on first load
     checkRevalidate();
 
-    // Optional: you can also poll every X seconds if you want live updates:
-    // const interval = setInterval(checkRevalidate, 5000);
+    // Optional: Poll every X seconds for live updates:
+    // const interval = setInterval(checkRevalidate, 10000); // every 10 sec
     // return () => clearInterval(interval);
   }, [router]);
 }

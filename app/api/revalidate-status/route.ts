@@ -1,3 +1,4 @@
+// /app/api/revalidate-status/route.ts
 import { readSingleton } from "@directus/sdk";
 import { NextResponse } from "next/server";
 import directus from "@/lib/directus";
@@ -6,7 +7,7 @@ export async function GET() {
   try {
     const settings = await directus.request(readSingleton("settings"));
 
-    const lastRevalidateTime = settings.last_revalidate_time ?? null;
+    const lastRevalidateTime = Number(settings.last_revalidate_time ?? 0);
 
     return NextResponse.json({
       lastRevalidateTime,

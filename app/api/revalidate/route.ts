@@ -1,3 +1,4 @@
+// /app/api/revalidate-path/route.ts
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import directus from "@/lib/directus";
@@ -9,17 +10,19 @@ export async function GET(request: NextRequest) {
   if (!token || token !== process.env.SECRET_TOKEN)
     return NextResponse.json({ error: "Not authorized" }, { status: 401 });
 
+  // Trigger revalidate
   revalidatePath("/", "layout");
 
-  const now = new Date().toISOString();
+  // Save timestamp (UTC ms)
+  const nowTimestamp = Date.now();
 
   await directus.request(
     updateSingleton("settings", {
-      last_revalidate_time: now,
+      last_revalidate_time: nowTimestamp, // store as number
     })
   );
 
-  console.log(`[REVALIDATE] last_revalidate_time updated to: ${now}`);
+  console.log(`[REVALIDATE] last_revalidate_time updated to: ${nowTimestamp}`);
 
-  return NextResponse.json({ revalidated: true, now });
+  return NextResponse.json({ revalidated: true, now: nowTimestamp });
 }
