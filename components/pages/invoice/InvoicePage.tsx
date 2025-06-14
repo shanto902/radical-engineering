@@ -7,6 +7,7 @@ import html2canvas from "html2canvas";
 import logo from "@/assets/logo-square.svg";
 import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { TSettings } from "@/interfaces";
 interface Product {
   id: string;
   name: string;
@@ -35,7 +36,7 @@ interface Order {
   }[];
 }
 
-export default function InvoicePage() {
+export default function InvoicePage({ settings }: { settings: TSettings }) {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -135,19 +136,16 @@ export default function InvoicePage() {
           />
           <p className="w-80 text-sm space-y-1">
             <span className="flex gap-2 items-center">
-              <Phone size={18} />: 01911922109
+              <Phone size={18} />: {settings.phone}
             </span>
             <span className="flex gap-2 items-start">
-              <Mail size={18} />: absuvro@gmail.com
+              <Mail size={18} />: {settings.email}
             </span>
             <span className="flex  gap-1 items-start">
               <span className="flex gap-2 items-center ">
                 <MapPin size={18} />:
               </span>
-              <span>
-                Hazi Hasen Ali Market Station Road (opposite of Medilab)
-                Kishoregonj , Kishoreganj, Bangladesh
-              </span>
+              <span>{settings.address}</span>
             </span>
           </p>
         </div>

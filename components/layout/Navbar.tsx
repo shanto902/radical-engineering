@@ -348,7 +348,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
 
                   <div
                     className={clsx(
-                      "absolute left-0 top-full mt-3 w-[400px] bg-background  border  rounded-2xl  z-20 overflow-hidden transition-all font-semibold duration-300 ease-out transform",
+                      "absolute -right-20 top-full mt-3 w-[400px] bg-background  border  rounded-2xl  z-20 overflow-hidden transition-all font-semibold duration-300 ease-out transform",
                       hoveringMenu
                         ? "opacity-100 visible translate-y-0"
                         : "opacity-0 invisible -translate-y-2"

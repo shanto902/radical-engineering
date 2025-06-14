@@ -25,7 +25,7 @@ const FeaturedCategoriesBlock = ({
               key={cat.categories_id.id}
               className="group text-center hover:bg-primary transition-all duration-200 hover:shadow-lg rounded-lg p-2"
             >
-              <div className="w-full aspect-square bg-gray-100 overflow-hidden rounded-lg">
+              <div className="w-full aspect-square overflow-hidden rounded-lg">
                 <Image
                   src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.categories_id.image}?width=150&height=150`}
                   alt={`${cat.categories_id.name} image`}

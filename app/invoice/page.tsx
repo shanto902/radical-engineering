@@ -1,4 +1,7 @@
 import InvoicePage from "@/components/pages/invoice/InvoicePage";
+import { TSettings } from "@/interfaces";
+import directus from "@/lib/directus";
+import { readSingleton } from "@directus/sdk";
 import { Metadata } from "next";
 import React, { Suspense } from "react";
 export const metadata: Metadata = {
@@ -23,10 +26,11 @@ export const metadata: Metadata = {
     images: ["/og/invoice.jpg"],
   },
 };
-const PageInvoice = () => {
+const PageInvoice = async () => {
+  const settings = await directus.request(readSingleton("settings"));
   return (
     <Suspense>
-      <InvoicePage />
+      <InvoicePage settings={settings as TSettings} />
     </Suspense>
   );
 };
