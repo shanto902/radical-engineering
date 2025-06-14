@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { Phone, Mail, MapPin } from "lucide-react";
 
 import logo from "@/assets/logo-square.svg";
 import logoDark from "@/assets/logo-square-dark.svg";
