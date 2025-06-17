@@ -90,6 +90,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date().toISOString(),
     },
     {
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}privacy-policy`,
+      lastModified: new Date().toISOString(),
+    },
+    {
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}cookie-policy`,
+      lastModified: new Date().toISOString(),
+    },
+    {
       url: `${process.env.NEXT_PUBLIC_SITE_URL}checkout`,
       lastModified: new Date().toISOString(),
     },
