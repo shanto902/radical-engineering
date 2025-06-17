@@ -136,20 +136,22 @@ function FilterContent({
       {subcategories.length > 0 && (
         <div>
           <h3 className="text-xl font-semibold mb-4">Subcategories</h3>
-          {subcategories.map((sub) => (
-            <label
-              key={sub}
-              className="flex items-center   gap-2  md:space-y-0 md:space-x-2 text-sm"
-            >
-              <input
-                type="checkbox"
-                checked={selectedSubcategories.includes(sub)}
-                onChange={() => onSubChange(sub)}
-                className="accent-primary"
-              />
-              <span>{sub}</span>
-            </label>
-          ))}
+          <div className="space-y-2 md:space-y-0">
+            {subcategories.map((sub) => (
+              <label
+                key={sub}
+                className="flex items-center gap-2  md:space-y-0 md:space-x-2 text-base"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedSubcategories.includes(sub)}
+                  onChange={() => onSubChange(sub)}
+                  className="accent-primary"
+                />
+                <span>{sub}</span>
+              </label>
+            ))}
+          </div>
         </div>
       )}
 
