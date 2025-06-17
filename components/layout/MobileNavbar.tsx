@@ -79,7 +79,7 @@ export default function MobileNavbar() {
   return (
     <>
       {/* 🔝 Top Bar */}
-      <div className="mb-16">
+      <div className="mb-16 safe-top">
         <div className="fixed top-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-b shadow-sm flex items-center justify-between px-4">
           {showBack ? (
             <button onClick={handleBack} aria-label="Go back">

@@ -49,7 +49,7 @@ export default function FilterSidebar({
         <div className="fixed z-40 top-14 left-0 right-0 bg-primary text-background py-3 px-4 md:hidden shadow-md">
           <button
             onClick={() => setIsOpen(true)}
-            className="w-full text-center font-bold text-lg flex gap-2 items-center justify-center"
+            className="w-full text-center font-bold !text-sm flex gap-2 items-center  justify-center"
           >
             <FilterIcon /> Filter Products
           </button>
@@ -94,7 +94,7 @@ export default function FilterSidebar({
             onClick={() => setIsOpen(false)}
           />
           <div className="fixed right-0 top-0 bottom-0 w-3/4 max-w-sm z-50 bg-background p-4 overflow-y-auto shadow-lg animate-slide-in-right">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center my-4 pb-2 border-b-2">
               <h3 className="text-lg font-bold">Filters</h3>
               <button onClick={() => setIsOpen(false)}>
                 <X className="w-6 h-6 text-foreground" />
@@ -154,7 +154,9 @@ function FilterContent({
       )}
 
       <div>
-        <h3 className="text-xl font-semibold mb-4">Price Range (৳)</h3>
+        <h3 className="text-xl font-semibold mb-4 accent-primary">
+          Price Range (৳)
+        </h3>
         <div className="text-sm mb-2">
           {priceRange[0].toLocaleString()}৳ – {priceRange[1].toLocaleString()}৳
         </div>
@@ -198,18 +200,23 @@ function FilterContent({
 
       {brands.length > 0 && (
         <div>
-          <h3 className="text-xl font-semibold mb-4">Brands</h3>
-          {brands.map((brand) => (
-            <label key={brand} className="flex items-center space-x-2 text-sm">
-              <input
-                type="checkbox"
-                checked={selectedBrands.includes(brand)}
-                onChange={() => onBrandChange(brand)}
-                className="accent-primary"
-              />
-              <span>{brand}</span>
-            </label>
-          ))}
+          <h3 className="text-xl font-semibold mb-4 ">Brands</h3>
+          <div className="space-y-2">
+            {brands.map((brand) => (
+              <label
+                key={brand}
+                className="flex items-center space-x-2 text-base"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedBrands.includes(brand)}
+                  onChange={() => onBrandChange(brand)}
+                  className="accent-primary"
+                />
+                <span>{brand}</span>
+              </label>
+            ))}
+          </div>
         </div>
       )}
     </div>

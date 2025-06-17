@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: "public",
   server: {
     url: "https://radicalengineering.com.bd/home",
-    // url: "http://192.168.110.210:3000",
+    // url: "http://192.168.0.220:3000",
     cleartext: true,
   },
   plugins: {

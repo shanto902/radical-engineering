@@ -60,7 +60,7 @@ export default function Footer({ settings }: { settings: TSettings }) {
         <div>
           <h3 className="text-lg font-semibold mb-3">Contact</h3>
           <ul className="space-y-2 text-sm text-background">
-            <li>
+            <ol>
               <span> Phone:</span>
               {settings.phone_numbers &&
                 settings.phone_numbers.map((number, i) => (
@@ -71,7 +71,7 @@ export default function Footer({ settings }: { settings: TSettings }) {
                     <a href={`tel:+88${number.number}`}>{number.number}</a>
                   </li>
                 ))}
-            </li>
+            </ol>
             <li className="hover:underline underline-offset-4 ">
               <a href={`mailto:${settings.email}`}>{settings.email}</a>
             </li>
