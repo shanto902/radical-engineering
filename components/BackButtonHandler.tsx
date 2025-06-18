@@ -69,7 +69,7 @@ export default function BackButtonHandler() {
     <>
       {showDialog && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
-          <div className="bg-white dark:bg-darkBG rounded-xl shadow-lg p-6 w-80 text-center">
+          <div className="bg-background rounded-xl shadow-lg p-6 w-80 text-center">
             <h2 className="text-lg font-semibold mb-4">Exit App?</h2>
             <p className="text-sm mb-6 text-muted-foreground">
               Are you sure you want to close the app?
@@ -77,7 +77,7 @@ export default function BackButtonHandler() {
             <div className="flex justify-center gap-4">
               <button
                 onClick={cancelExit}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded font-medium"
+                className="px-4 py-2 bg-primary text-background rounded font-medium"
               >
                 Cancel
               </button>
