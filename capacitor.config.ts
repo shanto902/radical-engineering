@@ -12,11 +12,11 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       splashImmersive: true,
-      launchShowDuration: 3000,
-      launchAutoHide: true,
+      launchShowDuration: 3000, // Optional; will not auto-hide anyway
+      launchAutoHide: false, // << Manual control
       androidScaleType: "CENTER_CROP",
       showSpinner: false,
-      backgroundColor: "#ffffff", // fallback (light mode)
+      backgroundColor: "#ffffff",
     },
   },
 };
