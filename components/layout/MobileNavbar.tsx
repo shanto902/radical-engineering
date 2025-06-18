@@ -209,6 +209,17 @@ export default function MobileNavbar() {
                 </Link>
               ))}
             </div>
+
+            <Link
+              href="/builder"
+              onClick={async () => {
+                await triggerHaptic();
+                setShowCategories(false);
+              }}
+              className="mb-3 block rounded-lg border px-3 py-2 text-center text-sm font-medium hover:bg-secondary"
+            >
+              System Builder
+            </Link>
           </div>
         </>
       )}
