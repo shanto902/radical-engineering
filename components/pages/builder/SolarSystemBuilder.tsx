@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { AppDispatch, RootState } from "@/store";
-import { addToCart } from "@/store/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import {
   BatteryCharging,
@@ -15,12 +14,14 @@ import {
   ShoppingCart,
   Trash,
   Zap,
+  Star,
 } from "lucide-react";
 
+import { AppDispatch, RootState } from "@/store";
+import { fetchProducts } from "@/store/productSlice";
+import { addToCart } from "@/store/cartSlice";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import { showCustomToast } from "@/lib/showCustomToast";
-import { fetchProducts } from "@/store/productSlice";
-import { useDispatch, useSelector } from "react-redux";
 
 type LoadType = "Light" | "Fan" | "TV" | "Computer" | "Printer" | "Custom";
 
@@ -69,35 +70,22 @@ const getBestTwoPanelCombo = (
   return bestCombo;
 };
 
+const categoryOptions = [
+  { label: "Battery", slug: "battery" },
+  { label: "Panel", slug: "solar-panels" },
+];
+
 export default function SolarSystemBuilder() {
   const dispatch = useDispatch<AppDispatch>();
-  const [selectedCategory, setSelectedCategory] = useState<"Battery" | "Panel">(
-    "Battery"
-  );
+  const [selectedCategory, setSelectedCategory] = useState<
+    "battery" | "solar-panels"
+  >("battery");
 
   const itemsByCategory = useSelector(
     (state: RootState) => state.products.itemsByCategory
   );
+  const allProducts = itemsByCategory[selectedCategory] || [];
 
-  const allProducts = Object.values(itemsByCategory).flat();
-
-  const products = allProducts.filter((p) =>
-    p.category?.name?.toLowerCase().includes(selectedCategory.toLowerCase())
-  );
-
-  useEffect(() => {
-    const categoriesToFetch = [
-      "battery",
-      "solar-panels",
-      "Inverter",
-      "Controller",
-    ];
-    categoriesToFetch.forEach((cat) => {
-      if (!itemsByCategory[cat]) {
-        dispatch(fetchProducts(cat));
-      }
-    });
-  }, [dispatch, itemsByCategory]);
   const [loads, setLoads] = useState<LoadItem[]>([
     { type: "Light", watt: 5, quantity: 4, hour: 6 },
     { type: "Fan", watt: 15, quantity: 1, hour: 8 },
@@ -106,6 +94,12 @@ export default function SolarSystemBuilder() {
   const [selectedProducts, setSelectedProducts] = useState<
     { id: string; quantity: number }[]
   >([]);
+
+  useEffect(() => {
+    if (!itemsByCategory[selectedCategory]) {
+      dispatch(fetchProducts(selectedCategory));
+    }
+  }, [dispatch, selectedCategory, itemsByCategory]);
 
   const updateLoad = <K extends keyof LoadItem>(
     index: number,
@@ -116,12 +110,6 @@ export default function SolarSystemBuilder() {
     newLoads[index][key] = value;
     setLoads(newLoads);
   };
-
-  const addLoad = () =>
-    setLoads([...loads, { type: "Custom", watt: 0, quantity: 1, hour: 1 }]);
-
-  const removeLoad = (index: number) =>
-    setLoads(loads.filter((_, i) => i !== index));
 
   const totalEnergy = loads.reduce(
     (sum, load) => sum + load.watt * load.quantity * load.hour,
@@ -139,6 +127,29 @@ export default function SolarSystemBuilder() {
     totalEnergy / 26,
     controllerOptions
   );
+  const panelThreshold = Array.isArray(recommendedPanel)
+    ? recommendedPanel.reduce((a, b) => a + b, 0)
+    : recommendedPanel;
+
+  const filteredProducts = allProducts.filter((product) => {
+    const match = product.name.match(/(\d+)\s*(AH|Wp|W)/i);
+    const value = match ? parseInt(match[1]) : null;
+    const unit = match?.[2]?.toLowerCase();
+
+    if (selectedCategory === "battery" && recommendedBattery && unit === "ah") {
+      return value && value >= recommendedBattery;
+    }
+
+    if (
+      selectedCategory === "solar-panels" &&
+      panelThreshold &&
+      (unit === "wp" || unit === "w")
+    ) {
+      return value && value >= panelThreshold;
+    }
+
+    return true;
+  });
 
   const toggleProductSelection = (id: string) => {
     setSelectedProducts((prev) =>
@@ -150,263 +161,274 @@ export default function SolarSystemBuilder() {
 
   const updateSelectedProductQty = (id: string, delta: number) => {
     setSelectedProducts((prev) =>
-      prev?.map((p) =>
+      prev.map((p) =>
         p.id === id ? { ...p, quantity: Math.max(1, p.quantity + delta) } : p
       )
     );
   };
 
   const totalCost = selectedProducts.reduce((sum, sel) => {
-    const product = products.find((p) => p.id === sel.id);
+    const product = filteredProducts.find((p) => p.id === sel.id);
     if (!product) return sum;
     const price = parseFloat(product.discounted_price || product.price);
     return sum + price * sel.quantity;
   }, 0);
 
+  const handleAddAllToCart = () => {
+    selectedProducts.forEach((sel) => {
+      const product = filteredProducts.find((p) => p.id === sel.id);
+      if (product) {
+        dispatch(
+          addToCart({
+            ...product,
+            quantity: sel.quantity,
+            price: parseFloat(product.price),
+            ...(product.discounted_price && {
+              discounted_price: parseFloat(product.discounted_price),
+            }),
+          })
+        );
+      }
+    });
+    showCustomToast({
+      icon: ShoppingCart,
+      message: "All selected products added to cart!",
+      id: `added-to-cart`,
+    });
+  };
+  const totalPanelWatt = Array.isArray(recommendedPanel)
+    ? recommendedPanel.reduce((a, b) => a + b, 0)
+    : typeof recommendedPanel === "number"
+    ? recommendedPanel
+    : null;
+  const panelText = Array.isArray(recommendedPanel)
+    ? `${recommendedPanel.join(" + ")} = ${totalPanelWatt} W`
+    : recommendedPanel
+    ? `${recommendedPanel} W`
+    : "Contact team";
+
   return (
-    <PaddingContainer className=" py-10">
-      <h1 className="text-3xl font-bold text-center mb-6">
+    <PaddingContainer className="py-10 space-y-10">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center">
         Solar System Builder
       </h1>
 
-      {/* Loads Table */}
-      <div className="grid grid-cols-6 font-semibold bg-background p-2 rounded-t-md text-sm mb-2">
-        <span>Type</span>
-        <span>Watt</span>
-        <span>Quantity</span>
-        <span>Hours</span>
-        <span>Total</span>
-        <span className="text-right">Action</span>
-      </div>
-
-      {loads?.map((load, i) => (
-        <div
-          key={i}
-          className="grid grid-cols-6 items-center bg-background border-b p-2 text-sm"
-        >
-          <select
-            className="border rounded bg-background px-2 py-1"
-            value={load.type}
-            onChange={(e) => {
-              const selected = loadOptions.find(
-                (l) => l.label === e.target.value
-              );
-              if (selected) {
-                updateLoad(i, "type", selected.label as LoadType);
-                updateLoad(i, "watt", selected.defaultWatt);
-              }
-            }}
+      {/* Load Table */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-6 font-semibold bg-muted text-muted-foreground p-2 rounded-t text-sm">
+          <span>Type</span>
+          <span>Watt</span>
+          <span>Qty</span>
+          <span>Hours</span>
+          <span>Total</span>
+        </div>
+        {loads.map((load, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-6 items-center gap-2 bg-background p-2 border rounded text-sm"
           >
-            {loadOptions?.map((opt) => (
-              <option key={opt.label} value={opt.label}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="number"
-            value={load.watt}
-            className="border p-1 rounded ml-2 bg-background text-center"
-            onChange={(e) => updateLoad(i, "watt", parseFloat(e.target.value))}
-            disabled={load.type !== "Custom"}
-          />
-
-          <div className="flex items-center justify-center gap-1">
-            <button
-              onClick={() =>
-                updateLoad(i, "quantity", Math.max(1, load.quantity - 1))
+            <select
+              className="border rounded px-2 py-1 bg-background"
+              value={load.type}
+              onChange={(e) => {
+                const opt = loadOptions.find((l) => l.label === e.target.value);
+                if (opt) {
+                  updateLoad(i, "type", opt.label as LoadType);
+                  updateLoad(i, "watt", opt.defaultWatt);
+                }
+              }}
+            >
+              {loadOptions.map((opt) => (
+                <option key={opt.label} value={opt.label}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              value={load.watt}
+              disabled={load.type !== "Custom"}
+              className="border p-1 rounded text-center bg-background"
+              onChange={(e) =>
+                updateLoad(i, "watt", parseFloat(e.target.value))
               }
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <span>{load.quantity}</span>
+            />
+            <div className="flex items-center justify-center gap-1">
+              <button
+                onClick={() =>
+                  updateLoad(i, "quantity", Math.max(1, load.quantity - 1))
+                }
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span>{load.quantity}</span>
+              <button
+                onClick={() => updateLoad(i, "quantity", load.quantity + 1)}
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+            <input
+              type="number"
+              value={load.hour}
+              className="border p-1 rounded text-center bg-background"
+              onChange={(e) =>
+                updateLoad(i, "hour", parseFloat(e.target.value))
+              }
+            />
+            <span className="text-center">
+              {load.watt * load.quantity * load.hour} Wp
+            </span>
             <button
-              onClick={() => updateLoad(i, "quantity", load.quantity + 1)}
+              onClick={() => setLoads(loads.filter((_, idx) => idx !== i))}
             >
-              <Plus className="w-4 h-4" />
+              <Trash className="w-4 h-4 text-red-500" />
             </button>
           </div>
-
-          <input
-            type="number"
-            value={load.hour}
-            className="border p-1 rounded text-center bg-background"
-            onChange={(e) => updateLoad(i, "hour", parseFloat(e.target.value))}
-          />
-
-          <span className="text-center">
-            {load.watt * load.quantity * load.hour} Wp
-          </span>
-
+        ))}
+        <div className="text-center">
           <button
-            onClick={() => removeLoad(i)}
-            className="text-red-600 p-2 rounded-full hover:bg-primary hover:text-background justify-self-end"
+            onClick={() =>
+              setLoads([
+                ...loads,
+                { type: "Custom", watt: 0, quantity: 1, hour: 1 },
+              ])
+            }
+            className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-primary text-background rounded hover:bg-secondary"
           >
-            <Trash className="w-4 h-4" />
+            <PlusCircle className="w-4 h-4" />
+            Add Load
           </button>
         </div>
-      ))}
-
-      <div className="text-center mt-4">
-        <button
-          onClick={addLoad}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-background rounded hover:bg-secondary hover:text-foreground"
-        >
-          <PlusCircle className="w-4 h-4" /> Add Load
-        </button>
       </div>
 
-      {/* Recommended Settings */}
-      <div className="bg-background mt-8 p-6 border rounded-md shadow text-sm sm:text-base">
-        <h2 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
-          <Settings /> Recommended System
+      {/* Recommendation */}
+      <div className="p-6 bg-muted border rounded-lg shadow text-sm sm:text-base">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4 flex justify-center items-center gap-2">
+          <Settings className="w-5 h-5" /> Recommended System
         </h2>
-        <div className="flex justify-between mt-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <p>
-            <Zap className="inline w-5 h-5 mr-2" />
-            Total Energy: {totalEnergy.toFixed(2)} Wp
+            <Zap className="inline w-5 h-5 mr-2" /> Total Energy:{" "}
+            {totalEnergy.toFixed(2)} Wp
           </p>
           <p>
-            <PanelTop className="inline w-5 h-5 mr-2" />
-            Panel:{" "}
-            {Array.isArray(recommendedPanel)
-              ? `${recommendedPanel.join(" + ")} = ${recommendedPanel.reduce(
-                  (a, b) => a + b,
-                  0
-                )} W`
-              : `${recommendedPanel ?? "Contact team"} W`}
+            <PanelTop className="inline w-5 h-5 mr-2" /> Panel: {panelText}
           </p>
           <p>
-            <BatteryCharging className="inline w-5 h-5 mr-2" />
-            Battery: {recommendedBattery ?? "Contact team"} AH
+            <BatteryCharging className="inline w-5 h-5 mr-2" /> Battery:{" "}
+            {recommendedBattery ?? "Contact team"} AH
           </p>
           <p>
-            <Zap className="inline w-5 h-5 mr-2" />
-            Controller: {recommendedController ?? "Contact team"} Amp
+            <Zap className="inline w-5 h-5 mr-2" /> Controller:{" "}
+            {recommendedController ?? "Contact team"} Amp
           </p>
         </div>
       </div>
 
       {/* Category Selector */}
-      <div className="mt-10 flex gap-4 items-center">
-        <h3 className="font-bold">Select Category:</h3>
-        <button
-          className={`px-3 py-1 border rounded ${
-            selectedCategory === "Battery" ? "bg-primary text-white" : ""
-          }`}
-          onClick={() => setSelectedCategory("Battery")}
-        >
-          Battery
-        </button>
-        <button
-          className={`px-3 py-1 border rounded ${
-            selectedCategory === "Panel" ? "bg-primary text-white" : ""
-          }`}
-          onClick={() => setSelectedCategory("Panel")}
-        >
-          Panel
-        </button>
+      <div className="flex flex-wrap gap-3 justify-center">
+        {categoryOptions.map((cat) => (
+          <button
+            key={cat.slug}
+            onClick={() => setSelectedCategory(cat.slug as any)}
+            className={`px-4 py-2 border rounded-full font-medium ${
+              selectedCategory === cat.slug
+                ? "bg-primary text-background"
+                : "bg-muted"
+            }`}
+          >
+            {cat.label}
+          </button>
+        ))}
       </div>
 
-      {/* Filtered Product Grid */}
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {products
-          ?.filter((p) =>
-            p.category?.name
-              ?.toLowerCase()
-              .includes(selectedCategory.toLowerCase())
-          )
-          ?.map((product) => {
-            const isSelected = selectedProducts.find(
-              (p) => p.id === product.id
-            );
-            const price = parseFloat(product.discounted_price || product.price);
+      {/* Product Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {filteredProducts.map((product) => {
+          const isSelected = selectedProducts.find((p) => p.id === product.id);
+          const price = parseFloat(product.discounted_price || product.price);
+          const match = product.name.match(/(\d+)\s*(AH|Wp|W)/i);
+          const value = match ? parseInt(match[1]) : null;
+          const unit = match?.[2]?.toLowerCase() || "";
+          const totalPanelWatt = Array.isArray(recommendedPanel)
+            ? recommendedPanel.reduce((a, b) => a + b, 0)
+            : typeof recommendedPanel === "number"
+            ? recommendedPanel
+            : null;
 
-            return (
-              <div
-                key={product.id}
-                className={`p-2 border rounded shadow-sm transition ${
-                  isSelected ? "ring-2 ring-primary" : ""
-                }`}
-              >
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?height=200`}
-                  alt={product.name}
-                  placeholder="blur"
-                  blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=10&quality=1`}
-                  width={200}
-                  height={200}
-                  className="object-contain w-full h-40 bg-imageBgPrimary/20 dark:bg-imageBgPrimaryDark/20"
-                />
-                <div className="mt-2">
-                  <p className="text-sm font-semibold">{product.name}</p>
-                  <p className="text-primary font-bold">৳ {price}</p>
+          const isRecommended =
+            (selectedCategory === "battery" &&
+              recommendedBattery &&
+              unit === "ah" &&
+              value &&
+              value >= recommendedBattery) ||
+            (selectedCategory === "solar-panels" &&
+              totalPanelWatt &&
+              (unit === "wp" || unit === "w") &&
+              value &&
+              value >= totalPanelWatt);
 
-                  {isSelected && (
-                    <div className="flex items-center justify-between mt-1">
-                      <button
-                        onClick={() => updateSelectedProductQty(product.id, -1)}
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <span>{isSelected.quantity}</span>
-                      <button
-                        onClick={() => updateSelectedProductQty(product.id, 1)}
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-
+          return (
+            <div
+              key={product.id}
+              className={`relative p-3 border rounded bg-background shadow hover:shadow-md transition ${
+                isSelected ? "ring-2 ring-primary" : ""
+              }`}
+            >
+              {isRecommended && (
+                <span className="absolute top-2 right-2 bg-primary text-foreground text-[10px] px-2 py-1 rounded flex items-center gap-1">
+                  <Star className="w-3 h-3" /> Recommended
+                </span>
+              )}
+              <Image
+                src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?height=200`}
+                alt={product.name}
+                width={200}
+                height={200}
+                placeholder="blur"
+                blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=10&quality=1`}
+                className="w-full h-36 object-contain bg-background"
+              />
+              <p className="mt-2 font-semibold text-sm">{product.name}</p>
+              <p className="text-primary font-bold text-sm">৳ {price}</p>
+              {isSelected && (
+                <div className="flex items-center justify-between mt-1">
                   <button
-                    onClick={() => toggleProductSelection(product.id)}
-                    className="mt-2 w-full text-xs px-2 py-1 bg-primary text-background rounded hover:bg-secondary"
+                    onClick={() => updateSelectedProductQty(product.id, -1)}
                   >
-                    {isSelected ? "Remove" : "Select"}
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span>{isSelected.quantity}</span>
+                  <button
+                    onClick={() => updateSelectedProductQty(product.id, 1)}
+                  >
+                    <Plus className="w-4 h-4" />
                   </button>
                 </div>
-              </div>
-            );
-          })}
+              )}
+              <button
+                onClick={() => toggleProductSelection(product.id)}
+                className="mt-2 w-full text-xs px-2 py-1 bg-primary text-background rounded hover:bg-secondary"
+              >
+                {isSelected ? "Remove" : "Select"}
+              </button>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Total + Add All to Cart */}
+      {/* Cart Footer */}
       {selectedProducts.length > 0 && (
-        <div className="mt-6 p-4 border-t flex flex-col sm:flex-row justify-between items-center">
+        <div className="sticky bottom-0 z-10 bg-background border-t mt-10 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-lg font-semibold">
             Total Estimated Cost: ৳ {totalCost}
           </p>
           <button
-            onClick={() => {
-              selectedProducts.forEach((sel) => {
-                const product = products.find((p) => p.id === sel.id);
-                if (product) {
-                  dispatch(
-                    addToCart({
-                      ...product,
-                      quantity: sel.quantity,
-                      price: parseFloat(product.price),
-                      ...(product.discounted_price && {
-                        discounted_price: parseFloat(product.discounted_price),
-                      }),
-                    })
-                  );
-                }
-              });
-
-              showCustomToast({
-                icon: ShoppingCart,
-                message: "All selected products added to cart!",
-                id: `added-to-cart`,
-              });
-            }}
-            className="mt-4 sm:mt-0 px-6 py-2 bg-primary text-background rounded hover:bg-secondary"
+            onClick={handleAddAllToCart}
+            className="px-6 py-2 bg-primary text-background rounded hover:bg-secondary"
           >
-            <ShoppingCart
-              aria-label="Add to Cart"
-              className="inline w-4 h-4 mr-2"
-            />
+            <ShoppingCart className="inline w-4 h-4 mr-2" />
             Add All to Cart
           </button>
         </div>
