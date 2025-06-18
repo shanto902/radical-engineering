@@ -196,13 +196,13 @@ export default function MobileNavbar() {
                   }}
                   className="flex items-center gap-3 px-3 py-2 rounded-lg border hover:bg-secondary"
                 >
-                  <div className="w-8 h-8 bg-white border rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-white border aspect-square rounded-full flex items-center justify-center">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_ASSETS_URL}${cat.image}`}
                       alt={cat.name}
                       width={32}
                       height={32}
-                      className="rounded-full object-contain"
+                      className="rounded-full aspect-square object-contain"
                     />
                   </div>
                   <span className="text-sm font-medium">{cat.name}</span>
@@ -216,7 +216,7 @@ export default function MobileNavbar() {
                 await triggerHaptic();
                 setShowCategories(false);
               }}
-              className="mb-3 block rounded-lg border px-3 py-2 text-center text-sm font-medium hover:bg-secondary"
+              className="mt-3 block rounded-lg border px-3 py-2 text-center text-sm font-medium hover:bg-secondary"
             >
               System Builder
             </Link>
