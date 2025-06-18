@@ -11,6 +11,7 @@ import Link from "next/link";
 import { ArrowLeftCircle, CircleAlert, ShoppingCart } from "lucide-react";
 
 import { showCustomToast } from "@/lib/showCustomToast";
+import { isNativeApp } from "../common/isNativeApp";
 
 export default function CheckoutPage() {
   const [showThankYou, setShowThankYou] = useState(false);
@@ -116,7 +117,11 @@ export default function CheckoutPage() {
         });
 
         setTimeout(() => {
-          window.location.href = "/";
+          if (isNativeApp()) {
+            window.location.href = "/mobile";
+          } else {
+            window.location.href = "/";
+          }
         }, 4000);
       } else {
         alert("❌ Failed to place order");

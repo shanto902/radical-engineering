@@ -45,7 +45,7 @@ const WishlistPage = () => {
         Your Wishlist
       </h1>
 
-      <div className="grid grid-cols-2  lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-4 gap-8">
         {items?.map((product) => {
           const showDiscount =
             product.discounted_price &&
@@ -62,9 +62,9 @@ const WishlistPage = () => {
                 alt={product.name}
                 placeholder="blur"
                 blurDataURL={`${process.env.NEXT_PUBLIC_ASSETS_URL}${product.image}?width=10&quality=1`}
-                width={400}
+                width={300}
                 height={300}
-                className={`w-full h-48 object-cover mb-4 rounded transition ${
+                className={`w-full h-40 object-contain bg-white mb-4 rounded transition ${
                   product.status !== "in-stock" ? "opacity-50 grayscale" : ""
                 }`}
               />
