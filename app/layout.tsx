@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
@@ -19,6 +21,8 @@ import AppInit from "@/components/AppInt";
 import OfflineBanner from "@/components/common/OfflineBanner";
 import Script from "next/script";
 import CookieBanner from "@/components/common/CookieBanner";
+import { headers } from "next/headers";
+import SafeAreaWrapper from "@/components/layout/SafeAreaWrapper";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -43,6 +47,9 @@ export default async function RootLayout({
     readSingleton("settings")
   )) as TSettings;
 
+  const headersList = await headers();
+  const userAgent = headersList.get("user-agent") || "";
+  const isNativeApp = /android|iphone|ipad|capacitor/i.test(userAgent);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -103,20 +110,22 @@ export default async function RootLayout({
         />
 
         {/* Consent mode (optional) */}
-        <Script
-          id="gtag-consent-mode"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('consent', 'default', {
-                ad_storage: 'denied',
-                analytics_storage: 'denied',
-              });
-            `,
-          }}
-        />
+        {!isNativeApp && (
+          <Script
+            id="gtag-consent-mode"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', {
+          ad_storage: 'denied',
+          analytics_storage: 'denied',
+        });
+      `,
+            }}
+          />
+        )}
 
         {/* Google Analytics 4 gtag.js */}
         <Script
@@ -136,6 +145,24 @@ export default async function RootLayout({
             `,
           }}
         />
+        <Script
+          id="meta-pixel"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1255308732866949');
+      fbq('track', 'PageView');
+    `,
+          }}
+        />
       </head>
 
       <body className={`${lato.variable} antialiased`}>
@@ -148,6 +175,14 @@ export default async function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src="https://www.facebook.com/tr?id=1255308732866949&ev=PageView&noscript=1"
+          />
+        </noscript>
 
         <ReduxProvider>
           <FaviconSwitcher />
@@ -156,14 +191,16 @@ export default async function RootLayout({
             <StatusBarControl />
             <TopLoader />
             <Toaster position="bottom-center" />
-            {<PlatformNavbar settings={settings} />}
+            <SafeAreaWrapper>
+              {<PlatformNavbar settings={settings} />}
 
-            <main className="relative md:min-h-screen">{children}</main>
+              <main className="relative md:min-h-screen">{children}</main>
 
-            <MobileCartSidebar />
-            <Footer settings={settings} />
-            <OfflineBanner />
-            <BackButtonHandler />
+              <MobileCartSidebar />
+              <Footer settings={settings} />
+              <OfflineBanner />
+              <BackButtonHandler />
+            </SafeAreaWrapper>
           </ThemeWrapper>
         </ReduxProvider>
 

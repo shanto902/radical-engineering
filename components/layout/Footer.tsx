@@ -60,22 +60,27 @@ export default function Footer({ settings }: { settings: TSettings }) {
         <div>
           <h3 className="text-lg font-semibold mb-3">Contact</h3>
           <ul className="space-y-2 text-sm text-background">
+            <div className="flex justify-start w-fit gap-2">
+              <span className="font-semibold"> Phone:</span>
+              <ol className="space-y-1 ">
+                {settings.phone_numbers &&
+                  settings.phone_numbers.map((number, i) => (
+                    <li key={i} className=" hover:underline underline-offset-4">
+                      <a href={`tel:${number.number}`}>{number.number}</a>
+                    </li>
+                  ))}
+              </ol>
+            </div>
+            <div className="flex justify-start w-fit gap-2">
+              <span className="font-semibold"> Email:</span>
+              <li className="hover:underline underline-offset-4 ">
+                <a href={`mailto:${settings.email}`}>{settings.email}</a>
+              </li>
+            </div>
             <li>
-              <span> Phone:</span>
-              {settings.phone_numbers &&
-                settings.phone_numbers.map((number, i) => (
-                  <li
-                    key={i}
-                    className="indent-11 hover:underline underline-offset-4"
-                  >
-                    <a href={`tel:+88${number.number}`}>{number.number}</a>
-                  </li>
-                ))}
+              <span className="font-semibold">Address: </span>
+              {settings.address}
             </li>
-            <li className="hover:underline underline-offset-4 ">
-              <a href={`mailto:${settings.email}`}>{settings.email}</a>
-            </li>
-            <li>{settings.address}</li>
           </ul>
         </div>
 

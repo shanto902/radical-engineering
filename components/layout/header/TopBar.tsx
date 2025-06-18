@@ -15,7 +15,7 @@ const TopBar = ({ settings }: { settings: TSettings }) => {
                   <span key={i} className="flex  items-center gap-1">
                     {i > 0 && <span>,</span>}
                     <a
-                      href={`tel:+88${number.number}`}
+                      href={`tel:${number.number}`}
                       className="font-bold hover:text-primary hover:underline"
                     >
                       {number.number}

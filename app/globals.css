@@ -180,6 +180,10 @@ html {
     @apply list-disc list-inside space-y-2 mb-4;
   }
 
+  .rich-text a {
+    @apply text-primary hover:underline underline-offset-4;
+  }
+
   .richtext p {
     @apply mb-5 leading-normal;
   }
