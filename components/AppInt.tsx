@@ -70,11 +70,13 @@ export default function AppInit() {
             String(lastRevalidateTime)
           );
 
-          await showCustomToast({
-            id: "refresh-toast",
-            icon: RefreshCcw,
-            message: "Refreshing data...",
-          });
+          if (!isNativeApp()) {
+            await showCustomToast({
+              id: "refresh-toast",
+              icon: RefreshCcw,
+              message: "Refreshing data...",
+            });
+          }
 
           if (isNativeApp()) {
             location.reload();
