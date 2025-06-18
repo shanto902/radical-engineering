@@ -169,6 +169,20 @@ export const fetchCategories = async (): Promise<TCategory[]> => {
   }
 };
 
+export const fetchCategoriesMobile = async (): Promise<TCategory[]> => {
+  try {
+    const result = await directus.request(
+      readItems("categories", {
+        fields: ["*", "image", "slug", "products.*"],
+      })
+    );
+    return result as TCategory[];
+  } catch (error) {
+    console.error("Error fetch locations", error);
+    throw new Error("Failed to fetch all locations");
+  }
+};
+
 export const fetchBrands = async (): Promise<TBrand[]> => {
   try {
     const result = await directus.request(

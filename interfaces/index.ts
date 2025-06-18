@@ -78,6 +78,7 @@ export type TCategory = {
   image: string;
   slug: string;
   description: string;
+  products?: TProduct[];
 };
 
 export type TProduct = {

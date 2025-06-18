@@ -10,6 +10,15 @@
   --secondary: #fcb974;
 }
 
+/* Hide scrollbars for mobile slider */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 @layer utilities {
   .animate-fade-in {
     @apply opacity-0 animate-[fadeIn_0.3s_ease-out_forwards];

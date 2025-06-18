@@ -26,7 +26,7 @@ export default function BackButtonHandler() {
         async () => {
           const currentPath = pathnameRef.current;
 
-          if (currentPath === "/" || currentPath === "/home") {
+          if (currentPath === "/mobile") {
             await Haptics.impact({ style: ImpactStyle.Medium });
             setShowDialog(true);
           } else {

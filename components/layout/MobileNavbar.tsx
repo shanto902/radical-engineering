@@ -36,15 +36,11 @@ export default function MobileNavbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
-  const showBack = pathname !== "/home" && pathname !== "/";
+  const showBack = pathname !== "/mobile" && pathname !== "/";
 
   const handleBack = () => {
-    const pathSegments = pathname.split("/").filter(Boolean);
-
     if (pathname === "/categories/all") {
-      router.push("/home");
-    } else if (pathSegments.length === 3 && pathSegments[0] === "categories") {
-      router.push("/categories/all");
+      router.push("/mobile");
     } else {
       router.back();
     }
@@ -100,7 +96,7 @@ export default function MobileNavbar() {
               />
             </div>
           ) : (
-            <Link href="/home" className="text-lg font-semibold text-primary">
+            <Link href="/mobile" className="text-lg font-bold text-primary">
               Radical Engineering
             </Link>
           )}
