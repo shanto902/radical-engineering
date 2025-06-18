@@ -7,10 +7,12 @@ import { AppDispatch } from "@/store";
 import { useRouter } from "next/navigation";
 import { App as CapacitorApp } from "@capacitor/app";
 import { SplashScreen } from "@capacitor/splash-screen";
-import { RefreshCcw } from "lucide-react";
 import { showCustomToast } from "@/lib/showCustomToast";
-import { isNativeApp } from "./common/isNativeApp";
+import { RefreshCcw } from "lucide-react";
 import FontFaceObserver from "fontfaceobserver";
+import { isNativeApp } from "./common/isNativeApp";
+import Image from "next/image";
+import logo from "@/assets/logo-square.svg";
 
 export default function AppInit() {
   const dispatch = useDispatch<AppDispatch>();
@@ -19,31 +21,30 @@ export default function AppInit() {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setHydrated(true); // Ensure React hydration is complete before triggering anything
+    setHydrated(true); // Marks React hydration as complete
   }, []);
 
   useEffect(() => {
     const waitForFonts = async () => {
-      const lato = new FontFaceObserver("Lato");
       try {
-        await lato.load(null, 3000); // Wait up to 3 seconds
-        console.log("✅ Fonts loaded");
+        const lato = new FontFaceObserver("Lato");
+        await lato.load(null, 3000);
       } catch {
-        console.warn("⚠️ Font loading timeout");
+        console.warn("⚠️ Font load timeout");
       }
     };
 
     const preloadImages = async () => {
       const images = Array.from(document.images);
       await Promise.allSettled(
-        images.map((img) => {
-          if (img.complete) return Promise.resolve();
-          return new Promise((resolve) => {
-            img.onload = img.onerror = resolve;
-          });
-        })
+        images.map((img) =>
+          img.complete
+            ? Promise.resolve()
+            : new Promise((resolve) => {
+                img.onload = img.onerror = resolve;
+              })
+        )
       );
-      console.log("✅ Images loaded");
     };
 
     const checkRevalidate = async () => {
@@ -51,17 +52,15 @@ export default function AppInit() {
         const res = await fetch("/api/revalidate-status", {
           cache: "no-store",
         });
-
-        if (!res.ok) throw new Error("Failed to fetch revalidate status");
+        if (!res.ok) throw new Error("Failed revalidate fetch");
 
         const data = await res.json();
         const lastRevalidateTime = Number(data.lastRevalidateTime);
-        const lastSeenStr = sessionStorage.getItem("lastSeenRevalidate");
-        const lastSeen = Number(lastSeenStr || "0");
-        const isFirstVisit = lastSeenStr === null;
-
+        const lastSeen = Number(
+          sessionStorage.getItem("lastSeenRevalidate") || "0"
+        );
         const shouldRefresh =
-          isFirstVisit || lastRevalidateTime - lastSeen > 500;
+          lastSeen === 0 || lastRevalidateTime - lastSeen > 500;
 
         if (shouldRefresh && !hasRefreshed.current) {
           hasRefreshed.current = true;
@@ -76,45 +75,43 @@ export default function AppInit() {
               icon: RefreshCcw,
               message: "Refreshing data...",
             });
-          }
-
-          if (isNativeApp()) {
-            location.reload();
-          } else {
             router.refresh();
+          } else {
+            location.reload();
           }
-        } else {
-          console.log("%c[Revalidate] No refresh needed.", "color: green;");
         }
-      } catch (error) {
-        console.error("❌ Revalidate check failed:", error);
+      } catch (err) {
+        console.error("❌ Revalidate error:", err);
       }
     };
 
     const initApp = async () => {
-      try {
-        await dispatch(fetchProducts("all"));
-        await checkRevalidate();
-        await waitForFonts();
-        await preloadImages();
-      } catch (e) {
-        console.error("❌ Init error:", e);
+      // Trigger splash hide fast
+      if (isNativeApp()) {
+        setTimeout(() => {
+          SplashScreen.hide().then(() =>
+            console.log("✅ Splash screen hidden")
+          );
+        }, 300);
       }
 
-      if (isNativeApp()) {
-        await SplashScreen.hide();
-        console.log("✅ Splash screen hidden");
-      }
+      // Load everything else in background
+      Promise.allSettled([
+        dispatch(fetchProducts("all")),
+        checkRevalidate(),
+        waitForFonts(),
+        preloadImages(),
+      ]);
     };
 
     if (hydrated) {
       initApp();
     }
 
+    // Resume handler for revalidate
     let removeResumeListener: () => void;
-
     CapacitorApp.addListener("resume", () => {
-      console.log("[Revalidate] App resumed — checking...");
+      console.log("[Resume] Checking again...");
       initApp();
     }).then((handler) => {
       removeResumeListener = handler.remove;
@@ -123,7 +120,18 @@ export default function AppInit() {
     return () => {
       if (removeResumeListener) removeResumeListener();
     };
-  }, [dispatch, hydrated, router]);
+  }, [hydrated, dispatch, router]);
+
+  // Optional: basic screen blocker before hydration
+  if (!hydrated) {
+    return (
+      <div className="fixed inset-0  bg-[#3c1100] z-[9999] flex flex-col gap-5 items-center justify-center">
+        <Image src={logo} alt="Logo" className=" object-contain w-fit h-28" />
+
+        <span className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></span>
+      </div>
+    );
+  }
 
   return null;
 }

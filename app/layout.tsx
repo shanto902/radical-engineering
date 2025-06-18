@@ -167,6 +167,7 @@ export default async function RootLayout({
 
       <body className={`${lato.variable} antialiased`}>
         {/* GTM noscript fallback */}
+
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-52BGCSCX"
@@ -185,16 +186,18 @@ export default async function RootLayout({
         </noscript>
 
         <ReduxProvider>
+          <AppInit />
           <FaviconSwitcher />
           <ThemeWrapper>
-            <AppInit />
             <StatusBarControl />
             <TopLoader />
             <Toaster position="bottom-center" />
             <SafeAreaWrapper>
               {<PlatformNavbar settings={settings} />}
 
-              <main className="relative md:min-h-screen">{children}</main>
+              <main className="relative md:min-h-screen mb-10 md:mb-0">
+                {children}
+              </main>
 
               <MobileCartSidebar />
               <Footer settings={settings} />

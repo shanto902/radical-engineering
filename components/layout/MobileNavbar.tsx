@@ -225,7 +225,7 @@ export default function MobileNavbar() {
       )}
 
       {/* ⬇️ Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
+      <div className="fixed bottom-0  left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
         <button
           onClick={async () => {
             await triggerHaptic();

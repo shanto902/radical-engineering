@@ -377,7 +377,7 @@ export default function SolarSystemBuilder() {
               }`}
             >
               {isRecommended && (
-                <span className="absolute top-2 right-2 bg-primary text-foreground text-[10px] px-2 py-1 rounded flex items-center gap-1">
+                <span className="absolute top-2 right-2 bg-primary text-background text-[10px] px-2 py-1 rounded flex items-center gap-1">
                   <Star className="w-3 h-3" /> Recommended
                 </span>
               )}
