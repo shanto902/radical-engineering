@@ -106,7 +106,7 @@ const page = async ({ params }: PageProps) => {
       "@type": "Brand",
       name: product.brand?.name || "Radical Engineering",
     },
-    sku: product.slug,
+    sku: product.sku,
     category: product.category.name,
     offers: {
       "@type": "Offer",
