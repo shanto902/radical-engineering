@@ -15,7 +15,7 @@ function mapToGoogleCategory(slug: string): string {
       return "Electronics > Power > Power Inverters";
     case "ips":
       return "Electronics > Power > Uninterruptible Power Supplies";
-    case "cable-connectors":
+    case "cable-and-connector":
       return "Electronics > Electronics Accessories > Power Cords";
     case "charge-controller":
       return "Electronics > Solar > Solar Charge Controllers";
