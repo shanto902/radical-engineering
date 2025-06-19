@@ -163,6 +163,10 @@ export default async function RootLayout({
     `,
           }}
         />
+        <meta
+          name="google-site-verification"
+          content="rqci9CS2bRjoJ6n2l_CEXS-gVDAbsB_p5WejTVYRPpQ"
+        />
       </head>
 
       <body className={`${lato.variable} antialiased`}>
