@@ -56,7 +56,7 @@ export async function generateMetadata(
         title: page.seo.title || page.name || "No description available",
         description: page.seo.meta_description || "",
         alternates: {
-          canonical: `https://radicalengineering.com.bd/${page.permalink}`,
+          canonical: `https://www.radicalengineering.com.bd/${page.permalink}`,
         },
         openGraph: {
           images: page.seo.og_image

@@ -90,7 +90,7 @@ export async function generateMetadata(
       title: `Buy ${categoryName} Online in Bangladesh | Radical Engineering`,
       description,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/categories/${category.slug}/`,
+        canonical: `https://www.radicalengineering.com.bd/categories/${category.slug}/`,
       },
       openGraph: {
         title: `Buy ${categoryName} Online in Bangladesh | Radical Engineering`,

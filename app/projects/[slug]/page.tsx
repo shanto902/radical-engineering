@@ -32,7 +32,7 @@ export async function generateMetadata({
         description:
           `${project.seo.meta_description || project.short_description}` || "",
         alternates: {
-          canonical: `https://radicalengineering.com.bd/projects/${project.slug}`,
+          canonical: `https://www.radicalengineering.com.bd/projects/${project.slug}`,
         },
         openGraph: {
           images: [
