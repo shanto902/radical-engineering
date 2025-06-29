@@ -489,7 +489,7 @@ export default function SolarSystemBuilder() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <p>
             <Zap className="inline w-5 h-5 mr-2" /> Total Energy:{" "}
-            {totalEnergy.toFixed(2)} Wp
+            {totalEnergy.toFixed(2)} Wh
           </p>
           <p>
             <PanelTop className="inline w-5 h-5 mr-2" /> Panel: {panelText}
