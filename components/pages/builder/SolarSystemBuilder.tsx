@@ -231,9 +231,9 @@ export default function SolarSystemBuilder() {
     : null;
 
   const panelText = Array.isArray(recommendedPanel)
-    ? `${recommendedPanel.join(" + ")} = ${totalPanelWatt} W`
+    ? `${recommendedPanel.join(" + ")} = ${totalPanelWatt} Wp`
     : recommendedPanel
-    ? `${recommendedPanel} W`
+    ? `${recommendedPanel} Wp`
     : "Contact team";
 
   return (
