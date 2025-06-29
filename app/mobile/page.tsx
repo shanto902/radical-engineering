@@ -94,6 +94,75 @@ const MobilePage = async () => {
                   </Link>
                 ))}
               </div>
+              {/* 🌟 Showcase Builders Section */}
+              <div className="px-4 pt-8">
+                <h2 className="text-lg font-bold mb-4 text-center text-foreground">
+                  🔧 Try Our System Builders
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Solar System Builder Card */}
+                  <Link
+                    href="/builder/solar-system"
+                    className="p-4 rounded-xl bg-gradient-to-br from-yellow-200 to-yellow-400 shadow-lg flex items-center justify-between gap-3 hover:scale-[1.02] transition"
+                  >
+                    <div className="flex-1">
+                      <h3 className="text-sm font-bold text-yellow-900">
+                        Solar System Builder
+                      </h3>
+                      <p className="text-xs text-yellow-800 mt-1">
+                        Calculate load & build your solar solution.
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-yellow-500 text-white rounded-full flex items-center justify-center animate-bounce">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 3v1.5m0 15V21m9-9h-1.5M3 12H1.5m16.364-6.364l-1.06 1.06M6.364 17.636l-1.06 1.06m12.728 0l-1.06-1.06M6.364 6.364L5.303 5.303M12 7.5a4.5 4.5 0 110 9a4.5 4.5 0 010-9z"
+                        />
+                      </svg>
+                    </div>
+                  </Link>
+
+                  {/* IPS Builder Card */}
+                  <Link
+                    href="/builder/ips-system"
+                    className="p-4 rounded-xl bg-gradient-to-br from-blue-200 to-blue-400 shadow-lg flex items-center justify-between gap-3 hover:scale-[1.02] transition"
+                  >
+                    <div className="flex-1">
+                      <h3 className="text-sm font-bold text-blue-900">
+                        IPS System Builder
+                      </h3>
+                      <p className="text-xs text-blue-800 mt-1">
+                        Backup power builder with load calculation.
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center animate-pulse">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M13.5 4.5l-6 7.5h4.5L10.5 19.5l6-7.5H12l1.5-7.5z"
+                        />
+                      </svg>
+                    </div>
+                  </Link>
+                </div>
+              </div>
             </div>
           ))}
       </div>
