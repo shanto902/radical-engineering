@@ -39,12 +39,12 @@ const getClosestBattery = (ah: number, volt: number) => {
 };
 
 const getIPSModel = (va: number) => {
-  if (va <= 600) return { model: "600VA", volt: 12 };
-  if (va <= 1000) return { model: "1000VA", volt: 12 };
-  if (va <= 1500) return { model: "1500VA", volt: 12 };
-  if (va <= 2500) return { model: "2500VA", volt: 24 };
-  if (va <= 3000) return { model: "3000VA", volt: 24 };
-  if (va <= 5000) return { model: "5000VA", volt: 48 };
+  if (va < 600) return { model: "600VA", volt: 12 };
+  if (va < 1000) return { model: "1000VA", volt: 12 };
+  if (va < 1500) return { model: "1500VA", volt: 12 };
+  if (va < 2500) return { model: "2500VA", volt: 24 };
+  if (va < 3000) return { model: "3000VA", volt: 24 };
+  if (va < 5000) return { model: "5000VA", volt: 48 };
   return { model: "8000VA", volt: 48 };
 };
 
