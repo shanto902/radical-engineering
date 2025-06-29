@@ -6,8 +6,9 @@ import { AppDispatch, RootState } from "@/store";
 import { fetchProducts } from "@/store/productSlice";
 import { addToCart } from "@/store/cartSlice";
 import PaddingContainer from "@/components/common/PaddingContainer";
-import { Settings, Zap, BatteryCharging } from "lucide-react";
+import { Settings, Zap, BatteryCharging, ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import { showCustomToast } from "@/lib/showCustomToast";
 
 interface LoadItem {
   type: string;
@@ -111,17 +112,30 @@ export default function IPSBuilder() {
 
       {/* Load Inputs */}
       <div className="space-y-4">
+        {/* Table Header (Desktop only) */}
+        <div className="hidden sm:grid grid-cols-6 font-semibold bg-muted text-muted-foreground p-2 rounded-t text-sm">
+          <span>Type</span>
+          <span>Watt</span>
+          <span>Qty</span>
+          <span>Hours</span>
+          <span>Total</span>
+          <span></span> {/* Delete column */}
+        </div>
+
         {loads.map((load, i) => (
           <div
             key={i}
-            className="grid grid-cols-2 sm:grid-cols-6 gap-2 items-center"
+            className="bg-background border rounded-lg p-4 sm:grid sm:grid-cols-6 sm:items-center sm:gap-3 text-sm space-y-3 sm:space-y-0 shadow-sm"
           >
-            <label>
-              Load Type
+            {/* Load Type */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Load Type
+              </div>
               <select
                 value={load.type}
                 onChange={(e) => updateLoad(i, "type", e.target.value)}
-                className="border rounded px-2 py-1 w-full bg-background text-foreground"
+                className="w-full border rounded px-2 py-2 bg-background text-foreground"
               >
                 {loadOptions.map((l) => (
                   <option key={l.label} value={l.label}>
@@ -129,10 +143,13 @@ export default function IPSBuilder() {
                   </option>
                 ))}
               </select>
-            </label>
+            </div>
 
-            <label>
-              Watt
+            {/* Watt */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Watt
+              </div>
               <input
                 type="number"
                 value={load.watt || ""}
@@ -143,86 +160,156 @@ export default function IPSBuilder() {
                     updateLoad(i, "watt", val === "" ? 0 : parseInt(val));
                   }
                 }}
-                className="border px-2 py-1 bg-background text-foreground disabled:bg-gray-600 rounded w-full"
+                className="w-full border rounded px-2 py-2 text-center bg-background text-foreground disabled:bg-gray-300 disabled:text-black"
               />
-            </label>
+            </div>
 
-            <label>
-              Qty
-              <input
-                type="number"
-                value={load.quantity || ""}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (/^\d*$/.test(val)) {
-                    updateLoad(i, "quantity", val === "" ? 0 : parseInt(val));
+            {/* Quantity */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Qty
+              </div>
+              <div className="flex items-center justify-between sm:justify-center gap-2">
+                <button
+                  onClick={() =>
+                    updateLoad(i, "quantity", Math.max(1, load.quantity - 1))
                   }
-                }}
-                className="border px-2 py-1 bg-background text-foreground rounded w-full"
-              />
-            </label>
+                  className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  value={load.quantity || ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (/^\d*$/.test(val)) {
+                      updateLoad(i, "quantity", val === "" ? 0 : parseInt(val));
+                    }
+                  }}
+                  className="w-16 text-center border px-2 py-1 bg-background text-foreground rounded"
+                />
+                <button
+                  onClick={() => updateLoad(i, "quantity", load.quantity + 1)}
+                  className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"
+                >
+                  +
+                </button>
+              </div>
+            </div>
 
-            <label>
-              Hours
-              <input
-                type="number"
-                value={load.hour || ""}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (/^\d*$/.test(val)) {
-                    updateLoad(i, "hour", val === "" ? 0 : parseInt(val));
+            {/* Hours */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Hours
+              </div>
+              <div className="flex items-center justify-between sm:justify-center gap-2">
+                <button
+                  onClick={() =>
+                    updateLoad(i, "hour", Math.max(1, (load.hour || 0) - 1))
                   }
-                }}
-                className="border px-2 py-1 bg-background text-foreground rounded w-full"
-              />
-            </label>
+                  className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  value={load.hour || ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (/^\d*\.?\d*$/.test(val)) {
+                      updateLoad(i, "hour", val === "" ? 0 : parseFloat(val));
+                    }
+                  }}
+                  className="w-20 text-center border px-2 py-1 bg-background text-foreground rounded"
+                />
+                <button
+                  onClick={() => updateLoad(i, "hour", (load.hour || 0) + 1)}
+                  className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"
+                >
+                  +
+                </button>
+              </div>
+            </div>
 
-            <div>Total: {load.watt * load.quantity * load.hour} Wh</div>
-            <button
-              onClick={() =>
-                setLoads((prev) => prev.filter((_, index) => index !== i))
-              }
-              className="text-red-500 text-sm hover:underline"
-            >
-              Remove
-            </button>
+            {/* Total */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Total
+              </div>
+              <div className="text-center">
+                {load.watt * load.quantity * load.hour} Wh
+              </div>
+            </div>
+
+            {/* Delete */}
+            <div className="flex justify-end sm:justify-center">
+              <button
+                onClick={() =>
+                  setLoads((prev) => prev.filter((_, index) => index !== i))
+                }
+                className="w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 text-red-600 flex items-center justify-center"
+              >
+                ×
+              </button>
+            </div>
           </div>
         ))}
 
-        <button
-          onClick={() =>
-            setLoads([
-              ...loads,
-              { type: "Custom", watt: 0, quantity: 1, hour: 1 },
-            ])
-          }
-          className="text-sm mt-2 px-4 py-2 border rounded bg-primary text-white"
-        >
-          + Add Load
-        </button>
+        {/* Add Load Button */}
+        <div className="text-center">
+          <button
+            onClick={() =>
+              setLoads([
+                ...loads,
+                { type: "Custom", watt: 0, quantity: 1, hour: 1 },
+              ])
+            }
+            className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-primary text-background hover:text-foreground rounded hover:bg-primary/90"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Add Load
+          </button>
+        </div>
       </div>
 
       {/* Recommendations */}
-      <div className="bg-muted p-4 rounded shadow text-sm space-y-2">
-        <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
-          <Settings className="w-4 h-4" /> Recommendation
+      <div className="p-6 bg-muted border rounded-lg shadow text-sm sm:text-base">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center justify-center gap-2">
+          <Settings className="w-5 h-5" /> IPS Recommendation
         </h2>
-        <p>
-          <Zap className="inline w-4 h-4 mr-1" /> Total Watt-Hour:{" "}
-          <strong>{totalWh} Wh</strong>
-        </p>
-        <p>
-          <Zap className="inline w-4 h-4 mr-1" /> Peak Load:{" "}
-          <strong>{peakLoad} W</strong>
-        </p>
-        <p>
-          <Zap className="inline w-4 h-4 mr-1" /> IPS:{" "}
-          <strong>{ips.model}</strong> ({ips.volt}V)
-        </p>
-        <p>
-          <BatteryCharging className="inline w-4 h-4 mr-1" /> Battery:{" "}
-          <strong>{batterySuggestion}</strong>
-        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <p>
+            <Zap className="inline w-5 h-5 mr-2" /> Total Watt-Hour:{" "}
+            <strong>{totalWh} Wh</strong>
+          </p>
+          <p>
+            <Zap className="inline w-5 h-5 mr-2" /> Peak Load:{" "}
+            <strong>{peakLoad} W</strong>
+          </p>
+          <p>
+            <Zap className="inline w-5 h-5 mr-2" /> IPS:{" "}
+            <strong>{ips.model}</strong> ({ips.volt}V)
+          </p>
+          <p>
+            <BatteryCharging className="inline w-5 h-5 mr-2" /> Battery:{" "}
+            <strong>{batterySuggestion}</strong>
+          </p>
+        </div>
       </div>
 
       {/* Product Display */}
@@ -250,6 +337,11 @@ export default function IPSBuilder() {
                     ...(product.discounted_price && {
                       discounted_price: parseFloat(product.discounted_price),
                     }),
+                  }),
+                  showCustomToast({
+                    icon: ShoppingBag,
+                    message: "Product added to cart!",
+                    id: `cart-add-${product.id}`,
                   })
                 )
               }

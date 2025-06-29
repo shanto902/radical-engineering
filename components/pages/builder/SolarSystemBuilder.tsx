@@ -6,13 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import {
   BatteryCharging,
-  Minus,
   PanelTop,
-  Plus,
   Settings,
-  ShoppingCart,
   Zap,
   Star,
+  ShoppingBag,
 } from "lucide-react";
 
 import { AppDispatch, RootState } from "@/store";
@@ -22,9 +20,6 @@ import PaddingContainer from "@/components/common/PaddingContainer";
 import { showCustomToast } from "@/lib/showCustomToast";
 
 type LoadType = "Light" | "Fan" | "TV" | "Computer" | "Printer" | "Custom";
-type SelectedProductsByCategory = {
-  [category: string]: { id: string; quantity: number }[];
-};
 
 interface LoadItem {
   type: LoadType;
@@ -92,28 +87,6 @@ export default function SolarSystemBuilder() {
     { type: "Fan", watt: 15, quantity: 1, hour: 8 },
   ]);
 
-  // ✅ Load selected products by category from localStorage
-  const [selectedProductsByCategory, setSelectedProductsByCategory] =
-    useState<SelectedProductsByCategory>(() => {
-      if (typeof window !== "undefined") {
-        const stored = localStorage.getItem("solar-selected-products");
-        return stored ? JSON.parse(stored) : {};
-      }
-      return {};
-    });
-
-  // ✅ Update localStorage on change
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(
-        "solar-selected-products",
-        JSON.stringify(selectedProductsByCategory)
-      );
-    }
-  }, [selectedProductsByCategory]);
-
-  const selectedProducts = selectedProductsByCategory[selectedCategory] || [];
-
   useEffect(() => {
     if (!itemsByCategory[selectedCategory]) {
       dispatch(fetchProducts(selectedCategory));
@@ -169,60 +142,6 @@ export default function SolarSystemBuilder() {
 
     return true;
   });
-
-  const toggleProductSelection = (id: string) => {
-    setSelectedProductsByCategory((prev) => {
-      const current = prev[selectedCategory] || [];
-      const exists = current.find((p) => p.id === id);
-
-      return {
-        ...prev,
-        [selectedCategory]: exists
-          ? current.filter((p) => p.id !== id)
-          : [...current, { id, quantity: 1 }],
-      };
-    });
-  };
-
-  const updateSelectedProductQty = (id: string, delta: number) => {
-    setSelectedProductsByCategory((prev) => {
-      const current = prev[selectedCategory] || [];
-      const updated = current.map((p) =>
-        p.id === id ? { ...p, quantity: Math.max(1, p.quantity + delta) } : p
-      );
-      return { ...prev, [selectedCategory]: updated };
-    });
-  };
-
-  const totalCost = selectedProducts.reduce((sum, sel) => {
-    const product = filteredProducts.find((p) => p.id === sel.id);
-    if (!product) return sum;
-    const price = parseFloat(product.discounted_price || product.price);
-    return sum + price * sel.quantity;
-  }, 0);
-
-  const handleAddAllToCart = () => {
-    selectedProducts.forEach((sel) => {
-      const product = filteredProducts.find((p) => p.id === sel.id);
-      if (product) {
-        dispatch(
-          addToCart({
-            ...product,
-            quantity: sel.quantity,
-            price: parseFloat(product.price),
-            ...(product.discounted_price && {
-              discounted_price: parseFloat(product.discounted_price),
-            }),
-          })
-        );
-      }
-    });
-    showCustomToast({
-      icon: ShoppingCart,
-      message: "All selected products added to cart!",
-      id: `added-to-cart`,
-    });
-  };
 
   const totalPanelWatt = Array.isArray(recommendedPanel)
     ? recommendedPanel.reduce((a, b) => a + b, 0)
@@ -293,7 +212,7 @@ export default function SolarSystemBuilder() {
                 type="number"
                 value={load.watt}
                 disabled={load.type !== "Custom"}
-                className="w-full border rounded px-2 py-2 text-center bg-background"
+                className="w-full border rounded px-2 py-2 disabled:bg-gray-300 disabled:text-black text-center bg-background"
                 onChange={(e) =>
                   updateLoad(i, "watt", parseFloat(e.target.value))
                 }
@@ -326,19 +245,28 @@ export default function SolarSystemBuilder() {
               </div>
             </div>
 
-            {/* Hours */}
+            {/* Hours with +/- Buttons */}
             <div>
               <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
                 Hours
               </div>
-              <input
-                type="number"
-                value={load.hour}
-                className="w-full border rounded px-2 py-2 text-center bg-background"
-                onChange={(e) =>
-                  updateLoad(i, "hour", parseFloat(e.target.value))
-                }
-              />
+              <div className="flex items-center justify-between sm:justify-center gap-2">
+                <button
+                  onClick={() =>
+                    updateLoad(i, "hour", Math.max(1, load.hour - 1))
+                  }
+                  className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"
+                >
+                  −
+                </button>
+                <span className="min-w-[32px] text-center">{load.hour}</span>
+                <button
+                  onClick={() => updateLoad(i, "hour", load.hour + 1)}
+                  className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"
+                >
+                  +
+                </button>
+              </div>
             </div>
 
             {/* Total */}
@@ -433,10 +361,8 @@ export default function SolarSystemBuilder() {
         ))}
       </div>
 
-      {/* Product Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredProducts.map((product) => {
-          const isSelected = selectedProducts.find((p) => p.id === product.id);
           const price = parseFloat(product.discounted_price || product.price);
           const match = product.name.match(/(\d+)\s*(AH|Wp|W)/i);
           const value = match ? parseInt(match[1]) : null;
@@ -462,9 +388,7 @@ export default function SolarSystemBuilder() {
           return (
             <div
               key={product.id}
-              className={`relative p-3 border rounded bg-background shadow hover:shadow-md transition ${
-                isSelected ? "ring-2 ring-primary" : ""
-              }`}
+              className="relative p-3 border rounded bg-background shadow hover:shadow-md transition"
             >
               {isRecommended && (
                 <span className="absolute top-2 right-2 bg-primary text-background text-[10px] px-2 py-1 rounded flex items-center gap-1">
@@ -482,47 +406,32 @@ export default function SolarSystemBuilder() {
               />
               <p className="mt-2 font-semibold text-sm">{product.name}</p>
               <p className="text-primary font-bold text-sm">৳ {price}</p>
-              {isSelected && (
-                <div className="flex items-center justify-between mt-1">
-                  <button
-                    onClick={() => updateSelectedProductQty(product.id, -1)}
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span>{isSelected.quantity}</span>
-                  <button
-                    onClick={() => updateSelectedProductQty(product.id, 1)}
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
               <button
-                onClick={() => toggleProductSelection(product.id)}
-                className="mt-2 w-full text-xs px-2 py-1 bg-primary text-background rounded hover:bg-secondary"
+                onClick={() =>
+                  dispatch(
+                    addToCart({
+                      ...product,
+                      quantity: 1,
+                      price: parseFloat(product.price),
+                      ...(product.discounted_price && {
+                        discounted_price: parseFloat(product.discounted_price),
+                      }),
+                    }),
+                    showCustomToast({
+                      icon: ShoppingBag,
+                      message: "Product added to cart!",
+                      id: `cart-add-${product.id}`,
+                    })
+                  )
+                }
+                className="mt-2 w-full text-xs px-2 py-1 bg-primary text-white rounded"
               >
-                {isSelected ? "Remove" : "Select"}
+                Add to Cart
               </button>
             </div>
           );
         })}
       </div>
-
-      {/* Cart Footer */}
-      {selectedProducts.length > 0 && (
-        <div className="sticky bottom-0 z-10 bg-background border-t mt-10 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-lg font-semibold">
-            Total Estimated Cost: ৳ {totalCost}
-          </p>
-          <button
-            onClick={handleAddAllToCart}
-            className="px-6 py-2 bg-primary text-background rounded hover:bg-secondary"
-          >
-            <ShoppingCart className="inline w-4 h-4 mr-2" />
-            Add All to Cart
-          </button>
-        </div>
-      )}
     </PaddingContainer>
   );
 }
