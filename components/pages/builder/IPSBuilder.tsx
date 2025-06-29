@@ -6,7 +6,6 @@ import { AppDispatch, RootState } from "@/store";
 import { fetchProducts } from "@/store/productSlice";
 import { addToCart } from "@/store/cartSlice";
 import PaddingContainer from "@/components/common/PaddingContainer";
-
 import { Settings, Zap, BatteryCharging } from "lucide-react";
 import Image from "next/image";
 
@@ -83,15 +82,10 @@ export default function IPSBuilder() {
   };
 
   const totalWh = loads.reduce(
-    (sum, l) =>
-      sum +
-      (Number(l.watt) || 0) * (Number(l.quantity) || 0) * (Number(l.hour) || 0),
+    (sum, l) => sum + l.watt * l.quantity * l.hour,
     0
   );
-  const peakLoad = loads.reduce(
-    (sum, l) => sum + (Number(l.watt) || 0) * (Number(l.quantity) || 0),
-    0
-  );
+  const peakLoad = loads.reduce((sum, l) => sum + l.watt * l.quantity, 0);
   const recommendedWatt = peakLoad * 1.5;
   const recommendedVA = Math.ceil(recommendedWatt * 1.25);
   const ips = getIPSModel(recommendedVA);
@@ -103,9 +97,9 @@ export default function IPSBuilder() {
     return va >= recommendedVA;
   });
 
-  const filteredBatteries = batteryProducts.filter((p) => {
-    return p.name.toLowerCase().includes(batterySuggestion.split("AH")[0]);
-  });
+  const filteredBatteries = batteryProducts.filter((p) =>
+    p.name.toLowerCase().includes(batterySuggestion.split("AH")[0])
+  );
 
   const all = [...filteredIPS, ...filteredBatteries];
 
@@ -115,7 +109,7 @@ export default function IPSBuilder() {
         IPS System Builder
       </h1>
 
-      {/* Load Input */}
+      {/* Load Inputs */}
       <div className="space-y-4">
         {loads.map((load, i) => (
           <div
@@ -136,55 +130,53 @@ export default function IPSBuilder() {
                 ))}
               </select>
             </label>
+
             <label>
               Watt
               <input
                 type="number"
-                min="1"
-                value={load.watt}
+                value={load.watt || ""}
                 disabled={load.type !== "Custom"}
-                onChange={(e) =>
-                  updateLoad(
-                    i,
-                    "watt",
-                    Math.max(1, parseInt(e.target.value) || 1)
-                  )
-                }
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (/^\d*$/.test(val)) {
+                    updateLoad(i, "watt", val === "" ? 0 : parseInt(val));
+                  }
+                }}
                 className="border px-2 py-1 bg-background text-foreground disabled:bg-gray-600 rounded w-full"
               />
             </label>
+
             <label>
               Qty
               <input
                 type="number"
-                min="1"
-                value={load.quantity}
-                onChange={(e) =>
-                  updateLoad(
-                    i,
-                    "quantity",
-                    Math.max(1, parseInt(e.target.value) || 1)
-                  )
-                }
-                className="border px-2 py-1  bg-background text-foreground rounded w-full"
+                value={load.quantity || ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (/^\d*$/.test(val)) {
+                    updateLoad(i, "quantity", val === "" ? 0 : parseInt(val));
+                  }
+                }}
+                className="border px-2 py-1 bg-background text-foreground rounded w-full"
               />
             </label>
+
             <label>
               Hours
               <input
                 type="number"
-                min="1"
-                value={load.hour}
-                onChange={(e) =>
-                  updateLoad(
-                    i,
-                    "hour",
-                    Math.max(1, parseInt(e.target.value) || 1)
-                  )
-                }
+                value={load.hour || ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (/^\d*$/.test(val)) {
+                    updateLoad(i, "hour", val === "" ? 0 : parseInt(val));
+                  }
+                }}
                 className="border px-2 py-1 bg-background text-foreground rounded w-full"
               />
             </label>
+
             <div>Total: {load.watt * load.quantity * load.hour} Wh</div>
             <button
               onClick={() =>
@@ -196,6 +188,7 @@ export default function IPSBuilder() {
             </button>
           </div>
         ))}
+
         <button
           onClick={() =>
             setLoads([
@@ -209,7 +202,7 @@ export default function IPSBuilder() {
         </button>
       </div>
 
-      {/* Recommendation Panel */}
+      {/* Recommendations */}
       <div className="bg-muted p-4 rounded shadow text-sm space-y-2">
         <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
           <Settings className="w-4 h-4" /> Recommendation
@@ -232,7 +225,7 @@ export default function IPSBuilder() {
         </p>
       </div>
 
-      {/* Product Grid */}
+      {/* Product Display */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {all.map((product) => (
           <div key={product.id} className="border p-3 rounded shadow relative">
