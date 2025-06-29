@@ -105,6 +105,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${process.env.NEXT_PUBLIC_SITE_URL}cart`,
       lastModified: new Date().toISOString(),
     },
+    {
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}builder/solar-system`,
+      lastModified: new Date().toISOString(),
+    },
+    {
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}builder/ips-system`,
+      lastModified: new Date().toISOString(),
+    },
   ];
 
   return [

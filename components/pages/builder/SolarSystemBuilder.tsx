@@ -9,10 +9,8 @@ import {
   Minus,
   PanelTop,
   Plus,
-  PlusCircle,
   Settings,
   ShoppingCart,
-  Trash,
   Zap,
   Star,
 } from "lucide-react";
@@ -24,6 +22,9 @@ import PaddingContainer from "@/components/common/PaddingContainer";
 import { showCustomToast } from "@/lib/showCustomToast";
 
 type LoadType = "Light" | "Fan" | "TV" | "Computer" | "Printer" | "Custom";
+type SelectedProductsByCategory = {
+  [category: string]: { id: string; quantity: number }[];
+};
 
 interface LoadItem {
   type: LoadType;
@@ -91,9 +92,27 @@ export default function SolarSystemBuilder() {
     { type: "Fan", watt: 15, quantity: 1, hour: 8 },
   ]);
 
-  const [selectedProducts, setSelectedProducts] = useState<
-    { id: string; quantity: number }[]
-  >([]);
+  // ✅ Load selected products by category from localStorage
+  const [selectedProductsByCategory, setSelectedProductsByCategory] =
+    useState<SelectedProductsByCategory>(() => {
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("solar-selected-products");
+        return stored ? JSON.parse(stored) : {};
+      }
+      return {};
+    });
+
+  // ✅ Update localStorage on change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "solar-selected-products",
+        JSON.stringify(selectedProductsByCategory)
+      );
+    }
+  }, [selectedProductsByCategory]);
+
+  const selectedProducts = selectedProductsByCategory[selectedCategory] || [];
 
   useEffect(() => {
     if (!itemsByCategory[selectedCategory]) {
@@ -152,19 +171,27 @@ export default function SolarSystemBuilder() {
   });
 
   const toggleProductSelection = (id: string) => {
-    setSelectedProducts((prev) =>
-      prev.some((p) => p.id === id)
-        ? prev.filter((p) => p.id !== id)
-        : [...prev, { id, quantity: 1 }]
-    );
+    setSelectedProductsByCategory((prev) => {
+      const current = prev[selectedCategory] || [];
+      const exists = current.find((p) => p.id === id);
+
+      return {
+        ...prev,
+        [selectedCategory]: exists
+          ? current.filter((p) => p.id !== id)
+          : [...current, { id, quantity: 1 }],
+      };
+    });
   };
 
   const updateSelectedProductQty = (id: string, delta: number) => {
-    setSelectedProducts((prev) =>
-      prev.map((p) =>
+    setSelectedProductsByCategory((prev) => {
+      const current = prev[selectedCategory] || [];
+      const updated = current.map((p) =>
         p.id === id ? { ...p, quantity: Math.max(1, p.quantity + delta) } : p
-      )
-    );
+      );
+      return { ...prev, [selectedCategory]: updated };
+    });
   };
 
   const totalCost = selectedProducts.reduce((sum, sel) => {
@@ -196,11 +223,13 @@ export default function SolarSystemBuilder() {
       id: `added-to-cart`,
     });
   };
+
   const totalPanelWatt = Array.isArray(recommendedPanel)
     ? recommendedPanel.reduce((a, b) => a + b, 0)
     : typeof recommendedPanel === "number"
     ? recommendedPanel
     : null;
+
   const panelText = Array.isArray(recommendedPanel)
     ? `${recommendedPanel.join(" + ")} = ${totalPanelWatt} W`
     : recommendedPanel
@@ -213,7 +242,7 @@ export default function SolarSystemBuilder() {
         Solar System Builder
       </h1>
 
-      {/* Load Table */}
+      {/* Load Table
       <div className="space-y-2">
         <div className="grid grid-cols-6 font-semibold bg-muted text-muted-foreground p-2 rounded-t text-sm">
           <span>Type</span>
@@ -297,6 +326,156 @@ export default function SolarSystemBuilder() {
             className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-primary text-background rounded hover:bg-secondary"
           >
             <PlusCircle className="w-4 h-4" />
+            Add Load
+          </button>
+        </div>
+      </div> */}
+
+      <div className="space-y-3">
+        {/* Header - Only visible on desktop */}
+        <div className="hidden sm:grid grid-cols-6 font-semibold bg-muted text-muted-foreground p-2 rounded-t text-sm">
+          <span>Type</span>
+          <span>Watt</span>
+          <span>Qty</span>
+          <span>Hours</span>
+          <span>Total</span>
+        </div>
+
+        {/* Load Rows */}
+        {loads.map((load, i) => (
+          <div
+            key={i}
+            className="bg-background border rounded-lg p-4 sm:grid sm:grid-cols-6 sm:items-center sm:gap-3 text-sm space-y-3 sm:space-y-0 shadow-sm"
+          >
+            {/* Type */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Type
+              </div>
+              <select
+                className="w-full border rounded px-2 py-2 bg-background"
+                value={load.type}
+                onChange={(e) => {
+                  const opt = loadOptions.find(
+                    (l) => l.label === e.target.value
+                  );
+                  if (opt) {
+                    updateLoad(i, "type", opt.label as LoadType);
+                    updateLoad(i, "watt", opt.defaultWatt);
+                  }
+                }}
+              >
+                {loadOptions.map((opt) => (
+                  <option key={opt.label} value={opt.label}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Watt */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Watt
+              </div>
+              <input
+                type="number"
+                value={load.watt}
+                disabled={load.type !== "Custom"}
+                className="w-full border rounded px-2 py-2 text-center bg-background"
+                onChange={(e) =>
+                  updateLoad(i, "watt", parseFloat(e.target.value))
+                }
+              />
+            </div>
+
+            {/* Quantity with +/- Buttons */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Qty
+              </div>
+              <div className="flex items-center justify-between sm:justify-center gap-2">
+                <button
+                  onClick={() =>
+                    updateLoad(i, "quantity", Math.max(1, load.quantity - 1))
+                  }
+                  className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"
+                >
+                  −
+                </button>
+                <span className="min-w-[24px] text-center">
+                  {load.quantity}
+                </span>
+                <button
+                  onClick={() => updateLoad(i, "quantity", load.quantity + 1)}
+                  className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Hours */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Hours
+              </div>
+              <input
+                type="number"
+                value={load.hour}
+                className="w-full border rounded px-2 py-2 text-center bg-background"
+                onChange={(e) =>
+                  updateLoad(i, "hour", parseFloat(e.target.value))
+                }
+              />
+            </div>
+
+            {/* Total */}
+            <div>
+              <div className="block sm:hidden text-xs text-muted-foreground mb-1 font-semibold">
+                Total
+              </div>
+              <div className="text-center">
+                {load.watt * load.quantity * load.hour} Wp
+              </div>
+            </div>
+
+            {/* Delete Button */}
+            <div className="flex justify-end sm:justify-center">
+              <button
+                onClick={() => setLoads(loads.filter((_, idx) => idx !== i))}
+                className="w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 text-red-600 flex items-center justify-center"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {/* Add Load */}
+        <div className="text-center">
+          <button
+            onClick={() =>
+              setLoads([
+                ...loads,
+                { type: "Custom", watt: 0, quantity: 1, hour: 1 },
+              ])
+            }
+            className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-primary  text-background hover:text-foreground rounded hover:bg-primary/90"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
             Add Load
           </button>
         </div>
