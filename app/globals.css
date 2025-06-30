@@ -10,6 +10,12 @@
   --secondary: #fcb974;
 }
 
+html,
+body {
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
 /* Hide scrollbars for mobile slider */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
