@@ -44,7 +44,9 @@ export async function POST(req: Request) {
       })
     );
 
-    const deviceTokens = tokens.map((t) => t.token).filter(Boolean);
+    const deviceTokens = [
+      ...new Set(tokens.map((t) => t.token).filter(Boolean)),
+    ];
 
     if (deviceTokens.length === 0) {
       return NextResponse.json(

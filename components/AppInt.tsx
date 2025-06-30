@@ -13,6 +13,11 @@ import FontFaceObserver from "fontfaceobserver";
 import { isNativeApp } from "./common/isNativeApp";
 import Image from "next/image";
 import logo from "@/assets/logo-square.svg";
+import {
+  fetchNotifications,
+  recalculateUnread,
+} from "@/store/notificationSlice";
+import { isNotificationRead } from "@/lib/notificationUtils";
 
 export default function AppInit() {
   const dispatch = useDispatch<AppDispatch>();
@@ -85,6 +90,21 @@ export default function AppInit() {
       }
     };
 
+    const fetchAndSyncNotifications = async () => {
+      const res = await dispatch(fetchNotifications());
+
+      if ("payload" in res && Array.isArray(res.payload)) {
+        const notifications = res.payload;
+        const readStatus = await Promise.all(
+          notifications.map((n) => isNotificationRead(n.id))
+        );
+        const unreadCount = notifications.filter(
+          (_, i) => !readStatus[i]
+        ).length;
+        dispatch(recalculateUnread(unreadCount));
+      }
+    };
+
     const initApp = async () => {
       // Trigger splash hide fast
       if (isNativeApp()) {
@@ -101,6 +121,7 @@ export default function AppInit() {
         checkRevalidate(),
         waitForFonts(),
         preloadImages(),
+        fetchAndSyncNotifications(),
       ]);
     };
 
