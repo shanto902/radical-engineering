@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "751553345739",
+    "project_id": "radical-engineering",
+    "storage_bucket": "radical-engineering.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751553345739:android:0339e0e8c9c036e5c9034e",
+        "android_client_info": {
+          "package_name": "com.radicalengineering.bd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiPdppAZKkuDyjCU3vmqU360QoAE-SKxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
