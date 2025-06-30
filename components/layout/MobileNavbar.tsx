@@ -2,14 +2,22 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ShoppingBag, Heart, Menu, Search, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ShoppingBag,
+  Heart,
+  Menu,
+  Search,
+  X,
+  Bell,
+} from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { openCartSidebar } from "@/store/cartUISlice";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import Image from "next/image";
-import { TProduct } from "@/interfaces";
+import { TNotification, TProduct } from "@/interfaces";
 import { fetchCategories } from "@/store/categorySlice";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { isNativeApp } from "@/components/common/isNativeApp";
@@ -19,6 +27,8 @@ import {
   toggleCategoryDrawer,
   toggleSearch,
 } from "@/store/uiSlice";
+
+import { isNotificationRead } from "@/lib/notificationUtils";
 
 const triggerHaptic = async (style: ImpactStyle = ImpactStyle.Medium) => {
   if (isNativeApp()) {
@@ -30,7 +40,7 @@ export default function MobileNavbar() {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-
+  const [unreadCount, setUnreadCount] = useState(0);
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const { data: categories } = useSelector(
     (state: RootState) => state.categories
@@ -47,6 +57,29 @@ export default function MobileNavbar() {
   const [searchLoading, setSearchLoading] = useState(false);
   const showBack = pathname !== "/mobile" && pathname !== "/";
 
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await fetch("/api/notifications");
+        if (!res.ok) throw new Error("Failed to fetch notifications");
+
+        const data: { notifications: TNotification[] } = await res.json();
+
+        if (!Array.isArray(data.notifications)) return;
+
+        const readCheck = await Promise.all(
+          data.notifications.map((n) => isNotificationRead(n.id))
+        );
+
+        const unread = data.notifications.filter((_, i) => !readCheck[i]);
+        setUnreadCount(unread.length);
+      } catch (error) {
+        console.error("Failed to fetch unread notifications count:", error);
+      }
+    };
+
+    fetchUnreadCount();
+  }, []);
   const handleBack = () => {
     if (pathname === "/categories/all") {
       router.push("/mobile");
@@ -230,7 +263,7 @@ export default function MobileNavbar() {
       )}
 
       {/* ⬇️ Bottom Navigation */}
-      <div className="fixed bottom-0  left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
+      <div className="fixed bottom-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
         <button
           onClick={async () => {
             await triggerHaptic();
@@ -243,6 +276,17 @@ export default function MobileNavbar() {
 
         <Link href="/wishlist" aria-label="Wishlist">
           <Heart className="h-6 w-6 text-primary" />
+        </Link>
+
+        <Link href="/notifications" aria-label="Notifications">
+          <div className="relative">
+            <Bell className="h-6 w-6 text-primary" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-2 left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {unreadCount}
+              </span>
+            )}
+          </div>
         </Link>
 
         <button

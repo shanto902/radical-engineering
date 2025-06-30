@@ -3,6 +3,13 @@ import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
 import admin from "@/lib/firebaseAdmin";
 
+// Define the expected structure for incoming JSON
+interface BroadcastRequest {
+  title: string;
+  message: string;
+  route?: string;
+}
+
 export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization");
   const expected = `Bearer ${process.env.BROADCAST_SECRET}`;
@@ -11,7 +18,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { title, message } = await req.json();
+  let body: BroadcastRequest;
+
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const { title, message, route } = body;
 
   if (!title || !message) {
     return NextResponse.json(
@@ -21,12 +36,15 @@ export async function POST(req: Request) {
   }
 
   try {
-    // 1. Fetch tokens
+    // 1. Fetch all device tokens from Directus
     const tokens = await directus.request(
-      readItems("device_tokens", { fields: ["token"], limit: -1 })
+      readItems("device_tokens", {
+        fields: ["token"],
+        limit: -1,
+      })
     );
 
-    const deviceTokens = tokens.map((t) => t.token);
+    const deviceTokens = tokens.map((t) => t.token).filter(Boolean);
 
     if (deviceTokens.length === 0) {
       return NextResponse.json(
@@ -35,13 +53,16 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Send broadcast
+    // 2. Send push notifications with FCM
     const response = await admin.messaging().sendEach(
       deviceTokens.map((token) => ({
         token,
         notification: {
           title,
           body: message,
+        },
+        data: {
+          route: route || "/notifications", // default route fallback
         },
       }))
     );

@@ -1,18 +1,23 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { PushNotifications } from "@capacitor/push-notifications";
 import { Capacitor } from "@capacitor/core";
 
 const PushNotification = () => {
+  const router = useRouter();
+
   useEffect(() => {
     const setupPush = async () => {
       try {
+        // Request permission for push notifications
         const permission = await PushNotifications.requestPermissions();
         if (permission.receive === "granted") {
           await PushNotifications.register();
         }
 
+        // Handle registration
         PushNotifications.addListener("registration", async (token) => {
           const platform = Capacitor.getPlatform();
           await fetch("/api/save-token", {
@@ -22,10 +27,12 @@ const PushNotification = () => {
           });
         });
 
+        // Handle registration error
         PushNotifications.addListener("registrationError", (error) => {
           console.error("Push registration error:", error);
         });
 
+        // Optional: Handle when a push is received while app is in foreground
         PushNotifications.addListener(
           "pushNotificationReceived",
           (notification) => {
@@ -33,10 +40,14 @@ const PushNotification = () => {
           }
         );
 
+        // Handle tap on notification (cold start or foreground)
         PushNotifications.addListener(
           "pushNotificationActionPerformed",
           (notification) => {
-            console.log("Push action performed:", notification);
+            const route = notification.notification.data?.route;
+            if (route) {
+              router.push(route);
+            }
           }
         );
       } catch (error) {
@@ -45,9 +56,9 @@ const PushNotification = () => {
     };
 
     setupPush();
-  }, []);
+  }, [router]);
 
-  return null; // No UI needed
+  return null; // This component has no UI
 };
 
 export default PushNotification;
