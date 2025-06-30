@@ -6,8 +6,8 @@ import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { closeCartSidebar } from "@/store/cartUISlice";
+import { closeSearch, closeCategoryDrawer, closeMenu } from "@/store/uiSlice";
 import { RootState } from "@/store";
-import { closeSearch, closeCategoryDrawer } from "@/store/uiSlice";
 import { isNativeApp } from "@/components/common/isNativeApp";
 
 export default function BackButtonHandler() {
@@ -19,16 +19,14 @@ export default function BackButtonHandler() {
   const isCartOpen = useSelector(
     (state: RootState) => state.cartUI.isSidebarOpen
   );
-  const { searchOpen, categoryDrawerOpen } = useSelector(
+  const { searchOpen, categoryDrawerOpen, menuOpen } = useSelector(
     (state: RootState) => state.ui
   );
 
-  // Keep latest pathname
   useEffect(() => {
     pathnameRef.current = pathname;
   }, [pathname]);
 
-  // 🔁 Shared Back Handling Logic
   const handleBack = async (isNative = false) => {
     if (searchOpen) {
       dispatch(closeSearch());
@@ -38,6 +36,12 @@ export default function BackButtonHandler() {
 
     if (categoryDrawerOpen) {
       dispatch(closeCategoryDrawer());
+      if (isNative) await Haptics.impact({ style: ImpactStyle.Light });
+      return;
+    }
+
+    if (menuOpen) {
+      dispatch(closeMenu());
       if (isNative) await Haptics.impact({ style: ImpactStyle.Light });
       return;
     }
@@ -60,7 +64,6 @@ export default function BackButtonHandler() {
     }
   };
 
-  // 🌐 Web back button support
   useEffect(() => {
     const browserHandler = (e: PopStateEvent) => {
       e.preventDefault();
@@ -71,9 +74,8 @@ export default function BackButtonHandler() {
     return () => {
       window.removeEventListener("popstate", browserHandler);
     };
-  }, [searchOpen, categoryDrawerOpen, isCartOpen]);
+  }, [searchOpen, categoryDrawerOpen, menuOpen, isCartOpen]);
 
-  // 📱 Capacitor back button support
   useEffect(() => {
     if (!isNativeApp()) return;
 
@@ -91,9 +93,8 @@ export default function BackButtonHandler() {
     return () => {
       cleanupPromise.then((remove) => remove?.());
     };
-  }, [searchOpen, categoryDrawerOpen, isCartOpen]);
+  }, [searchOpen, categoryDrawerOpen, menuOpen, isCartOpen]);
 
-  // 🛑 Confirm Exit Modal
   const confirmExit = async () => {
     await Haptics.impact({ style: ImpactStyle.Heavy });
     CapacitorApp.exitApp();
