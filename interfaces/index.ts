@@ -120,6 +120,7 @@ export type TNotification = {
   title: string;
   message: string;
   date_created: string;
+  route: string;
 };
 
 export type TGlobalSettings = {

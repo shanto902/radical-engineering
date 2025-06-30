@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { markAsRead, isNotificationRead } from "@/lib/notificationUtils";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store";
+import {
+  fetchNotifications,
+  recalculateUnread,
+} from "@/store/notificationSlice";
 
 type TNotification = {
   id: string;
@@ -13,45 +19,51 @@ type TNotification = {
 };
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<TNotification[]>([]);
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const notifications = useSelector(
+    (state: RootState) => state.notifications.notifications
+  );
+
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/api/notifications");
-        if (!res.ok) throw new Error("Failed to fetch");
+    const fetchAndMark = async () => {
+      const res = await dispatch(fetchNotifications());
 
-        const data: { notifications: TNotification[] } = await res.json();
+      if ("payload" in res && Array.isArray(res.payload)) {
+        const items = res.payload as TNotification[];
 
-        if (!Array.isArray(data.notifications)) {
-          throw new Error("Invalid format from API");
-        }
-
-        const readChecks = await Promise.all(
-          data.notifications.map((n) => isNotificationRead(n.id))
+        const readCheck = await Promise.all(
+          items.map((n) => isNotificationRead(n.id))
         );
 
-        const read = new Set(
-          data.notifications.filter((_, i) => readChecks[i]).map((n) => n.id)
-        );
+        const read = items.filter((_, i) => readCheck[i]).map((n) => n.id);
 
-        setNotifications(data.notifications);
-        setReadIds(read);
-      } catch (err) {
-        console.error("Error loading notifications:", err);
-      } finally {
-        setLoading(false);
+        const unreadCount = items.length - read.length;
+
+        setReadIds(new Set(read));
+        dispatch(recalculateUnread(unreadCount));
       }
+
+      setLoading(false);
     };
 
-    fetchData();
-  }, []);
+    fetchAndMark();
+  }, [dispatch]);
 
   const handleClick = async (notif: TNotification) => {
     await markAsRead(notif.id);
+    setReadIds((prev) => new Set(prev).add(notif.id));
+
+    // Recalculate unread after marking this as read
+    const unreadLeft = notifications.filter(
+      (n) => !readIds.has(n.id) && n.id !== notif.id
+    );
+    dispatch(recalculateUnread(unreadLeft.length));
+
     router.push(notif.route);
   };
 

@@ -13,7 +13,7 @@ import { loadFromLocalStorage, saveToLocalStorage } from "./persistConfig";
 import type { CartState } from "./cartSlice";
 import type { WishlistState } from "./wishlistSlice";
 import type { ThemeState } from "./themeSlice";
-
+import notificationReducer from "./notificationSlice";
 const preloadedState: {
   cart: CartState;
   wishlist: WishlistState;
@@ -34,6 +34,7 @@ export const store = configureStore({
     projects: projectReducer,
     categories: categoryReducer,
     ui: uiReducer, // ✅ INCLUDE HERE
+    notifications: notificationReducer,
   },
   preloadedState,
 });
