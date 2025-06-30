@@ -10,6 +10,9 @@ const config: CapacitorConfig = {
     cleartext: true,
   },
   plugins: {
+    Keyboard: {
+      resize: "none", // Prevent keyboard bounce/stretch
+    },
     SplashScreen: {
       splashImmersive: true,
       launchShowDuration: 3000, // Optional; will not auto-hide anyway
@@ -17,6 +20,9 @@ const config: CapacitorConfig = {
       androidScaleType: "CENTER_CROP",
       showSpinner: false,
       backgroundColor: "#ffffff",
+    },
+    ios: {
+      scrollEnabled: false, // <== prevent elastic scroll on iOS
     },
   },
 };

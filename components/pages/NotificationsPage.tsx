@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { markAsRead, isNotificationRead } from "@/lib/notificationUtils";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/store";
+import { markAsRead, isNotificationRead } from "@/lib/notificationUtils";
 import {
   fetchNotifications,
   recalculateUnread,
 } from "@/store/notificationSlice";
+import type { AppDispatch, RootState } from "@/store";
+import { formatDistanceToNow } from "date-fns";
 
 type TNotification = {
   id: string;
@@ -58,43 +59,64 @@ export default function NotificationsPage() {
     await markAsRead(notif.id);
     setReadIds((prev) => new Set(prev).add(notif.id));
 
-    // Recalculate unread after marking this as read
+    // Update unread count
     const unreadLeft = notifications.filter(
       (n) => !readIds.has(n.id) && n.id !== notif.id
     );
     dispatch(recalculateUnread(unreadLeft.length));
 
-    router.push(notif.route);
+    if (notif.route) router.push(notif.route);
   };
 
   if (loading) {
-    return <div className="p-4 text-center text-sm">Loading...</div>;
+    return (
+      <div className="p-4 text-center text-sm text-muted-foreground">
+        Loading notifications...
+      </div>
+    );
   }
 
   if (!notifications.length) {
     return (
-      <div className="p-4 text-center text-sm">No notifications found.</div>
+      <div className="p-4 text-center text-sm text-muted-foreground">
+        No notifications found.
+      </div>
     );
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-lg font-bold mb-4">Notifications</h1>
-      {notifications.map((notif) => (
-        <div
-          key={notif.id}
-          onClick={() => handleClick(notif)}
-          className={`cursor-pointer border p-4 mb-2 rounded transition ${
-            readIds.has(notif.id) ? "bg-gray-100" : "bg-red-100"
-          }`}
-        >
-          <h2 className="font-semibold">{notif.title}</h2>
-          <p className="text-sm text-muted-foreground">{notif.message}</p>
-          <p className="text-xs text-gray-400 mt-1">
-            {new Date(notif.date_created).toLocaleString()}
-          </p>
-        </div>
-      ))}
+    <div className="p-4 max-w-md mx-auto">
+      <h1 className="text-xl font-bold mb-5 text-center text-primary">
+        Notifications
+      </h1>
+      <div className="space-y-4">
+        {notifications.map((notif) => {
+          const isRead = readIds.has(notif.id);
+          return (
+            <div
+              key={notif.id}
+              onClick={() => handleClick(notif)}
+              className={`p-4 rounded-lg border shadow-sm cursor-pointer transition-all hover:shadow-md ${
+                isRead
+                  ? "bg-background"
+                  : "bg-red-50 dark:bg-red-900/20 text-foreground"
+              }`}
+            >
+              <h2 className="font-semibold text-base text-foreground">
+                {notif.title}
+              </h2>
+              <p className="text-sm mt-1 text-muted-foreground">
+                {notif.message}
+              </p>
+              <p className="text-xs text-gray-500 mt-2">
+                {formatDistanceToNow(new Date(notif.date_created), {
+                  addSuffix: true,
+                })}
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
