@@ -42,6 +42,7 @@ export async function POST(req: Request) {
         notification: {
           title,
           body: message,
+          icon: "ic_launcher_round",
         },
       }))
     );
