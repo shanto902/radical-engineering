@@ -4,20 +4,23 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PushNotifications } from "@capacitor/push-notifications";
 import { Capacitor } from "@capacitor/core";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store";
+import { addNotification } from "@/store/notificationSlice";
+import { TNotification } from "@/interfaces";
 
 const PushNotification = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
   useEffect(() => {
     const setupPush = async () => {
       try {
-        // Request permission for push notifications
         const permission = await PushNotifications.requestPermissions();
         if (permission.receive === "granted") {
           await PushNotifications.register();
         }
 
-        // Handle registration
         PushNotifications.addListener("registration", async (token) => {
           const platform = Capacitor.getPlatform();
           await fetch("/api/save-token", {
@@ -27,24 +30,35 @@ const PushNotification = () => {
           });
         });
 
-        // Handle registration error
         PushNotifications.addListener("registrationError", (error) => {
           console.error("Push registration error:", error);
         });
 
-        // Optional: Handle when a push is received while app is in foreground
         PushNotifications.addListener(
           "pushNotificationReceived",
           (notification) => {
-            console.log("Push received:", notification);
+            const data = notification.notification
+              .data as Partial<TNotification>;
+            if (data?.id && data?.title && data?.message && data?.route) {
+              dispatch(
+                addNotification({
+                  id: data.id,
+                  title: data.title,
+                  message: data.message,
+                  route: data.route,
+                  date_created: new Date().toISOString(),
+                })
+              );
+            }
           }
         );
 
-        // Handle tap on notification (cold start or foreground)
         PushNotifications.addListener(
           "pushNotificationActionPerformed",
           (notification) => {
-            const route = notification.notification.data?.route;
+            const route = notification.notification.data?.route as
+              | string
+              | undefined;
             if (route) {
               router.push(route);
             }
@@ -56,9 +70,9 @@ const PushNotification = () => {
     };
 
     setupPush();
-  }, [router]);
+  }, [dispatch, router]);
 
-  return null; // This component has no UI
+  return null;
 };
 
 export default PushNotification;
