@@ -13,6 +13,12 @@ import { TProduct } from "@/interfaces";
 import { fetchCategories } from "@/store/categorySlice";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { isNativeApp } from "@/components/common/isNativeApp";
+import {
+  closeCategoryDrawer,
+  closeSearch,
+  toggleCategoryDrawer,
+  toggleSearch,
+} from "@/store/uiSlice";
 
 const triggerHaptic = async (style: ImpactStyle = ImpactStyle.Medium) => {
   if (isNativeApp()) {
@@ -33,8 +39,11 @@ export default function MobileNavbar() {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
   const [products, setProducts] = useState<TProduct[]>([]);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [showCategories, setShowCategories] = useState(false);
+  const searchOpen = useSelector((state: RootState) => state.ui.searchOpen);
+  const showCategories = useSelector(
+    (state: RootState) => state.ui.categoryDrawerOpen
+  );
+
   const [searchLoading, setSearchLoading] = useState(false);
   const showBack = pathname !== "/mobile" && pathname !== "/";
 
@@ -105,7 +114,7 @@ export default function MobileNavbar() {
             <button
               onClick={async () => {
                 await triggerHaptic(ImpactStyle.Light);
-                setSearchOpen((p) => !p);
+                dispatch(toggleSearch());
               }}
               aria-label="Search"
             >
@@ -132,7 +141,7 @@ export default function MobileNavbar() {
                 onClick={async () => {
                   await triggerHaptic(ImpactStyle.Light);
                   setQuery("");
-                  setSearchOpen(false);
+                  dispatch(closeSearch());
                 }}
                 className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-secondary hover:text-foreground"
               >
@@ -160,7 +169,7 @@ export default function MobileNavbar() {
           <div
             onClick={async () => {
               await triggerHaptic(ImpactStyle.Light);
-              setShowCategories(false);
+              dispatch(closeCategoryDrawer());
             }}
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300"
           />
@@ -174,7 +183,7 @@ export default function MobileNavbar() {
               href="/categories"
               onClick={async () => {
                 await triggerHaptic();
-                setShowCategories(false);
+                dispatch(closeCategoryDrawer());
               }}
               className="mb-3 block rounded-lg border px-3 py-2 text-center text-sm font-medium hover:bg-secondary"
             >
@@ -188,7 +197,7 @@ export default function MobileNavbar() {
                   key={cat.slug}
                   onClick={async () => {
                     await triggerHaptic();
-                    setShowCategories(false);
+                    dispatch(closeCategoryDrawer());
                   }}
                   className="flex items-center gap-3 px-3 py-2 rounded-lg border hover:bg-secondary"
                 >
@@ -210,7 +219,7 @@ export default function MobileNavbar() {
               href="/builder"
               onClick={async () => {
                 await triggerHaptic();
-                setShowCategories(false);
+                dispatch(closeCategoryDrawer());
               }}
               className="mt-3 block rounded-lg border px-3 py-2 text-center text-sm font-medium hover:bg-secondary"
             >
@@ -225,7 +234,7 @@ export default function MobileNavbar() {
         <button
           onClick={async () => {
             await triggerHaptic();
-            setShowCategories((prev) => !prev);
+            dispatch(toggleCategoryDrawer());
           }}
           aria-label="Categories"
         >

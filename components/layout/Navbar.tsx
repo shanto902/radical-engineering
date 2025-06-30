@@ -30,14 +30,17 @@ import BreadcrumbBanner from "../common/BreadCrumb";
 import { openCartSidebar } from "@/store/cartUISlice";
 import TopBar from "./header/TopBar";
 import PaddingContainer from "../common/PaddingContainer";
+import { closeMenu, toggleMenu } from "@/store/uiSlice";
 
 const Navbar = ({ settings }: { settings: TSettings }) => {
+  const dispatch = useDispatch<AppDispatch>(); // ✅ Typed dispatch
+
   const pathname = usePathname();
   const router = useRouter();
   const [categories, setCategories] = useState<
     { name: string; slug: string; image?: string }[]
   >([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const menuOpen = useSelector((state: RootState) => state.ui.menuOpen);
   const [hoveringMenu, setHoveringMenu] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState<number>(-1); // -1 means nothing selected
@@ -53,7 +56,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
     setHasMounted(true);
   }, []);
   useEffect(() => {
-    if (isOpen) {
+    if (menuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -62,7 +65,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen]);
+  }, [menuOpen]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -76,7 +79,6 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
     };
     fetchCategories();
   }, []);
-  const dispatch = useDispatch<AppDispatch>(); // ✅ Typed dispatch
 
   useEffect(() => {
     if (!debouncedQuery.trim()) {
@@ -234,7 +236,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                     }
 
                     setQuery("");
-                    setIsOpen(false);
+                    dispatch(closeMenu());
                     setActiveIndex(-1);
                   }
                 }}
@@ -267,7 +269,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                         )}
                         onClick={() => {
                           setQuery("");
-                          setIsOpen(false);
+                          dispatch(closeMenu());
                           setActiveIndex(-1);
                         }}
                       >
@@ -294,7 +296,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
                         )}
                         onClick={() => {
                           setQuery("");
-                          setIsOpen(false);
+                          dispatch(closeMenu());
                           setActiveIndex(-1);
                         }}
                       >
@@ -437,15 +439,15 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
             <ThemeToggle />
             <button
               aria-label="Toggle Mobile Menu"
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => dispatch(toggleMenu())}
             >
-              {isOpen ? <X size={26} /> : <Menu size={26} />}
+              {menuOpen ? <X size={26} /> : <Menu size={26} />}
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        {isOpen && (
+        {menuOpen && (
           <div className="fixed inset-x-0 top-[72px]  overflow-y-auto z-50 md:hidden backdrop-blur-lg bg-white dark:bg-backgroundDark px-4 pt-3  border-t shadow">
             <div className="mb-4 relative">
               <input
@@ -459,7 +461,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
                     e.preventDefault();
                     router.push(`/search?query=${encodeURIComponent(query)}`);
                     setQuery("");
-                    setIsOpen(false); // optional
+                    dispatch(closeMenu()); // optional
                   }
                 }}
                 className="w-full border bg-background rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -530,7 +532,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
                     <Link
                       href={navItem.link || "#"}
                       aria-label={`Go to ${navItem.label} Page`}
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => dispatch(closeMenu())}
                       className={`block py-2 text-base font-medium transition hover:text-primary ${
                         pathname === navItem.link
                           ? "text-primary"
@@ -545,7 +547,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
                         aria-label={`Go to ${item.label} Page`}
                         key={idx}
                         href={item.link}
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => dispatch(closeMenu())}
                         className="block pl-4 py-2 text-base text-foreground hover:text-primary"
                       >
                         {item.label}
@@ -555,7 +557,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
                       <Link
                         className="block pl-4 py-2 text-base text-foreground hover:text-primary"
                         href={"/categories"}
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => dispatch(closeMenu())}
                       >
                         View All Products
                       </Link>
@@ -566,7 +568,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
               <Link
                 href={"/order-tracker"}
                 className="block py-2 text-base text-foreground hover:text-primary"
-                onClick={() => setIsOpen(false)}
+                onClick={() => dispatch(closeMenu())}
               >
                 Track Order
               </Link>
@@ -576,7 +578,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
               <Link
                 href="/wishlist"
                 aria-label={`Go to Whishlist Page`}
-                onClick={() => setIsOpen(false)}
+                onClick={() => dispatch(closeMenu())}
                 className=" text-center mt-3  bg-primary text-background relative py-3 w-fit px-4 rounded-full flex items-center gap-2  font-semibold hover:shadow-lg transition"
               >
                 <Heart /> View Wishlist
@@ -585,7 +587,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
               <Link
                 href="/builder"
                 aria-label={`Go to System Builder Page`}
-                onClick={() => setIsOpen(false)}
+                onClick={() => dispatch(closeMenu())}
                 className=" text-center mt-3  bg-primary text-background relative py-3 w-fit px-4 rounded-full flex items-center gap-2  font-semibold hover:shadow-lg transition"
               >
                 <Cog /> System Builder

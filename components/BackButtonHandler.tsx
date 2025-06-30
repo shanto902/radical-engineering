@@ -3,19 +3,24 @@
 import { useEffect, useRef, useState } from "react";
 import { App as CapacitorApp } from "@capacitor/app";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
-import { isNativeApp } from "@/components/common/isNativeApp";
 import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { closeCartSidebar } from "@/store/cartUISlice";
 import { RootState } from "@/store";
+import { closeSearch, closeCategoryDrawer } from "@/store/uiSlice";
+import { isNativeApp } from "@/components/common/isNativeApp";
 
 export default function BackButtonHandler() {
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
   const [showDialog, setShowDialog] = useState(false);
   const dispatch = useDispatch();
+
   const isCartOpen = useSelector(
     (state: RootState) => state.cartUI.isSidebarOpen
+  );
+  const { searchOpen, categoryDrawerOpen } = useSelector(
+    (state: RootState) => state.ui
   );
 
   // Keep latest pathname
@@ -23,7 +28,52 @@ export default function BackButtonHandler() {
     pathnameRef.current = pathname;
   }, [pathname]);
 
-  // Setup native back button handling
+  // 🔁 Shared Back Handling Logic
+  const handleBack = async (isNative = false) => {
+    if (searchOpen) {
+      dispatch(closeSearch());
+      if (isNative) await Haptics.impact({ style: ImpactStyle.Light });
+      return;
+    }
+
+    if (categoryDrawerOpen) {
+      dispatch(closeCategoryDrawer());
+      if (isNative) await Haptics.impact({ style: ImpactStyle.Light });
+      return;
+    }
+
+    if (isCartOpen) {
+      dispatch(closeCartSidebar());
+      if (isNative) await Haptics.impact({ style: ImpactStyle.Medium });
+      return;
+    }
+
+    const currentPath = pathnameRef.current;
+    if (currentPath === "/mobile") {
+      if (isNative) await Haptics.impact({ style: ImpactStyle.Medium });
+      setShowDialog(true);
+    } else {
+      if (currentPath.startsWith("/categories/all")) {
+        sessionStorage.setItem("shop-scroll-y", window.scrollY.toString());
+      }
+      window.history.back();
+    }
+  };
+
+  // 🌐 Web back button support
+  useEffect(() => {
+    const browserHandler = (e: PopStateEvent) => {
+      e.preventDefault();
+      handleBack(false);
+    };
+
+    window.addEventListener("popstate", browserHandler);
+    return () => {
+      window.removeEventListener("popstate", browserHandler);
+    };
+  }, [searchOpen, categoryDrawerOpen, isCartOpen]);
+
+  // 📱 Capacitor back button support
   useEffect(() => {
     if (!isNativeApp()) return;
 
@@ -31,44 +81,19 @@ export default function BackButtonHandler() {
       const listener = await CapacitorApp.addListener(
         "backButton",
         async () => {
-          const currentPath = pathnameRef.current;
-
-          // ✅ If cart is open, close it first
-          if (isCartOpen) {
-            dispatch(closeCartSidebar());
-            await Haptics.impact({ style: ImpactStyle.Medium });
-            return;
-          }
-
-          if (currentPath === "/mobile") {
-            await Haptics.impact({ style: ImpactStyle.Medium });
-            setShowDialog(true);
-          } else {
-            if (currentPath.startsWith("/categories/all")) {
-              sessionStorage.setItem(
-                "shop-scroll-y",
-                window.scrollY.toString()
-              );
-            }
-
-            window.history.back();
-          }
+          await handleBack(true);
         }
       );
-
-      return () => {
-        listener.remove();
-      };
+      return () => listener.remove();
     };
 
     const cleanupPromise = setupListener();
-
     return () => {
       cleanupPromise.then((remove) => remove?.());
     };
-  }, [isCartOpen, dispatch]);
+  }, [searchOpen, categoryDrawerOpen, isCartOpen]);
 
-  // Handle exit
+  // 🛑 Confirm Exit Modal
   const confirmExit = async () => {
     await Haptics.impact({ style: ImpactStyle.Heavy });
     CapacitorApp.exitApp();

@@ -6,10 +6,14 @@ import projectReducer from "./projectSlice";
 import themeReducer from "./themeSlice";
 import cartUIReducer from "./cartUISlice";
 import categoryReducer from "./categorySlice";
+import uiReducer from "./uiSlice"; // ✅ ADD THIS LINE
+
 import { loadFromLocalStorage, saveToLocalStorage } from "./persistConfig";
+
 import type { CartState } from "./cartSlice";
 import type { WishlistState } from "./wishlistSlice";
 import type { ThemeState } from "./themeSlice";
+
 const preloadedState: {
   cart: CartState;
   wishlist: WishlistState;
@@ -17,7 +21,7 @@ const preloadedState: {
 } = {
   cart: loadFromLocalStorage<CartState>("cart") || { items: [] },
   wishlist: loadFromLocalStorage<WishlistState>("wishlist") || { items: [] },
-  theme: loadFromLocalStorage<ThemeState>("theme") || { mode: "light" }, // ← FIXED HERE
+  theme: loadFromLocalStorage<ThemeState>("theme") || { mode: "light" },
 };
 
 export const store = configureStore({
@@ -29,6 +33,7 @@ export const store = configureStore({
     cartUI: cartUIReducer,
     projects: projectReducer,
     categories: categoryReducer,
+    ui: uiReducer, // ✅ INCLUDE HERE
   },
   preloadedState,
 });
@@ -37,7 +42,7 @@ store.subscribe(() => {
   const state = store.getState();
   saveToLocalStorage("cart", state.cart);
   saveToLocalStorage("wishlist", state.wishlist);
-  saveToLocalStorage("theme", state.theme); // ← PERSIST THEME
+  saveToLocalStorage("theme", state.theme);
 });
 
 export type RootState = ReturnType<typeof store.getState>;
