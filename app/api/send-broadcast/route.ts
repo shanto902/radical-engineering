@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
-
-const FCM_SERVER_KEY = process.env.FCM_SERVER_KEY!;
+import admin from "@/lib/firebaseAdmin";
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -22,35 +21,35 @@ export async function POST(req: Request) {
   }
 
   try {
-    // 1. Get all device tokens from Directus
+    // 1. Fetch tokens
     const tokens = await directus.request(
       readItems("device_tokens", { fields: ["token"], limit: -1 })
     );
 
-    // 2. Prepare fetch POST requests to FCM
-    const requests = tokens.map((t) =>
-      fetch("https://fcm.googleapis.com/fcm/send", {
-        method: "POST",
-        headers: {
-          Authorization: `key=${FCM_SERVER_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to: t.token,
-          notification: {
-            title,
-            body: message,
-          },
-        }),
-      })
-    );
+    const deviceTokens = tokens.map((t) => t.token);
 
-    // 3. Execute all in parallel
-    const results = await Promise.allSettled(requests);
+    if (deviceTokens.length === 0) {
+      return NextResponse.json(
+        { error: "No device tokens found" },
+        { status: 404 }
+      );
+    }
+
+    // 2. Send broadcast
+    const response = await admin.messaging().sendEach(
+      deviceTokens.map((token) => ({
+        token,
+        notification: {
+          title,
+          body: message,
+        },
+      }))
+    );
 
     return NextResponse.json({
       success: true,
-      sent: results.filter((r) => r.status === "fulfilled").length,
+      sent: response.successCount,
+      failed: response.failureCount,
     });
   } catch (err) {
     console.error("Push broadcast error:", err);

@@ -25,6 +25,7 @@
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "date-fns": "4.1.0",
+    "firebase-admin": "^13.4.0",
     "fontfaceobserver": "^2.3.0",
     "html-react-parser": "^5.2.5",
     "html2canvas": "^1.4.1",
