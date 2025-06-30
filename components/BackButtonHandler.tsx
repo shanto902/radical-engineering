@@ -57,7 +57,7 @@ export default function BackButtonHandler() {
       if (isNative) await Haptics.impact({ style: ImpactStyle.Medium });
       setShowDialog(true);
     } else {
-      if (currentPath.startsWith("/categories/all")) {
+      if (currentPath.startsWith("/categories")) {
         sessionStorage.setItem("shop-scroll-y", window.scrollY.toString());
       }
       window.history.back();
@@ -65,12 +65,23 @@ export default function BackButtonHandler() {
   };
 
   useEffect(() => {
-    const browserHandler = (e: PopStateEvent) => {
-      e.preventDefault();
-      handleBack(false);
+    const browserHandler = () => {
+      // If any drawer is open, close it instead of navigating back
+      if (searchOpen || categoryDrawerOpen || menuOpen || isCartOpen) {
+        handleBack(false);
+        // Immediately push state again to trap user in history stack
+        history.pushState(null, "", location.href);
+      } else {
+        // Let the native back happen
+        window.removeEventListener("popstate", browserHandler);
+        history.back();
+      }
     };
 
+    // Push a fake state to trap user
+    history.pushState(null, "", location.href);
     window.addEventListener("popstate", browserHandler);
+
     return () => {
       window.removeEventListener("popstate", browserHandler);
     };
