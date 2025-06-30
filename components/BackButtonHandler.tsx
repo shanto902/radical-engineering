@@ -5,11 +5,18 @@ import { App as CapacitorApp } from "@capacitor/app";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { isNativeApp } from "@/components/common/isNativeApp";
 import { usePathname } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { closeCartSidebar } from "@/store/cartUISlice";
+import { RootState } from "@/store";
 
 export default function BackButtonHandler() {
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
   const [showDialog, setShowDialog] = useState(false);
+  const dispatch = useDispatch();
+  const isCartOpen = useSelector(
+    (state: RootState) => state.cartUI.isSidebarOpen
+  );
 
   // Keep latest pathname
   useEffect(() => {
@@ -25,6 +32,13 @@ export default function BackButtonHandler() {
         "backButton",
         async () => {
           const currentPath = pathnameRef.current;
+
+          // ✅ If cart is open, close it first
+          if (isCartOpen) {
+            dispatch(closeCartSidebar());
+            await Haptics.impact({ style: ImpactStyle.Medium });
+            return;
+          }
 
           if (currentPath === "/mobile") {
             await Haptics.impact({ style: ImpactStyle.Medium });
@@ -52,7 +66,7 @@ export default function BackButtonHandler() {
     return () => {
       cleanupPromise.then((remove) => remove?.());
     };
-  }, []);
+  }, [isCartOpen, dispatch]);
 
   // Handle exit
   const confirmExit = async () => {
