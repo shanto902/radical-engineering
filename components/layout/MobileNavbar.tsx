@@ -180,7 +180,7 @@ export default function MobileNavbar() {
             </h3>
 
             <Link
-              href="/categories"
+              href="/categories/all"
               onClick={async () => {
                 await triggerHaptic();
                 dispatch(closeCategoryDrawer());
