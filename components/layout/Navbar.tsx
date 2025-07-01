@@ -448,7 +448,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="fixed inset-x-0 top-[72px]  overflow-y-auto z-50 md:hidden backdrop-blur-lg bg-white dark:bg-backgroundDark px-4 pt-3  border-t shadow">
+          <div className="fixed inset-x-0 top-[72px] mb-[72px]  overflow-y-auto z-50 md:hidden backdrop-blur-lg bg-white dark:bg-backgroundDark px-4 pt-3  border-t shadow">
             <div className="mb-4 relative">
               <input
                 aria-label="Got to search"
