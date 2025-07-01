@@ -448,7 +448,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="fixed inset-x-0 top-[72px] mb-[72px]  overflow-y-auto z-50 md:hidden backdrop-blur-lg bg-white dark:bg-backgroundDark px-4 pt-3  border-t shadow">
+          <div className="fixed inset-x-0 top-[72px] h-screen  overflow-y-auto z-50 md:hidden backdrop-blur-lg bg-white dark:bg-backgroundDark px-4 pt-3 border-t shadow">
             <div className="mb-4 relative">
               <input
                 aria-label="Got to search"
@@ -515,7 +515,7 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
               )}
             </div>
 
-            <div className="overflow-y-auto max-h-[calc(100vh-240px)] mb-4">
+            <div className="overflow-y-auto max-h-[calc(100vh-180px)] mb-4">
               {settings.menu?.map((navItem, i) => {
                 const isDynamicCategoryMenu = navItem.sub_menu?.some(
                   (s) => s.categories === true
@@ -572,26 +572,25 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
               >
                 Track Order
               </Link>
-            </div>
+              <div className="flex flex-wrap items-center  gap-4 w-full mb-20">
+                <Link
+                  href="/wishlist"
+                  aria-label={`Go to Whishlist Page`}
+                  onClick={() => dispatch(closeMenu())}
+                  className=" text-center mt-3  bg-primary text-background relative py-3 w-fit px-4 rounded-full flex items-center gap-2  font-semibold hover:shadow-lg transition"
+                >
+                  <Heart /> View Wishlist
+                </Link>
 
-            <div className="flex items-center  gap-4 w-full mb-10">
-              <Link
-                href="/wishlist"
-                aria-label={`Go to Whishlist Page`}
-                onClick={() => dispatch(closeMenu())}
-                className=" text-center mt-3  bg-primary text-background relative py-3 w-fit px-4 rounded-full flex items-center gap-2  font-semibold hover:shadow-lg transition"
-              >
-                <Heart /> View Wishlist
-              </Link>
-
-              <Link
-                href="/builder"
-                aria-label={`Go to System Builder Page`}
-                onClick={() => dispatch(closeMenu())}
-                className=" text-center mt-3  bg-primary text-background relative py-3 w-fit px-4 rounded-full flex items-center gap-2  font-semibold hover:shadow-lg transition"
-              >
-                <Cog /> System Builder
-              </Link>
+                <Link
+                  href="/builder"
+                  aria-label={`Go to System Builder Page`}
+                  onClick={() => dispatch(closeMenu())}
+                  className=" text-center mt-3  bg-primary text-background relative py-3 w-fit px-4 rounded-full flex items-center gap-2  font-semibold hover:shadow-lg transition"
+                >
+                  <Cog /> System Builder
+                </Link>
+              </div>
             </div>
           </div>
         )}
