@@ -2,6 +2,7 @@ import BannerBlock from "@/components/blocks/BannerBlock";
 import BrandBlock from "@/components/blocks/BrandBlock";
 import FeaturedCategoriesBlock from "@/components/blocks/FeaturedCategoriesBlock";
 import FeaturedProductsBlock from "@/components/blocks/FeaturedProductsBlock";
+import GoogleReviewBlock from "@/components/blocks/GoogleReviewBlock";
 import HeroBlock from "@/components/blocks/HeroBlock";
 import ProjectsBlock from "@/components/blocks/ProjectsBlock";
 import { fetchPage, fetchPages } from "@/helper/fetchFromDirectus";
@@ -142,12 +143,12 @@ const renderBlock = (block: TBlock) => {
           <ProjectsBlock key={block.id} block={block} />
         </Suspense>
       );
-    // case "block_two_columns":
-    //   return (
-    //     <Suspense key={block.id}>
-    //       <TwoColumnBlock key={block.id} block={block as TTwoColumnBlock} />
-    //     </Suspense>
-    //   );
+    case "block_google_reviews":
+      return (
+        <Suspense key={block.id}>
+          <GoogleReviewBlock key={block.id} />
+        </Suspense>
+      );
     // case "block_partners":
     //   return (
     //     <Suspense key={block.id}>

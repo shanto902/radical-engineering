@@ -41,6 +41,7 @@
     "react-cookie-consent": "^9.0.0",
     "react-dom": "^19.1.0",
     "react-fast-marquee": "^1.6.5",
+    "react-google-reviews": "^1.7.4",
     "react-hot-toast": "^2.5.2",
     "react-inner-image-zoom": "^4.0.1",
     "react-medium-image-zoom": "^5.2.14",

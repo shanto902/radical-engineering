@@ -1,7 +1,9 @@
+import GoogleReviewBlock from "@/components/blocks/GoogleReviewBlock";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import CheckoutPage from "@/components/pages/CheckoutPage";
 import { Metadata } from "next";
 import React from "react";
+
 export const metadata: Metadata = {
   title: "Checkout | Radical Engineering",
   description: "Checkout page of Radical Engineering",
@@ -28,6 +30,7 @@ const PageCheckout = () => {
   return (
     <PaddingContainer>
       <CheckoutPage />
+      <GoogleReviewBlock />
     </PaddingContainer>
   );
 };

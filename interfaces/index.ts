@@ -4,7 +4,8 @@ export type TBlock =
   | TBannerBlock
   | TBrandBlock
   | TFeaturedProductsBlock
-  | TProjectsBlock;
+  | TProjectsBlock
+  | TGoogleReview;
 
 export type THeroBlock = {
   collection: "block_hero";
@@ -12,6 +13,11 @@ export type THeroBlock = {
   item: {
     sliders: TSlider[];
   };
+};
+
+export type TGoogleReview = {
+  collection: "block_google_reviews";
+  id: string;
 };
 export type TBrand = {
   logo?: string;
