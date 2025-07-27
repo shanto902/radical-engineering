@@ -154,7 +154,7 @@ const MobilePage = async () => {
                       height={200}
                       className="w-full aspect-square object-contain bg-white rounded mb-2"
                     />
-                    <div className="text-sm font-medium line-clamp-2">
+                    <div className="text-sm  line-clamp-2 font-medium">
                       {product.name}
                     </div>
                     <div className="text-xs text-muted-foreground">
