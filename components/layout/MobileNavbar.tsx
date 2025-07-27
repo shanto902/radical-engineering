@@ -234,7 +234,17 @@ export default function MobileNavbar() {
               }}
               className="mt-3 block rounded-lg border px-3 py-2 text-center text-sm font-medium hover:bg-secondary"
             >
-              System Builder
+              🛠️ System Builder
+            </Link>
+            <Link
+              href="/contact-us"
+              onClick={async () => {
+                await triggerHaptic();
+                dispatch(closeCategoryDrawer());
+              }}
+              className="mt-3 block rounded-lg border px-3 py-2 text-center text-sm font-medium hover:bg-secondary"
+            >
+              ✉️ Contact Us
             </Link>
           </div>
         </>

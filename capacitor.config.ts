@@ -5,8 +5,8 @@ const config: CapacitorConfig = {
   appName: "Radical Engineering",
   webDir: "public",
   server: {
-    url: "https://radicalengineering.com.bd/mobile",
-    // url: "http://192.168.0.220:3000/mobile",
+    // url: "https://radicalengineering.com.bd/mobile",
+    url: "http://192.168.0.220:3000/mobile",
     cleartext: true,
   },
   plugins: {
