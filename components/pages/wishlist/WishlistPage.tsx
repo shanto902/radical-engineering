@@ -87,28 +87,28 @@ const WishlistPage = () => {
 
               {/* Price */}
               <div className="mt-1 text-lg font-bold">
-                {showDiscount ? (
+                {Number(product.price) === 0 ? (
+                  <p className="text-primary">Call for Price</p>
+                ) : showDiscount && product.discounted_price ? (
                   <div className="text-primary">
-                    ৳{" "}
-                    {product.discounted_price &&
-                      product.discounted_price.toLocaleString()}{" "}
-                    <span className=" line-through text-sm ml-1">
-                      ৳ {product.price.toLocaleString()}
+                    ৳ {Number(product.discounted_price).toLocaleString()}
+                    <span className="line-through text-sm ml-1">
+                      ৳ {Number(product.price).toLocaleString()}
                     </span>
                   </div>
                 ) : (
                   <p className="text-primary">
-                    ৳ {product.price.toLocaleString()}
+                    ৳ {Number(product.price).toLocaleString()}
                   </p>
                 )}
               </div>
 
               {/* Buttons */}
-              <div className="flex items-center justify-between mt-4">
-                <button
-                  aria-label="Add to Cart"
-                  onClick={() => {
-                    if (product.status === "in-stock") {
+              {product.status === "in-stock" && Number(product.price) !== 0 && (
+                <div className="flex items-center justify-between mt-4">
+                  <button
+                    aria-label="Add to Cart"
+                    onClick={() => {
                       dispatch(
                         addToCart({
                           ...product,
@@ -121,38 +121,29 @@ const WishlistPage = () => {
                         message: "Product added to cart!",
                         id: `cart-add-${product.id}`,
                       });
-                    }
-                  }}
-                  disabled={product.status !== "in-stock"}
-                  title={
-                    product.status === "in-stock"
-                      ? "Add this item to your cart"
-                      : "Product is out of stock"
-                  }
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded transition ${
-                    product.status === "in-stock"
-                      ? "bg-primary text-background hover:bg-secondary hover:text-foreground"
-                      : "bg-gray-300 text-foreground cursor-not-allowed"
-                  }`}
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                  Add to Cart
-                </button>
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded transition bg-primary text-background hover:bg-secondary hover:text-foreground"
+                    title="Add this item to your cart"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Add to Cart
+                  </button>
 
-                <button
-                  aria-label="Wishlist Toggle"
-                  onClick={() => {
-                    dispatch(removeFromWishlist(product.id));
-                    toast("Removed from wishlist", {
-                      icon: "💔",
-                    });
-                  }}
-                  title="Remove from wishlist"
-                  className="text-red-500 hover:text-red-700 transition"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              </div>
+                  <button
+                    aria-label="Wishlist Toggle"
+                    onClick={() => {
+                      dispatch(removeFromWishlist(product.id));
+                      toast("Removed from wishlist", {
+                        icon: "💔",
+                      });
+                    }}
+                    title="Remove from wishlist"
+                    className="text-red-500 hover:text-red-700 transition"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}

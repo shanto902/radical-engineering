@@ -194,93 +194,104 @@ export default function ProductPage({ product }: { product: TProduct }) {
               )}
             </p>
 
-            {product.discounted_price ? (
+            {Number(product.price) === 0 ? (
+              <div className="flex items-center gap-4 my-3">
+                <span className="text-yellow-500 text-2xl font-bold">
+                  Call for Price
+                </span>
+              </div>
+            ) : product.discounted_price ? (
               <div className="flex items-center gap-4 my-3">
                 <span className="line-through text-gray-400 text-xl font-medium">
-                  {product.price}৳
+                  {Number(product.price).toLocaleString()}৳
                 </span>
                 <span className="text-green-600 dark:text-green-400 text-2xl font-bold">
-                  {product.discounted_price}৳
+                  {Number(product.discounted_price).toLocaleString()}৳
                 </span>
               </div>
             ) : (
               <div className="flex items-center gap-4 my-3">
                 <span className="text-green-600 dark:text-green-400 text-2xl font-bold">
-                  {product.price}৳
+                  {Number(product.price).toLocaleString()}৳
                 </span>
               </div>
             )}
+
             <Body className="rich-text mb-4">{product.short_description}</Body>
           </div>
 
           <div>
-            <div className="flex md:items-center flex-col md:flex-row gap-5   md:justify-between mb-6">
-              <div className=" flex items-center gap-2 place-self-end">
-                <label className="text-base font-medium ">Quantity:</label>
-                <div className="flex items-center gap-2">
-                  <button
-                    aria-label="Quantity Decrement"
-                    type="button"
-                    onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                    className="bg-primary hover:secondary text-background hover:bg-secondary hover:text-foreground font-bold py-2 px-2 rounded-full"
-                  >
-                    <Minus size={16} />
-                  </button>
+            {Number(product.price) !== 0 && (
+              <div className="flex md:items-center flex-col md:flex-row gap-5   md:justify-between mb-6">
+                <div className=" flex items-center gap-2 place-self-end">
+                  <label className="text-base font-medium ">Quantity:</label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      aria-label="Quantity Decrement"
+                      type="button"
+                      onClick={() =>
+                        setQuantity((prev) => Math.max(1, prev - 1))
+                      }
+                      className="bg-primary hover:secondary text-background hover:bg-secondary hover:text-foreground font-bold py-2 px-2 rounded-full"
+                    >
+                      <Minus size={16} />
+                    </button>
 
-                  <input
-                    type="number"
-                    min={1}
-                    value={quantity}
-                    onChange={(e) =>
-                      setQuantity(Math.max(1, Number(e.target.value)))
+                    <input
+                      type="number"
+                      min={1}
+                      value={quantity}
+                      onChange={(e) =>
+                        setQuantity(Math.max(1, Number(e.target.value)))
+                      }
+                      className="w-16 text-center accent-primary border bg-background border-foreground py-1 rounded-full text-base font-semibold"
+                    />
+
+                    <button
+                      aria-label="Quantity Increment"
+                      type="button"
+                      onClick={() => setQuantity((prev) => prev + 1)}
+                      className="bg-primary hover:secondary text-background hover:bg-secondary hover:text-foreground font-bold py-2 px-2 rounded-full"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 ">
+                  <button
+                    aria-label="Add to Cart"
+                    onClick={() =>
+                      product.status === "in-stock"
+                        ? handleAddToCart()
+                        : showCustomToast({
+                            icon: CircleAlert,
+                            message: "Product Not Available",
+                            id: `cart-not-${product.id}`,
+                          })
                     }
-                    className="w-16 text-center accent-primary border bg-background border-foreground py-1 rounded-full text-base font-semibold"
-                  />
-
-                  <button
-                    aria-label="Quantity Increment"
-                    type="button"
-                    onClick={() => setQuantity((prev) => prev + 1)}
-                    className="bg-primary hover:secondary text-background hover:bg-secondary hover:text-foreground font-bold py-2 px-2 rounded-full"
+                    className="md:w-fit w-full px-5 bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
                   >
-                    <Plus size={16} />
+                    Add to Cart
+                  </button>
+                  <button
+                    aria-label="Buy Now"
+                    onClick={() =>
+                      product.status === "in-stock"
+                        ? handleBuyNow()
+                        : showCustomToast({
+                            icon: CircleAlert,
+                            message: "Product Not Available",
+                            id: `cart-not-${product.id}`,
+                          })
+                    }
+                    className="md:w-fit w-full px-5  bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
+                  >
+                    Buy Now
                   </button>
                 </div>
               </div>
-
-              <div className="flex gap-4 ">
-                <button
-                  aria-label="Add to Cart"
-                  onClick={() =>
-                    product.status === "in-stock"
-                      ? handleAddToCart()
-                      : showCustomToast({
-                          icon: CircleAlert,
-                          message: "Product Not Available",
-                          id: `cart-not-${product.id}`,
-                        })
-                  }
-                  className="md:w-fit w-full px-5 bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
-                >
-                  Add to Cart
-                </button>
-                <button
-                  aria-label="Buy Now"
-                  onClick={() =>
-                    product.status === "in-stock"
-                      ? handleBuyNow()
-                      : showCustomToast({
-                          icon: CircleAlert,
-                          message: "Product Not Available",
-                          id: `cart-not-${product.id}`,
-                        })
-                  }
-                  className="md:w-fit w-full px-5  bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
-                >
-                  Buy Now
-                </button>
-              </div>
-            </div>
+            )}
 
             <div className="flex items-center justify-between mb-2 text-sm ">
               <button
