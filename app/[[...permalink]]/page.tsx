@@ -19,9 +19,10 @@ import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import React, { Suspense } from "react";
 
+// Define PageProps for catch-all route
 interface PageProps {
   params: Promise<{
-    permalink: string;
+    permalink?: string[]; // Optional array for catch-all
   }>;
 }
 
@@ -31,11 +32,14 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   try {
     const { permalink } = await params;
+    // Default to "home" for root route (/)
+    const slug = permalink?.[0] || "home";
+
     const result = await directus.request(
       readItems("pages", {
         filter: {
           permalink: {
-            _eq: permalink,
+            _eq: slug,
           },
         },
         limit: 1,
@@ -50,33 +54,27 @@ export async function generateMetadata(
       };
     }
 
+    const page = result[0];
     const previousImages = (await parent).openGraph?.images || [];
-    if (result && result.length > 0) {
-      const page = result[0];
-      return {
-        title: page.seo.title || page.name || "No description available",
-        description: page.seo.meta_description || "",
-        alternates: {
-          canonical: `https://www.radicalengineering.com.bd/${page.permalink}`,
-        },
-        openGraph: {
-          images: page.seo.og_image
-            ? [
-                {
-                  url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${page.seo.og_image}`,
-                },
-              ]
-            : [...previousImages],
-        },
-        twitter: {
-          card: "summary_large_image",
-        },
-      };
-    }
 
     return {
-      title: "Page not found",
-      description: "This page does not exist.",
+      title: page.seo?.title || page.name || "No description available",
+      description: page.seo?.meta_description || "",
+      alternates: {
+        canonical: `https://www.radicalengineering.com.bd/${page.permalink}`,
+      },
+      openGraph: {
+        images: page.seo?.og_image
+          ? [
+              {
+                url: `${process.env.NEXT_PUBLIC_ASSETS_URL}${page.seo.og_image}`,
+              },
+            ]
+          : [...previousImages],
+      },
+      twitter: {
+        card: "summary_large_image",
+      },
     };
   } catch (error) {
     console.error("Error fetching page metadata:", error);
@@ -91,11 +89,11 @@ export async function generateStaticParams() {
   try {
     const pages = await fetchPages();
     return pages?.map((page) => ({
-      permalink: page.permalink,
+      permalink: page.permalink === "home" ? [] : [page.permalink], // Empty array for home
     }));
   } catch (error) {
     console.error("Error generating static params:", error);
-    throw new Error("Error fetching categories");
+    throw new Error("Error fetching pages");
   }
 }
 
@@ -149,67 +147,22 @@ const renderBlock = (block: TBlock) => {
           <GoogleReviewBlock key={block.id} />
         </Suspense>
       );
-    // case "block_partners":
-    //   return (
-    //     <Suspense key={block.id}>
-    //       <PartnerBlock key={block.id} block={block as TPartnerBlock} />
-    //     </Suspense>
-    //   );
-
-    // case "block_inspired_gallery":
-    //   return (
-    //     <Suspense key={block.id}>
-    //       <InspiredGalleryBlock
-    //         key={block.id}
-    //         block={block as TInspiredGalleryBlock}
-    //       />
-    //     </Suspense>
-    //   );
-    // case "block_testimonial":
-    //   return (
-    //     <Suspense key={block.id}>
-    //       <TestimonialBlock key={block.id} block={block as TTestimonialBlock} />
-    //     </Suspense>
-    //   );
-    // case "block_blogs":
-    //   return (
-    //     <Suspense key={block.id}>
-    //       <BlogBlock key={block.id} block={block as TBlogBlogs} />
-    //     </Suspense>
-    //   );
-    // case "block_product_showcase":
-    //   return (
-    //     <Suspense key={block.id}>
-    //       <ProductShowcaseBlock
-    //         key={block.id}
-    //         block={block as TProductShowCaseBlock}
-    //       />
-    //     </Suspense>
-    //   );
-    // case "block_breadcrumb":
-    //   return (
-    //     <Suspense key={block.id}>
-    //       <BreadcrumbBlock key={block.id} block={block as TBreadcrumbBlock} />
-    //     </Suspense>
-    //   );
-    // case "block_one_cloumn":
-    //   return (
-    //     <Suspense key={block.id}>
-    //       <OneColumnBlock key={block.id} block={block as TOneColumnBlock} />
-    //     </Suspense>
-    //   );
     default:
-      return <h2 key={(block as TBlock).id}>Unknown Block Type</h2>;
+      return <h2>Unknown Block Type</h2>;
   }
 };
 
-const page = async ({ params }: PageProps) => {
+const Page = async ({ params }: PageProps) => {
   const { permalink } = await params;
-  const pageData = await fetchPage(permalink);
+  // Default to "home" for root route (/)
+  const slug = permalink?.[0] || "home";
+
+  const pageData = await fetchPage(slug);
 
   if (!pageData) {
     notFound();
   }
+
   return (
     <section key={pageData.id}>
       {pageData.blocks?.map((block) => renderBlock(block))}
@@ -217,4 +170,4 @@ const page = async ({ params }: PageProps) => {
   );
 };
 
-export default page;
+export default Page;

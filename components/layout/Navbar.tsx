@@ -190,7 +190,7 @@ const Navbar = ({ settings }: { settings: TSettings }) => {
       </PaddingContainer>
       <nav className="backdrop-blur-lg bg-backgroundLight/80 h-[72px] dark:bg-backgroundDark/80    sticky top-0 transition-all duration-300 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/home">
+          <Link href="/">
             {hasMounted && (
               <Image
                 src={theme === "light" ? logo : logoDark}
