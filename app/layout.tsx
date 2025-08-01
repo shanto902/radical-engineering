@@ -23,15 +23,7 @@ import Script from "next/script";
 import CookieBanner from "@/components/common/CookieBanner";
 import { headers } from "next/headers";
 import SafeAreaWrapper from "@/components/layout/SafeAreaWrapper";
-
 import { Figtree } from "next/font/google";
-
-export const figtree = Figtree({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // customize as needed
-  variable: "--font-figtree", // optional if you want to use as CSS var
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title:
@@ -39,6 +31,13 @@ export const metadata: Metadata = {
   description:
     "Buy solar panels, batteries, inverters, IPS, and accessories in Bangladesh from Radical Engineering. Trusted quality, great prices, fast delivery, and warranty.",
 };
+
+export const figtree = Figtree({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"], // customize as needed
+  variable: "--font-figtree", // optional if you want to use as CSS var
+  display: "swap",
+});
 
 export default async function RootLayout({
   children,

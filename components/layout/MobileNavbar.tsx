@@ -28,7 +28,6 @@ import {
   toggleCategoryDrawer,
   toggleSearch,
 } from "@/store/uiSlice";
-import { figtree } from "@/app/layout";
 
 const triggerHaptic = async (style: ImpactStyle = ImpactStyle.Medium) => {
   if (isNativeApp()) {
@@ -118,10 +117,7 @@ export default function MobileNavbar() {
               />
             </div>
           ) : (
-            <Link
-              href="/mobile"
-              className={`text-lg  font-bold text-primary ${figtree.className}`}
-            >
+            <Link href="/mobile" className={`text-lg  font-bold text-primary `}>
               Radical Engineering
             </Link>
           )}
