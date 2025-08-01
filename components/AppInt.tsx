@@ -32,8 +32,8 @@ export default function AppInit() {
   useEffect(() => {
     const waitForFonts = async () => {
       try {
-        const lato = new FontFaceObserver("Lato");
-        await lato.load(null, 3000);
+        const figtree = new FontFaceObserver("Figtree");
+        await figtree.load(null, 3000);
       } catch {
         console.warn("⚠️ Font load timeout");
       }

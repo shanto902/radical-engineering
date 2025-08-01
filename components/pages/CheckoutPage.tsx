@@ -135,7 +135,7 @@ export default function CheckoutPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
       {/* Shipping Info */}
-      <div className=" p-6 shadow-md order-2 rounded-lg border">
+      <div className=" p-6 order-2  rounded-lg ">
         <h1 className="text-2xl font-bold mb-6">Shipping Information</h1>
         <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
           {/* Phone Number */}
@@ -202,7 +202,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* Order Summary */}
-      <div className="p-4 sm:p-6 shadow-md order-1 rounded-lg border relative">
+      <div className="p-4 sm:p-6  order-1 rounded-lg  relative">
         <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
           Order Summary
         </h2>

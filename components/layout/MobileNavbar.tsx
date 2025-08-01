@@ -1,4 +1,5 @@
 "use client";
+// app/fonts.ts
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -27,6 +28,7 @@ import {
   toggleCategoryDrawer,
   toggleSearch,
 } from "@/store/uiSlice";
+import { figtree } from "@/app/layout";
 
 const triggerHaptic = async (style: ImpactStyle = ImpactStyle.Medium) => {
   if (isNativeApp()) {
@@ -95,8 +97,8 @@ export default function MobileNavbar() {
   return (
     <>
       {/* 🔝 Top Bar */}
-      <div className="mb-16 safe-top">
-        <div className="fixed top-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-b shadow-sm flex items-center justify-between px-4">
+      <div className=" mb-5 safe-top">
+        <div className="fixed top-0 left-0 right-0 z-50 pt-4 h-16 bg-background dark:bg-darkBG border-b shadow-sm flex items-center justify-between px-4">
           {showBack ? (
             <button onClick={handleBack} aria-label="Go back">
               <ArrowLeft className="h-6 w-6 text-primary" />
@@ -116,7 +118,10 @@ export default function MobileNavbar() {
               />
             </div>
           ) : (
-            <Link href="/mobile" className="text-lg font-bold text-primary">
+            <Link
+              href="/mobile"
+              className={`text-lg  font-bold text-primary ${figtree.className}`}
+            >
               Radical Engineering
             </Link>
           )}
@@ -251,7 +256,7 @@ export default function MobileNavbar() {
       )}
 
       {/* ⬇️ Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
+      <div className="fixed bottom-0 pb-4 left-0 right-0 z-50 h-16 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
         <button
           onClick={async () => {
             await triggerHaptic();
