@@ -28,7 +28,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = await fetchPages();
 
   const pageEntries: MetadataRoute.Sitemap = pages?.map((page) => ({
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}${page.permalink}`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}${
+      page.permalink === "home" ? "" : page.permalink
+    }`,
     lastModified: page.date_updated ? page.date_updated : page.date_created,
   }));
 
