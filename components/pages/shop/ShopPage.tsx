@@ -2,18 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
-import { TCategory, TProduct } from "@/interfaces";
+import { useInView } from "react-intersection-observer";
 
+import { TCategory, TProduct } from "@/interfaces";
 import PaddingContainer from "@/components/common/PaddingContainer";
-import PaginationControls from "./ShopPagination";
 import FilterSidebar from "./ShopFiltersSidebar";
 import CategoryTabs from "./ShopCategoryTabs";
 import ProductGrid from "./ShopProductGrid";
-
 import { isNativeApp } from "@/components/common/isNativeApp";
 import useScrollRestore from "@/hooks/useScrollRestore";
 
-const PRODUCTS_PER_PAGE = 16;
+const PRODUCTS_PER_PAGE = 10;
 const MIN = 0;
 
 export default function ShopPage({
@@ -32,7 +31,13 @@ export default function ShopPage({
     []
   );
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
+
+  const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
+  const { ref, inView } = useInView({
+    threshold: 0,
+    triggerOnce: false,
+  });
 
   const maxAvailablePrice = useMemo(() => {
     if (productsRaw.length === 0) return 100;
@@ -41,8 +46,6 @@ export default function ShopPage({
       .filter((p) => !isNaN(p));
     return prices.length ? Math.max(...prices) : 100;
   }, [productsRaw]);
-
-  const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
 
   useEffect(() => {
     if (maxAvailablePrice > 0) {
@@ -68,7 +71,7 @@ export default function ShopPage({
     });
 
     setFilteredProducts(filtered);
-    setCurrentPage(1);
+    setVisibleCount(PRODUCTS_PER_PAGE); // reset visible count on filter
   }, [
     productsRaw,
     categorySlug,
@@ -77,12 +80,13 @@ export default function ShopPage({
     priceRange,
   ]);
 
-  useScrollRestore("shop", [filteredProducts.length]);
+  useEffect(() => {
+    if (inView && visibleCount < filteredProducts.length) {
+      setVisibleCount((prev) => prev + PRODUCTS_PER_PAGE);
+    }
+  }, [inView, visibleCount, filteredProducts.length]);
 
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE
-  );
+  useScrollRestore("shop", [filteredProducts.length]);
 
   const subcategories = useMemo(() => {
     return Array.from(
@@ -123,6 +127,10 @@ export default function ShopPage({
     );
   }
 
+  const productsToRender = isNativeApp()
+    ? filteredProducts
+    : filteredProducts.slice(0, visibleCount);
+
   return (
     <PaddingContainer>
       <CategoryTabs categories={categories} />
@@ -142,21 +150,21 @@ export default function ShopPage({
             maxPrice={maxAvailablePrice}
           />
         </aside>
+
         <main className="mt-5 md:mt-0">
           <ProductGrid
             loading={false}
-            products={isNativeApp() ? filteredProducts : paginatedProducts}
+            products={productsToRender}
             totalProducts={filteredProducts.length}
           />
 
-          {!isNativeApp() && (
-            <PaginationControls
-              currentPage={currentPage}
-              totalPages={Math.ceil(
-                filteredProducts.length / PRODUCTS_PER_PAGE
-              )}
-              onPageChange={setCurrentPage}
-            />
+          {!isNativeApp() && visibleCount < filteredProducts.length && (
+            <div
+              ref={ref}
+              className="text-center my-8 text-muted-foreground text-sm"
+            >
+              Loading more products...
+            </div>
           )}
         </main>
       </div>

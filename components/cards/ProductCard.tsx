@@ -3,7 +3,6 @@
 import { TProduct } from "@/interfaces";
 import {
   CheckCircle,
-  CircleAlert,
   Clock,
   Heart,
   HeartCrack,
@@ -210,52 +209,52 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         </p>
 
         <div className="mb-3">
-          {product.discounted_price && (
-            <span className="line-through  text-sm mr-2">
-              {product.price.toLocaleString()}৳
+          {Number(product.price) !== 0 && product.discounted_price && (
+            <span className="line-through text-sm mr-2">
+              {Number(product.price).toLocaleString()}৳
             </span>
           )}
+
           <span className="text-foreground font-bold text-lg">
-            {product.discounted_price
-              ? Number(product.discounted_price).toLocaleString()
-              : Number(product.price || 0).toLocaleString()}
-            ৳
+            {Number(product.price) === 0
+              ? "Call for Price"
+              : product.discounted_price
+              ? Number(product.discounted_price).toLocaleString() + "৳"
+              : Number(product.price).toLocaleString() + "৳"}
           </span>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-2">
-          <button
-            aria-label="Add To Cart"
-            onClick={() =>
-              product.status === "in-stock"
-                ? handleCart()
-                : showCustomToast({
-                    icon: CircleAlert,
-                    message: "Product Not Available",
-                    id: `cart-not-${product.id}`,
-                  })
-            }
-            className="w-full bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
-          >
-            Add To Cart
-          </button>
+        {product.status === "in-stock" && (
+          <div className="flex flex-col md:flex-row gap-2">
+            {Number(product.price) !== 0 ? (
+              <>
+                <button
+                  aria-label="Add To Cart"
+                  onClick={handleCart}
+                  className="w-full bg-primary hover:bg-secondary text-background hover:text-foreground text-sm py-2 rounded-lg font-semibold transition"
+                >
+                  Add To Cart
+                </button>
 
-          <button
-            aria-label="Buy Now"
-            onClick={() =>
-              product.status === "in-stock"
-                ? handleBuyNow()
-                : showCustomToast({
-                    icon: CircleAlert,
-                    message: "Product Not Available",
-                    id: `buy-not-${product.id}`,
-                  })
-            }
-            className="w-full bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
-          >
-            Buy Now
-          </button>
-        </div>
+                <button
+                  aria-label="Buy Now"
+                  onClick={handleBuyNow}
+                  className="w-full bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
+                >
+                  Buy Now
+                </button>
+              </>
+            ) : (
+              <Link
+                href={"/contact-us"}
+                aria-label="Call for Price"
+                className="w-full bg-secondary text-center hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
+              >
+                Contact Us
+              </Link>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

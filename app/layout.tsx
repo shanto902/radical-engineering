@@ -199,7 +199,10 @@ export default async function RootLayout({
             <SafeAreaWrapper>
               {<PlatformNavbar settings={settings} />}
 
-              <main className="relative md:min-h-screen mb-10 md:mb-0">
+              <main
+                id="scrollable-content"
+                className="relative md:min-h-screen mb-10 md:mb-0"
+              >
                 {children}
               </main>
 

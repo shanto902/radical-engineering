@@ -46,7 +46,7 @@ export default function ContactForm() {
   return (
     <PaddingContainer className=" pt-10  px-4 flex items-center justify-center">
       <div className="w-full max-w-2xl  ">
-        <h2 className="text-3xl font-bold text-primary text-center mb-6">
+        <h2 className="text-2xl font-bold text-primary text-center mb-6">
           Get In Touch
         </h2>
 
