@@ -2,9 +2,10 @@ import BannerBlock from "@/components/blocks/BannerBlock";
 import BrandBlock from "@/components/blocks/BrandBlock";
 import FeaturedCategoriesBlock from "@/components/blocks/FeaturedCategoriesBlock";
 import FeaturedProductsBlock from "@/components/blocks/FeaturedProductsBlock";
-import GoogleReviewBlock from "@/components/blocks/GoogleReviewBlock";
+
 import HeroBlock from "@/components/blocks/HeroBlock";
 import ProjectsBlock from "@/components/blocks/ProjectsBlock";
+import ReviewCarousel from "@/components/ReviewCarousel";
 import { fetchPage, fetchPages } from "@/helper/fetchFromDirectus";
 import {
   TBannerBlock,
@@ -144,7 +145,7 @@ const renderBlock = (block: TBlock) => {
     case "block_google_reviews":
       return (
         <Suspense key={block.id}>
-          <GoogleReviewBlock key={block.id} />
+          <ReviewCarousel key={block.id} />
         </Suspense>
       );
     default:
