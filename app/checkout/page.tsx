@@ -1,6 +1,6 @@
-import GoogleReviewBlock from "@/components/blocks/GoogleReviewBlock";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import CheckoutPage from "@/components/pages/CheckoutPage";
+import ReviewCarousel from "@/components/ReviewCarousel";
 import { Metadata } from "next";
 import React from "react";
 
@@ -28,10 +28,12 @@ export const metadata: Metadata = {
 };
 const PageCheckout = () => {
   return (
-    <PaddingContainer>
-      <CheckoutPage />
-      <GoogleReviewBlock />
-    </PaddingContainer>
+    <>
+      <PaddingContainer>
+        <CheckoutPage />
+      </PaddingContainer>
+      <ReviewCarousel />
+    </>
   );
 };
 

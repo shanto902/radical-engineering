@@ -38,7 +38,7 @@ const GoogleReviewBlock = () => {
         hideEmptyReviews={true}
         carouselSpeed={4000}
         dateDisplay="relative"
-        featurableId={`${process.env.NEXT_PUBLIC_GOOGLE_REVIEW_API}`}
+        featurableId={`8f46be43-b855-4151-b5d7-4b4cc943d027`}
       />
     </PaddingContainer>
   );
