@@ -18,13 +18,13 @@ interface LoadItem {
 }
 
 const loadOptions = [
-  { label: "Light", defaultWatt: 20 },
-  { label: "Fan", defaultWatt: 80 },
-  { label: "TV", defaultWatt: 100 },
-  { label: "Router", defaultWatt: 30 },
-  { label: "Computer", defaultWatt: 250 },
-  { label: "Printer", defaultWatt: 1000 },
-  { label: "Custom", defaultWatt: 0 },
+  { label: "💡 Light", defaultWatt: 20 },
+  { label: "🌀 Fan", defaultWatt: 80 },
+  { label: "📺 TV", defaultWatt: 100 },
+  { label: "📡 Router", defaultWatt: 30 },
+  { label: "💻 Computer", defaultWatt: 250 },
+  { label: "🖨️ Printer", defaultWatt: 1000 },
+  { label: "⚙️ Custom", defaultWatt: 0 },
 ];
 
 const getClosestBattery = (ah: number, volt: number) => {
@@ -178,17 +178,9 @@ export default function IPSBuilder() {
                 >
                   −
                 </button>
-                <input
-                  type="number"
-                  value={load.quantity || ""}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (/^\d*$/.test(val)) {
-                      updateLoad(i, "quantity", val === "" ? 0 : parseInt(val));
-                    }
-                  }}
-                  className="w-16 text-center border px-2 py-1 bg-background text-foreground rounded"
-                />
+                <span className="min-w-[24px] text-center">
+                  {load.quantity}
+                </span>
                 <button
                   onClick={() => updateLoad(i, "quantity", load.quantity + 1)}
                   className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"
@@ -212,19 +204,7 @@ export default function IPSBuilder() {
                 >
                   −
                 </button>
-                <input
-                  type="number"
-                  step="1"
-                  min="1"
-                  value={load.hour || ""}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (/^\d*\.?\d*$/.test(val)) {
-                      updateLoad(i, "hour", val === "" ? 0 : parseFloat(val));
-                    }
-                  }}
-                  className="w-20 text-center border px-2 py-1 bg-background text-foreground rounded"
-                />
+                <span className="min-w-[24px] text-center">{load.hour}</span>
                 <button
                   onClick={() => updateLoad(i, "hour", (load.hour || 0) + 1)}
                   className="w-8 h-8 flex items-center justify-center text-background hover:text-foreground rounded bg-primary hover:bg-secondary text-lg font-bold"

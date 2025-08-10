@@ -29,12 +29,13 @@ interface LoadItem {
 }
 
 const loadOptions = [
-  { label: "Light", defaultWatt: 5 },
-  { label: "Fan", defaultWatt: 15 },
-  { label: "TV", defaultWatt: 80 },
-  { label: "Computer", defaultWatt: 150 },
-  { label: "Printer", defaultWatt: 200 },
-  { label: "Custom", defaultWatt: 0 },
+  { label: "💡 Light", defaultWatt: 20 },
+  { label: "🌀 Fan", defaultWatt: 80 },
+  { label: "📺 TV", defaultWatt: 100 },
+  { label: "📡 Router", defaultWatt: 30 },
+  { label: "💻 Computer", defaultWatt: 250 },
+  { label: "🖨️ Printer", defaultWatt: 1000 },
+  { label: "⚙️ Custom", defaultWatt: 0 },
 ];
 
 const batteryOptions = [20, 30, 50, 60, 80, 100, 130, 150];
