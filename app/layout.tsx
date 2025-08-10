@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable jsx-a11y/alt-text */
 import type { Metadata } from "next";
-import { Lato } from "next/font/google";
+
 import "./globals.css";
 import "keen-slider/keen-slider.min.css";
 import Footer from "@/components/layout/Footer";
@@ -23,13 +23,7 @@ import Script from "next/script";
 import CookieBanner from "@/components/common/CookieBanner";
 import { headers } from "next/headers";
 import SafeAreaWrapper from "@/components/layout/SafeAreaWrapper";
-
-const lato = Lato({
-  variable: "--font-lato",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
+import { Figtree } from "next/font/google";
 
 export const metadata: Metadata = {
   title:
@@ -37,6 +31,13 @@ export const metadata: Metadata = {
   description:
     "Buy solar panels, batteries, inverters, IPS, and accessories in Bangladesh from Radical Engineering. Trusted quality, great prices, fast delivery, and warranty.",
 };
+
+export const figtree = Figtree({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"], // customize as needed
+  variable: "--font-figtree", // optional if you want to use as CSS var
+  display: "swap",
+});
 
 export default async function RootLayout({
   children,
@@ -169,7 +170,7 @@ export default async function RootLayout({
         />
       </head>
 
-      <body className={`${lato.variable} antialiased`}>
+      <body className={`${figtree.className} antialiased`}>
         {/* GTM noscript fallback */}
 
         <noscript>

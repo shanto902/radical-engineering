@@ -1,8 +1,11 @@
 "use client";
 
 import CookieConsent from "react-cookie-consent";
+import { isNativeApp } from "@/components/common/isNativeApp";
 
 export default function CookieBanner() {
+  if (isNativeApp()) return null; // 🔒 Don't show on native app
+
   return (
     <CookieConsent
       location="bottom"

@@ -14,7 +14,7 @@ const ContactInfoMobile = ({ settings }: { settings: TSettings }) => {
   if (!isMobileApp) return null;
 
   return (
-    <div className="mx-4 my-6 rounded-xl border border-border bg-background shadow-md p-5 text-sm">
+    <div className="mx-4 mt-10 mb-6 rounded-xl  bg-background shadow-md px-2 text-sm">
       <h2 className="text-2xl font-bold text-primary text-center mb-6">
         Contact Information
       </h2>
