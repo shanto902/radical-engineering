@@ -1,4 +1,3 @@
-// /app/api/revalidate-path/route.ts
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import directus from "@/lib/directus";
