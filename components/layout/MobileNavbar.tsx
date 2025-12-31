@@ -95,8 +95,8 @@ export default function MobileNavbar() {
   return (
     <>
       {/* 🔝 Top Bar */}
-      <div className="mb-16 safe-top">
-        <div className="fixed top-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-b shadow-sm flex items-center justify-between px-4">
+      <div className="mb-16 ">
+        <div className="fixed top-0 pt-[env(safe-area-inset-top,0px)]  left-0 right-0 z-50 h-auto pb-2 bg-background dark:bg-darkBG border-b shadow-sm flex items-center justify-between px-4">
           {showBack ? (
             <button onClick={handleBack} aria-label="Go back">
               <ArrowLeft className="h-6 w-6 text-primary" />
@@ -241,7 +241,7 @@ export default function MobileNavbar() {
       )}
 
       {/* ⬇️ Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 h-14 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
+      <div className="fixed bottom-0 pb-[env(safe-area-inset-bottom,0px)] left-0 right-0 z-50 h-16 bg-background dark:bg-darkBG border-t shadow flex justify-around items-center">
         <button
           onClick={async () => {
             await triggerHaptic();

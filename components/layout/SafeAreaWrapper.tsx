@@ -10,13 +10,7 @@ export default function SafeAreaWrapper({
   const isNative = isNativeApp();
 
   return (
-    <div
-      className={
-        isNative
-          ? "pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] min-h-screen"
-          : "min-h-screen"
-      }
-    >
+    <div className={isNative ? "safe-area min-h-screen" : "min-h-screen"}>
       {children}
     </div>
   );

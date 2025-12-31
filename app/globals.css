@@ -8,6 +8,8 @@
   --primary: #3c1100;
   --gradient-color: #f4f1ec;
   --secondary: #fcb974;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 html,
@@ -45,11 +47,11 @@ body {
   --gradient-color: #1f1f1f;
 }
 
-.safe-top {
-  padding-top: env(safe-area-inset-top, 24px);
-}
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 16px);
+.safe-area {
+  padding-top: calc(var(--safe-top) + 12px);
+  padding-bottom: calc(
+    var(--safe-bottom) + 88px
+  ); /* 88 = bottom navbar height */
 }
 
 ::selection {
