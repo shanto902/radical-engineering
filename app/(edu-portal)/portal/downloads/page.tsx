@@ -1,10 +1,14 @@
-import PaddingContainer from '@/components/common/PaddingContainer';
-import { fetchDownloads } from '@/helper/fetchFromDirectus';
-import React from 'react';
+import PaddingContainer from "@/components/common/PaddingContainer";
+import { fetchDownloads } from "@/helper/fetchFromDirectus";
+import React from "react";
+
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: 'Downloads | Radical Engineering',
-  description: 'Access and download our latest resources, catalogs, and technical documents.',
+  title: "Downloads | Radical Engineering",
+  description:
+    "Access and download our latest resources, catalogs, and technical documents.",
 };
 
 const DownloadsPage = async () => {
@@ -12,19 +16,18 @@ const DownloadsPage = async () => {
 
   return (
     <main className="min-h-screen bg-background ">
-      {/* Hero Section */}
-      {/* <section className="bg-primary text-background py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-background/10"></div>
-        <PaddingContainer className="container mx-auto px-4 relative z-10">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold  tracking-tight">
-            Downloads
-          </h1>
-          
-        </PaddingContainer>
-      </section> */}
+      <PaddingContainer className="mx-auto px-4 py-8">
+        <div className="flex items-center gap-4 mb-8">
+          <Link
+            href="/portal"
+            className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </Link>
+          <h1 className="text-2xl font-bold">Downloads</h1>
+        </div>
 
-      {/* Downloads Grid */}
-      <PaddingContainer className=" mx-auto px-4 py-16">
         {downloads.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {downloads.map((item) => (
@@ -111,7 +114,8 @@ const DownloadsPage = async () => {
               No downloads found
             </h3>
             <p className="text-gray-500 max-w-md">
-              We couldn't find any resources available for download at this time. Please check back later.
+              We couldn't find any resources available for download at this
+              time. Please check back later.
             </p>
           </div>
         )}

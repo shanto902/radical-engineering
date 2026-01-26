@@ -197,21 +197,7 @@ export default async function RootLayout({
             <StatusBarControl />
             <TopLoader />
             <Toaster position="bottom-center" />
-            <SafeAreaWrapper>
-              {<PlatformNavbar settings={settings} />}
-
-              <main
-                id="scrollable-content"
-                className="relative md:min-h-screen mb-10 md:mb-0"
-              >
-                {children}
-              </main>
-
-              <MobileCartSidebar />
-              <Footer settings={settings} />
-              <OfflineBanner />
-              <BackButtonHandler />
-            </SafeAreaWrapper>
+           {children}
           </ThemeWrapper>
         </ReduxProvider>
 

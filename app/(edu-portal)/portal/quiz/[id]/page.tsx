@@ -13,19 +13,22 @@ interface PageProps {
   }>;
 }
 
+import AuthGuard from "@/components/auth/AuthGuard";
+
 const QuizIdPage = async ({ params }: PageProps) => {
   const { id } = await params;
   const data = await getQuestionData(id);
 
-  console.log(data)
   if (!data) {
     return notFound();
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <QuizClient quiz={data} />
-    </main>
+    <AuthGuard>
+      <main className="bg-background">
+        <QuizClient quiz={data} />
+      </main>
+    </AuthGuard>
   );
 };
 

@@ -14,14 +14,19 @@ import type { CartState } from "./cartSlice";
 import type { WishlistState } from "./wishlistSlice";
 import type { ThemeState } from "./themeSlice";
 import notificationReducer from "./notificationSlice";
+import authReducer from "./authSlice"; // ✅ Import authReducer
+import type { AuthState } from "./authSlice"; // ✅ Import AuthState type
+
 const preloadedState: {
   cart: CartState;
   wishlist: WishlistState;
   theme: ThemeState;
+  auth: AuthState; // ✅ Add auth to preloadedState type
 } = {
   cart: loadFromLocalStorage<CartState>("cart") || { items: [] },
   wishlist: loadFromLocalStorage<WishlistState>("wishlist") || { items: [] },
   theme: loadFromLocalStorage<ThemeState>("theme") || { mode: "light" },
+  auth: loadFromLocalStorage<AuthState>("auth") || { user: null, isAuthenticated: false }, // ✅ Load auth from local storage
 };
 
 export const store = configureStore({
@@ -33,8 +38,9 @@ export const store = configureStore({
     cartUI: cartUIReducer,
     projects: projectReducer,
     categories: categoryReducer,
-    ui: uiReducer, // ✅ INCLUDE HERE
+    ui: uiReducer,
     notifications: notificationReducer,
+    auth: authReducer, // ✅ Add auth reducer
   },
   preloadedState,
 });
@@ -44,6 +50,7 @@ store.subscribe(() => {
   saveToLocalStorage("cart", state.cart);
   saveToLocalStorage("wishlist", state.wishlist);
   saveToLocalStorage("theme", state.theme);
+  saveToLocalStorage("auth", state.auth); // ✅ Save auth to local storage
 });
 
 export type RootState = ReturnType<typeof store.getState>;
