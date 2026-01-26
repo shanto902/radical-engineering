@@ -215,6 +215,18 @@ export type TProject = {
   seo: TSeo;
 };
 
+
+export type TDownload = {
+  name: string;
+  id: string;
+  status: "published" | "draft" | "archived";
+  description?: string;
+  file: string;
+  date_created: string;
+  date_updated?: string;
+};
+
+
 export type TMenu = {
   label: string;
   link: string;

@@ -1,6 +1,7 @@
 import {
   TBrand,
   TCategory,
+  TDownload,
   TPageBlock,
   TProduct,
   TProject,
@@ -260,6 +261,25 @@ export const fetchProjects = async (): Promise<TProject[]> => {
   } catch (error) {
     console.error("Error fetch projects", error);
     throw new Error("Failed to fetch projects");
+  }
+};
+
+export const fetchDownloads = async (): Promise<TDownload[]> => {
+  try {
+    const result = await directus.request(
+      readItems("downloads", {
+        filter: {
+          status: {
+            _eq: "published",
+          },
+        },
+        fields: ["*"],
+      })
+    );
+    return result as TDownload[];
+  } catch (error) {
+    console.error("Error fetch downloads", error);
+    throw new Error("Failed to fetch downloads");
   }
 };
 
