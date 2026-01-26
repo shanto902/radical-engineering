@@ -5,6 +5,7 @@ import {
   TPageBlock,
   TProduct,
   TProject,
+  TQuestions,
 } from "@/interfaces";
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
@@ -283,6 +284,48 @@ export const fetchDownloads = async (): Promise<TDownload[]> => {
   }
 };
 
+export const fetchQuestions = async (): Promise<TQuestions[]> => {
+  try {
+    const result = await directus.request(
+      readItems("questions", {
+        filter: {
+          status: {
+            _eq: "published",
+          },
+        },
+        fields: ["*", "questions.question_id.*"],
+      })
+    );
+    return result as TQuestions[];
+  } catch (error) {
+    console.error("Error fetch questions", error);
+    throw new Error("Failed to fetch questions");
+  }
+};
+
+export const getQuestionData = cache(async (id: string): Promise<TQuestions> => {
+  try {
+    const result = await directus.request(
+      readItems("questions", {
+        filter: {
+          status: {
+            _eq: "published",
+          },
+          id: {
+            _eq: id,
+          },
+        },
+        sort: ["sort"],
+        fields: ["*","questions.question_id.*"],
+      })
+    );
+
+    return result[0] as TQuestions;
+  } catch (error) {
+    console.error("Error fetching question data:", error);
+    throw new Error("Error fetching question");
+  }
+});
 export const fetchBlockProjects = async (
   limit: number
 ): Promise<TProject[]> => {

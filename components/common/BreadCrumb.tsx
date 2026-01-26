@@ -38,7 +38,8 @@ export default function BreadcrumbBanner() {
     }
   }, [itemsByCategory, dispatch]);
 
-  if (pathname === "/" || pathname === "/home") return null;
+  if (pathname === "/" || pathname === "/home" || pathname.startsWith("/quiz/"))
+    return null;
 
   const breadcrumb = segments.map((segment, index) => {
     const matchedProduct = allProducts.find((p) => p.slug === segment);

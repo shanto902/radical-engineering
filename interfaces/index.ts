@@ -227,6 +227,27 @@ export type TDownload = {
 };
 
 
+export type TQuestions = {
+  id: string;
+  title: string;
+  status: "published" | "draft" | "archived";
+  questions?: TQuestion[];
+  date_created: string;
+  date_updated?: string;
+  total_marks: number;
+  total_time: number;
+  notes:string;
+};
+
+export type TQuestion = {
+question_id: {id: string;
+title: string;
+multiple_questions:  {
+  option: string;
+  is_correct?: boolean;
+}[]}
+}
+
 export type TMenu = {
   label: string;
   link: string;
