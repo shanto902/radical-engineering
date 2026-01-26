@@ -63,7 +63,7 @@ const QuizPage = async () => {
                       </svg>
                     </div>
                     {quiz.questions && (
-                      <span className="text-xs font-medium px-2 py-1 rounded-full bg-secondary text-background">
+                      <span className="text-xs font-medium px-2 py-1 rounded-full bg-secondary text-foreground">
                         {quiz.questions.length} Questions
                       </span>
                     )}

@@ -215,7 +215,6 @@ export type TProject = {
   seo: TSeo;
 };
 
-
 export type TDownload = {
   name: string;
   id: string;
@@ -226,7 +225,6 @@ export type TDownload = {
   date_updated?: string;
 };
 
-
 export type TQuestions = {
   id: string;
   title: string;
@@ -236,17 +234,19 @@ export type TQuestions = {
   date_updated?: string;
   total_marks: number;
   total_time: number;
-  notes:string;
+  notes: string;
 };
 
 export type TQuestion = {
-question_id: {id: string;
-title: string;
-multiple_questions:  {
-  option: string;
-  is_correct?: boolean;
-}[]}
-}
+  question_id: {
+    id: string;
+    title: string;
+    multiple_questions: {
+      option: string;
+      is_correct?: boolean;
+    }[];
+  };
+};
 
 export type TMenu = {
   label: string;
@@ -258,4 +258,16 @@ export type TSubMenu = {
   label: string;
   link: string;
   categories?: boolean;
+};
+
+export type TQuizResult = {
+  id: string;
+  student: string; // User ID
+  quiz: string | TQuestions; // Quiz ID or Object
+  score: number;
+  total_marks: number;
+  percentage: number;
+  answers: any; // JSON
+  status: string;
+  date_created: string;
 };

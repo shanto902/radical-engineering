@@ -4,12 +4,15 @@ import PaddingContainer from "@/components/common/PaddingContainer";
 import { TQuestions } from "@/interfaces";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/index";
 
 type QuizClientProps = {
   quiz: TQuestions;
 };
 
 const QuizClient = ({ quiz }: QuizClientProps) => {
+  const { user } = useSelector((state: RootState) => state.auth);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: string;
@@ -71,10 +74,54 @@ const QuizClient = ({ quiz }: QuizClientProps) => {
     localStorage.setItem(`quiz_end_time_${quiz.id}`, endTime.toString());
   };
 
-  const finishQuiz = useCallback(() => {
+  const finishQuiz = useCallback(async () => {
     setIsFinished(true);
     localStorage.removeItem(`quiz_end_time_${quiz.id}`);
-  }, [quiz.id]);
+
+    if (
+      user // Only submit if logged in
+    ) {
+      let score = 0;
+      const answers: Record<string, any> = {};
+
+      questions.forEach((q, index) => {
+        const selected = selectedAnswers[index];
+        const correctOption = q.question_id.multiple_questions.find(
+          (opt) => opt.is_correct,
+        );
+        if (selected === correctOption?.option) {
+          score++;
+        }
+        answers[q.question_id.id] = {
+          question: q.question_id.title,
+          selected: selected || "Skipped",
+          correct: correctOption?.option,
+          isCorrect: selected === correctOption?.option,
+        };
+      });
+
+      const totalQuestions = questions.length;
+      const percentage = Math.round((score / totalQuestions) * 100);
+
+      try {
+        await fetch("/api/quiz/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            student: user.id,
+            quiz: quiz.id,
+            score,
+            total_marks: totalQuestions, // Or quiz.total_marks if properly set
+            percentage,
+            answers,
+            status: "completed",
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to submit quiz result", error);
+      }
+    }
+  }, [quiz.id, user, questions, selectedAnswers]);
 
   const handleOptionSelect = (option: string) => {
     setSelectedAnswers((prev) => ({
@@ -139,7 +186,7 @@ const QuizClient = ({ quiz }: QuizClientProps) => {
     return (
       <PaddingContainer className="py-16  mx-auto flex flex-col justify-center">
         <div className="bg-card border rounded-3xl p-8 md:p-12 shadow-xl text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-6 text-primary">
+          <h1 className="text-3xl text-left md:text-4xl font-bold mb-6 text-primary">
             {quiz.title}
           </h1>
 

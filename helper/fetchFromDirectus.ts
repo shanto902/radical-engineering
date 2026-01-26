@@ -12,7 +12,7 @@ import { readItems } from "@directus/sdk";
 import { cache } from "react";
 
 export const fetchPage = async (
-  permalink: string
+  permalink: string,
 ): Promise<TPageBlock | null> => {
   try {
     const result = await directus.request(
@@ -50,7 +50,7 @@ export const fetchPage = async (
             ],
           },
         ],
-      })
+      }),
     );
 
     return result[0] as TPageBlock; // Changed from `TPageBlock[]`
@@ -65,7 +65,7 @@ export const fetchPages = async (): Promise<TPageBlock[]> => {
     const result = await directus.request(
       readItems("pages", {
         fields: ["permalink", "date_updated", "date_created"],
-      })
+      }),
     );
     return result as TPageBlock[];
   } catch (error) {
@@ -75,7 +75,7 @@ export const fetchPages = async (): Promise<TPageBlock[]> => {
 };
 
 export const fetchProducts = async (
-  categorySlug?: string
+  categorySlug?: string,
 ): Promise<TProduct[]> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,7 +105,7 @@ export const fetchProducts = async (
 export const fetchProductsWithLimitAndSorting = async (
   limit: number,
   sort: "most_popular" | "latest_updated",
-  categorySlug?: string
+  categorySlug?: string,
 ): Promise<TProduct[]> => {
   try {
     const sortField = sort === "most_popular" ? "-total_sold" : "-date_updated";
@@ -162,7 +162,7 @@ export const fetchCategories = async (): Promise<TCategory[]> => {
     const result = await directus.request(
       readItems("categories", {
         fields: ["*", "image", "slug"],
-      })
+      }),
     );
     return result as TCategory[];
   } catch (error) {
@@ -176,7 +176,7 @@ export const fetchCategoriesMobile = async (): Promise<TCategory[]> => {
     const result = await directus.request(
       readItems("categories", {
         fields: ["*", "image", "slug", "products.*"],
-      })
+      }),
     );
     return result as TCategory[];
   } catch (error) {
@@ -190,7 +190,7 @@ export const fetchBrands = async (): Promise<TBrand[]> => {
     const result = await directus.request(
       readItems("brands", {
         fields: ["*"],
-      })
+      }),
     );
     return result as TBrand[];
   } catch (error) {
@@ -215,7 +215,7 @@ export const fetchProductData = cache(
             "image_gallery.*",
             "brand.*",
           ],
-        })
+        }),
       );
 
       return results[0] as TProduct;
@@ -223,7 +223,7 @@ export const fetchProductData = cache(
       console.error("Error fetching product data:", error);
       throw new Error("Error fetching product ");
     }
-  }
+  },
 );
 
 export const fetchCategoryData = cache(
@@ -235,7 +235,7 @@ export const fetchCategoryData = cache(
             slug,
           },
           fields: ["*"],
-        })
+        }),
       );
 
       return results[0] as TCategory;
@@ -243,7 +243,7 @@ export const fetchCategoryData = cache(
       console.error("Error fetching category data:", error);
       throw new Error("Error fetching category ");
     }
-  }
+  },
 );
 
 export const fetchProjects = async (): Promise<TProject[]> => {
@@ -256,7 +256,7 @@ export const fetchProjects = async (): Promise<TProject[]> => {
           },
         },
         fields: ["*"],
-      })
+      }),
     );
     return result as TProject[];
   } catch (error) {
@@ -275,7 +275,7 @@ export const fetchDownloads = async (): Promise<TDownload[]> => {
           },
         },
         fields: ["*"],
-      })
+      }),
     );
     return result as TDownload[];
   } catch (error) {
@@ -294,7 +294,7 @@ export const fetchQuestions = async (): Promise<TQuestions[]> => {
           },
         },
         fields: ["*", "questions.question_id.*"],
-      })
+      }),
     );
     return result as TQuestions[];
   } catch (error) {
@@ -303,31 +303,33 @@ export const fetchQuestions = async (): Promise<TQuestions[]> => {
   }
 };
 
-export const getQuestionData = cache(async (id: string): Promise<TQuestions> => {
-  try {
-    const result = await directus.request(
-      readItems("questions", {
-        filter: {
-          status: {
-            _eq: "published",
+export const getQuestionData = cache(
+  async (id: string): Promise<TQuestions> => {
+    try {
+      const result = await directus.request(
+        readItems("questions", {
+          filter: {
+            status: {
+              _eq: "published",
+            },
+            id: {
+              _eq: id,
+            },
           },
-          id: {
-            _eq: id,
-          },
-        },
-        sort: ["sort"],
-        fields: ["*","questions.question_id.*"],
-      })
-    );
+          sort: ["sort"],
+          fields: ["*", "questions.question_id.*"],
+        }),
+      );
 
-    return result[0] as TQuestions;
-  } catch (error) {
-    console.error("Error fetching question data:", error);
-    throw new Error("Error fetching question");
-  }
-});
+      return result[0] as TQuestions;
+    } catch (error) {
+      console.error("Error fetching question data:", error);
+      throw new Error("Error fetching question");
+    }
+  },
+);
 export const fetchBlockProjects = async (
-  limit: number
+  limit: number,
 ): Promise<TProject[]> => {
   try {
     const result = await directus.request(
@@ -347,7 +349,7 @@ export const fetchBlockProjects = async (
         ],
         sort: ["-date_created"],
         limit: limit || 0,
-      })
+      }),
     );
     return result as TProject[];
   } catch (error) {
@@ -370,7 +372,7 @@ export const getProjectData = cache(async (slug: string): Promise<TProject> => {
         },
         sort: ["sort"],
         fields: ["*"],
-      })
+      }),
     );
 
     return result[0] as TProject;
@@ -379,3 +381,24 @@ export const getProjectData = cache(async (slug: string): Promise<TProject> => {
     throw new Error("Error fetching post");
   }
 });
+
+export const fetchQuizResults = async (userId: string) => {
+  try {
+    const results = await directus.request(
+      // @ts-ignore
+      readItems("quiz_results", {
+        filter: {
+          student: {
+            _eq: userId,
+          },
+        },
+        sort: ["-date_created"],
+        fields: ["*", { quiz: ["title", "id", "total_marks"] }],
+      }),
+    );
+    return results;
+  } catch (error) {
+    console.error("Error fetching quiz results:", error);
+    return [];
+  }
+};
