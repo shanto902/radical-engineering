@@ -8,7 +8,9 @@ import PaddingContainer from "../common/PaddingContainer";
 import Link from "next/link";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, user } = useSelector(
+    (state: RootState) => state.auth,
+  );
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
@@ -19,10 +21,9 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (mounted && !isAuthenticated) {
-        // Option 1: Redirect immediately
-        // router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
-        
-        // Option 2: Show access denied message (Doing this for better UX so they know WHY)
+      // Option 1: Redirect immediately
+      // router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+      // Option 2: Show access denied message (Doing this for better UX so they know WHY)
     }
   }, [mounted, isAuthenticated, router, pathname]);
 
@@ -61,8 +62,86 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
             Login to Continue
           </Link>
           <p className="mt-4 text-sm text-muted-foreground">
-             Don't have an account? <Link href="/login?mode=register" className="text-primary hover:underline font-medium">Register here</Link>
+            Don't have an account?{" "}
+            <Link
+              href="/login?mode=register"
+              className="text-primary hover:underline font-medium"
+            >
+              Register here
+            </Link>
           </p>
+        </div>
+      </PaddingContainer>
+    );
+  }
+
+  if (user?.status === "pending") {
+    return (
+      <PaddingContainer className="min-h-[60vh] flex flex-col items-center justify-center text-center py-20">
+        <div className="bg-card border rounded-2xl p-8 max-w-md w-full shadow-lg">
+          <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-yellow-600 dark:text-yellow-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold mb-2">Account Pending</h2>
+          <p className="text-muted-foreground mb-8">
+            Your account is currently pending approval. Please ask an
+            administrator to approve your account.
+          </p>
+          <Link
+            href="/"
+            className="block w-full py-3 px-4 bg-secondary text-secondary-foreground font-semibold rounded-xl hover:bg-secondary/80 transition-colors"
+          >
+            Back to Home
+          </Link>
+        </div>
+      </PaddingContainer>
+    );
+  }
+
+  if (user?.status === "blocked") {
+    return (
+      <PaddingContainer className="min-h-[60vh] flex flex-col items-center justify-center text-center py-20">
+        <div className="bg-card border rounded-2xl p-8 max-w-md w-full shadow-lg">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-red-600 dark:text-red-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+              />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold mb-2">Account Suspended</h2>
+          <p className="text-muted-foreground mb-8">
+            Your account is suspended. Please talk with an administrator to
+            resolve this issue.
+          </p>
+          <Link
+            href="/"
+            className="block w-full py-3 px-4 bg-secondary text-secondary-foreground font-semibold rounded-xl hover:bg-secondary/80 transition-colors"
+          >
+            Back to Home
+          </Link>
         </div>
       </PaddingContainer>
     );

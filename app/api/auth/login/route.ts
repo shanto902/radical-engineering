@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     if (!identifier || !password) {
       return NextResponse.json(
         { success: false, error: "Identifier and password are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -18,31 +18,49 @@ export async function POST(req: NextRequest) {
     const users = await directus.request(
       readItems("students", {
         filter: {
-          _or: [
-              { email: { _eq: identifier } },
-              { phone: { _eq: identifier } }
-          ]
+          _or: [{ email: { _eq: identifier } }, { phone: { _eq: identifier } }],
         },
-        fields: ["id", "email", "phone", "name", "password"], // Need password to verify
-      })
+        fields: ["id", "email", "phone", "name", "password", "status"], // Need password to verify
+      }),
     );
 
     if (!users || users.length === 0) {
       return NextResponse.json(
         { success: false, error: "Invalid username or password" },
-        { status: 401 }
+        { status: 401 },
       );
     }
-    
+
     // Check password
     const user = users[0];
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-        return NextResponse.json(
-          { success: false, error: "Invalid username or password" },
-          { status: 401 }
-        );
+      return NextResponse.json(
+        { success: false, error: "Invalid username or password" },
+        { status: 401 },
+      );
+    }
+
+    // Check Status
+    if (user.status === "pending") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Ask administrator to approve his/her account",
+        },
+        { status: 403 },
+      );
+    }
+
+    if (user.status === "blocked") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Your account is suspended please talk with administrator",
+        },
+        { status: 403 },
+      );
     }
 
     // Remove password from response
@@ -53,7 +71,7 @@ export async function POST(req: NextRequest) {
     console.error("Login error:", error);
     return NextResponse.json(
       { success: false, error: "Login failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

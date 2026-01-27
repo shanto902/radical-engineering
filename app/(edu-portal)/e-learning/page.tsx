@@ -21,7 +21,7 @@ const PortalDashboard = () => {
       description:
         "Practice with our collection of technical question papers and quizzes.",
       icon: <BookOpen className="w-8 h-8 text-primary" />,
-      href: "/portal/quiz",
+      href: "/e-learning/quiz",
       color: "bg-primary/10",
       delay: "delay-100",
     },
@@ -30,7 +30,7 @@ const PortalDashboard = () => {
       description:
         "Access study materials, diagrams, and other important resources.",
       icon: <Download className="w-8 h-8 text-blue-600" />,
-      href: "/portal/downloads", // Assuming this is the correct path
+      href: "/e-learning/downloads", // Assuming this is the correct path
       color: "bg-blue-600/10",
       delay: "delay-200",
     },
@@ -40,7 +40,7 @@ const PortalDashboard = () => {
       title: "My Progress",
       description: "Track your quiz performance and learning journey.",
       icon: <LayoutGrid className="w-8 h-8 text-purple-600" />,
-      href: "/portal/progress",
+      href: "/e-learning/progress",
       color: "bg-purple-600/10",
       delay: "delay-300",
     },

@@ -23,7 +23,7 @@ const QuizPage = async () => {
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-2">
               <Link
-                href="/portal"
+                href="/e-learning"
                 className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors"
                 aria-label="Go back"
               >
@@ -85,7 +85,7 @@ const QuizPage = async () => {
 
                   <div className="mt-auto pt-6 border-t">
                     <Link
-                      href={`/portal/quiz/${quiz.id}`}
+                      href={`/e-learning/quiz/${quiz.id}`}
                       className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-lg bg-primary text-background font-medium hover:bg-secondary active:scale-[0.98] transition-all duration-300 shadow-md hover:text-foreground"
                     >
                       <span>Start Quiz</span>

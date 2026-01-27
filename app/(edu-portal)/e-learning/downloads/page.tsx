@@ -19,7 +19,7 @@ const DownloadsPage = async () => {
       <PaddingContainer className="mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Link
-            href="/portal"
+            href="/e-learning"
             className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors"
             aria-label="Go back"
           >

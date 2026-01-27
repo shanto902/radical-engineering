@@ -28,7 +28,7 @@ function AuthContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const redirectPath = searchParams.get("redirect") || "/quiz";
+  const redirectPath = searchParams.get("redirect") || "/e-learning/quiz";
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
@@ -113,7 +113,7 @@ function AuthContent() {
     <PaddingContainer>
       <div className="py-6">
         <Link
-          href="/portal"
+          href="/e-learning"
           className="inline-flex items-center gap-2 text-sm font-medium group transition-colors"
         >
           <div className="p-2 bg-secondary rounded-full">
@@ -121,7 +121,7 @@ function AuthContent() {
           </div>
           <span className="group-hover:underline underline-offset-8">
             {" "}
-            Back to Portal
+            Back to E-Learning
           </span>
         </Link>
       </div>

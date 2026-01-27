@@ -32,7 +32,7 @@ const PortalNavbar = () => {
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-6">
             <Link
-              href="/portal/quiz"
+              href="/e-learning/quiz"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               Quiz
@@ -40,7 +40,7 @@ const PortalNavbar = () => {
           </div>
           <div className="hidden md:flex items-center gap-6">
             <Link
-              href="/portal/downloads"
+              href="/e-learning/downloads"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               Downloads
@@ -53,7 +53,7 @@ const PortalNavbar = () => {
           {isAuthenticated && user ? (
             <div className="flex items-center gap-4">
               <Link
-                href="/portal/profile"
+                href="/e-learning/profile"
                 className="hidden md:flex flex-col text-right hover:opacity-80 transition-opacity"
               >
                 <span className="text-sm font-semibold">{user.name}</span>

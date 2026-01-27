@@ -192,7 +192,7 @@ export default function ProfilePage() {
                     </div>
                     <p>No quizzes taken yet.</p>
                     <Link
-                      href="/portal/quiz"
+                      href="/e-learning/quiz"
                       className="text-primary hover:underline mt-2 inline-block"
                     >
                       Start your first quiz

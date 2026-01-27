@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     if (!email || !phone || !password || !name) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -18,19 +18,19 @@ export async function POST(req: NextRequest) {
     const existingUsers = await directus.request(
       readItems("students", {
         filter: {
-           _or: [
-               { email: { _eq: email } },
-               { phone: { _eq: phone } }
-           ]
+          _or: [{ email: { _eq: email } }, { phone: { _eq: phone } }],
         },
-      })
+      }),
     );
 
     if (Array.isArray(existingUsers) && existingUsers.length > 0) {
-        return NextResponse.json(
-            { success: false, error: "User with this email or phone already exists" },
-            { status: 409 }
-        );
+      return NextResponse.json(
+        {
+          success: false,
+          error: "User with this email or phone already exists",
+        },
+        { status: 409 },
+      );
     }
 
     // Hash password
@@ -40,12 +40,11 @@ export async function POST(req: NextRequest) {
       createItem("students", {
         email,
         phone,
-        password: hashedPassword, 
+        password: hashedPassword,
         name,
         address,
-        username: email, // Optional: if username is required by Directus, map it to email. Otherwise remove.
-        status: "published"
-      })
+        status: "pending",
+      }),
     );
 
     return NextResponse.json({ success: true, user: newUser });
@@ -53,7 +52,7 @@ export async function POST(req: NextRequest) {
     console.error("Registration error:", error);
     return NextResponse.json(
       { success: false, error: "Registration failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
