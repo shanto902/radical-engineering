@@ -26,6 +26,9 @@ import SafeAreaWrapper from "@/components/layout/SafeAreaWrapper";
 import { Figtree } from "next/font/google";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  ),
   title:
     "Solar Panels, Batteries, Inverters & Accessories | Radical Engineering",
   description:
@@ -45,7 +48,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = (await directus.request(
-    readSingleton("settings")
+    readSingleton("settings"),
   )) as TSettings;
 
   const headersList = await headers();
@@ -197,7 +200,7 @@ export default async function RootLayout({
             <StatusBarControl />
             <TopLoader />
             <Toaster position="bottom-center" />
-           {children}
+            {children}
           </ThemeWrapper>
         </ReduxProvider>
 
