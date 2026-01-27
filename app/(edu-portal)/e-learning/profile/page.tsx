@@ -60,7 +60,7 @@ export default function ProfilePage() {
           {/* Back Header */}
           <div className="mb-8">
             <Link
-              href="/portal"
+              href="/e-learning"
               className="inline-flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
             >
               <div className="p-2 bg-background border rounded-full">
@@ -80,7 +80,7 @@ export default function ProfilePage() {
                   </div>
                   <h2 className="text-xl font-bold">{user?.name}</h2>
                   <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full mt-2">
-                    Student
+                    Trainee
                   </span>
                 </div>
 

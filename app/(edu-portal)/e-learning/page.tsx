@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "Student Portal | Radical Engineering",
-  description: "Access your quizzes, downloads, and other student resources.",
+  title: "Trainee Portal | Radical Engineering",
+  description: "Access your quizzes, downloads, and other Trainee resources.",
 };
 
 const PortalDashboard = () => {
@@ -55,7 +55,7 @@ const PortalDashboard = () => {
         <PaddingContainer className="relative z-10">
           <div className="max-w-3xl">
             <h1 className="text-3xl md:text-5xl font-bold mb-4">
-              Student Portal
+              Trainee Portal
             </h1>
             <p className="text-lg md:text-xl opacity-90">
               Welcome to your learning hub. Access quizzes, study materials, and
