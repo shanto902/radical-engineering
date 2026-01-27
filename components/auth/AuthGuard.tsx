@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
+import { login } from "@/store/authSlice";
 import { useRouter, usePathname } from "next/navigation";
 import PaddingContainer from "../common/PaddingContainer";
 import Link from "next/link";
@@ -11,6 +12,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.auth,
   );
+  const dispatch = useDispatch();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
@@ -27,8 +29,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
           const data = await res.json();
 
           if (data.success && data.status && data.status !== user.status) {
-            // Reload window to force update if status changed significant
-            window.location.reload();
+            // Update Redux status instead of reloading
+            dispatch(login({ ...user, status: data.status }));
           }
         } catch (error) {
           console.error("Failed to check status", error);
@@ -39,7 +41,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     if (isAuthenticated) {
       checkStatus();
     }
-  }, [isAuthenticated, user?.id, user?.status]);
+  }, [isAuthenticated, user?.id, user?.status, dispatch]);
 
   useEffect(() => {
     if (mounted && !isAuthenticated) {
