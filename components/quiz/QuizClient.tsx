@@ -111,7 +111,7 @@ const QuizClient = ({ quiz }: QuizClientProps) => {
             student: user.id,
             quiz: quiz.id,
             score,
-            total_marks: totalQuestions, // Or quiz.total_marks if properly set
+            total_marks: quiz.total_marks || totalQuestions, // Or quiz.total_marks if properly set
             percentage,
             answers,
             status: "completed",
