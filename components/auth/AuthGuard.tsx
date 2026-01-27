@@ -20,6 +20,28 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    const checkStatus = async () => {
+      if (user?.id) {
+        try {
+          const res = await fetch(`/api/auth/status?id=${user.id}`);
+          const data = await res.json();
+
+          if (data.success && data.status && data.status !== user.status) {
+            // Reload window to force update if status changed significant
+            window.location.reload();
+          }
+        } catch (error) {
+          console.error("Failed to check status", error);
+        }
+      }
+    };
+
+    if (isAuthenticated) {
+      checkStatus();
+    }
+  }, [isAuthenticated, user?.id, user?.status]);
+
+  useEffect(() => {
     if (mounted && !isAuthenticated) {
       // Option 1: Redirect immediately
       // router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
