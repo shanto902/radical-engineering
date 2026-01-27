@@ -2,8 +2,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { fetchProductData } from "@/helper/fetchFromDirectus";
 import { ImageResponse } from "next/og";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 
 // Image metadata
 export const alt = "Product | Radical Engineering";
@@ -13,19 +11,20 @@ export const size = {
 };
 
 export const contentType = "image/png";
-
 // Image generation
 export default async function Image({
   params,
 }: {
-  params: { product_slug: string };
+  params: Promise<{ product_slug: string }>;
 }) {
-  // Load font
-  const latoRegular = await readFile(
-    join(process.cwd(), "assets/Lato-Regular.ttf")
-  );
+  const { product_slug } = await params;
 
-  const product = await fetchProductData(params.product_slug);
+  // Load font
+  const latoRegular = await fetch(
+    new URL(`${process.env.NEXT_PUBLIC_SITE_URL}/fonts/Lato-Regular.ttf`),
+  ).then((res) => res.arrayBuffer());
+
+  const product = await fetchProductData(product_slug);
   return new ImageResponse(
     (
       <div
@@ -140,6 +139,6 @@ export default async function Image({
           weight: 400,
         },
       ],
-    }
+    },
   );
 }
