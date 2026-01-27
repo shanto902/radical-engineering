@@ -75,7 +75,7 @@ export default function ReviewCarousel() {
         setCurrentSlide(slider.track.details.rel);
       },
     },
-    [AutoplayPlugin]
+    [AutoplayPlugin],
   );
 
   useEffect(() => {
@@ -85,7 +85,15 @@ export default function ReviewCarousel() {
         const data = await res.json();
 
         if (data?.success) {
-          setReviews(data.widget.reviews || []);
+          const mappedReviews = data.widget.reviews.map((r: any) => ({
+            uuid: r.id,
+            authorName: r.author.name,
+            authorAvatar: r.author.avatarUrl,
+            text: r.text,
+            starRating: r.rating.value,
+            datePublished: r.publishedAt,
+          }));
+          setReviews(mappedReviews);
         }
       } catch (err) {
         console.error("Failed to fetch reviews:", err);
