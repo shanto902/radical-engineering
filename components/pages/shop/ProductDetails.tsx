@@ -28,6 +28,7 @@ import { toggleWishlist } from "@/store/wishlistSlice";
 import { TProduct } from "@/interfaces";
 import PaddingContainer from "@/components/common/PaddingContainer";
 import ProductTabs from "./ProductTabs";
+import CallForPriceModal from "@/components/common/CallForPriceModal";
 
 import { getImageUrl } from "@/utils/image-url";
 import { showCustomToast } from "@/lib/showCustomToast";
@@ -43,6 +44,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
   const [selectedImage, setSelectedImage] = useState(product.image);
   const [hasMounted, setHasMounted] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const images = [
     product.image,
@@ -73,7 +75,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
           name: product.category.name,
           slug: product.category.slug,
         },
-      })
+      }),
     );
     showCustomToast({
       icon: ShoppingBag,
@@ -111,7 +113,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   ((parseFloat(product.price) -
                     parseFloat(product.discounted_price)) /
                     parseFloat(product.price)) *
-                    100
+                    100,
                 )}
                 %
               </span>
@@ -196,8 +198,8 @@ export default function ProductPage({ product }: { product: TProduct }) {
 
             {Number(product.price) === 0 ? (
               <div className="flex items-center gap-4 my-3">
-                <span className="text-yellow-500 text-2xl font-bold">
-                  Call for Price
+                <span className="text-primary text-2xl font-bold">
+                  Contact for Price
                 </span>
               </div>
             ) : product.discounted_price ? (
@@ -221,7 +223,7 @@ export default function ProductPage({ product }: { product: TProduct }) {
           </div>
 
           <div>
-            {Number(product.price) !== 0 && (
+            {Number(product.price) !== 0 ? (
               <div className="flex md:items-center flex-col md:flex-row gap-5   md:justify-between mb-6">
                 <div className=" flex items-center gap-2 place-self-end">
                   <label className="text-base font-medium ">Quantity:</label>
@@ -291,6 +293,16 @@ export default function ProductPage({ product }: { product: TProduct }) {
                   </button>
                 </div>
               </div>
+            ) : (
+              <div className="flex md:items-center flex-col md:flex-row gap-5 mb-6">
+                <button
+                  aria-label="Call for Price"
+                  onClick={() => setIsModalOpen(true)}
+                  className="md:w-fit w-full px-5 bg-secondary hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
+                >
+                  Call for Price
+                </button>
+              </div>
             )}
 
             <div className="flex items-center justify-between mb-2 text-sm ">
@@ -304,13 +316,13 @@ export default function ProductPage({ product }: { product: TProduct }) {
                     toggleWishlist({
                       ...product,
                       price: parseFloat(
-                        product.discounted_price || product.price
+                        product.discounted_price || product.price,
                       ),
                       discounted_price:
                         product.discounted_price != null
                           ? parseFloat(product.discounted_price)
                           : undefined,
-                    })
+                    }),
                   )
                 }
               >
@@ -347,6 +359,10 @@ export default function ProductPage({ product }: { product: TProduct }) {
         productDetails={product.description}
         pdfUrl={product.datasheet}
         userManual={product.user_manual}
+      />
+      <CallForPriceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </PaddingContainer>
   );

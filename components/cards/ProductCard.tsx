@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { addToCart } from "@/store/cartSlice";
@@ -21,10 +21,12 @@ import { useRouter } from "next/navigation";
 
 import { showCustomToast } from "@/lib/showCustomToast";
 import { isNativeApp } from "../common/isNativeApp";
+import CallForPriceModal from "../common/CallForPriceModal";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
   const hasMounted = useHasMounted();
   const dispatch = useDispatch<AppDispatch>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const wishlist = useSelector((state: RootState) => state.wishlist.items);
   const isInWishlist = wishlist.some((item) => item.id === product.id);
   const router = useRouter();
@@ -245,17 +247,18 @@ const ProductCard = ({ product }: { product: TProduct }) => {
                 </button>
               </>
             ) : (
-              <Link
-                href={"/contact-us"}
+              <button
                 aria-label="Call for Price"
+                onClick={() => setIsModalOpen(true)}
                 className="w-full bg-secondary text-center hover:bg-primary text-foreground hover:text-background text-sm py-2 rounded-lg font-semibold transition"
               >
-                Contact Us
-              </Link>
+                Call for Price
+              </button>
             )}
           </div>
         )}
       </div>
+      <CallForPriceModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };
