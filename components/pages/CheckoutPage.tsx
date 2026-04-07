@@ -8,13 +8,14 @@ import { useState } from "react";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { clearCart } from "@/store/cartSlice";
 import Link from "next/link";
-import { ArrowLeftCircle, CircleAlert, ShoppingCart } from "lucide-react";
+import { ArrowLeftCircle, CircleAlert, ShoppingCart, Loader2 } from "lucide-react";
 
 import { showCustomToast } from "@/lib/showCustomToast";
 import { isNativeApp } from "../common/isNativeApp";
 
 export default function CheckoutPage() {
   const [showThankYou, setShowThankYou] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { items } = useSelector((state: RootState) => state.cart);
   const hasMounted = useHasMounted();
@@ -76,6 +77,9 @@ export default function CheckoutPage() {
       return;
     }
 
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
       const res = await fetch("/api/create-order", {
         method: "POST",
@@ -104,6 +108,19 @@ export default function CheckoutPage() {
           }),
         });
 
+        // Send WhatsApp notification silently via backend
+        await fetch("/api/notify-whatsapp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.name,
+            phone: form.phone,
+            address: form.address,
+            items,
+            total,
+          }),
+        });
+
         // Clear cart and reset form
         dispatch(clearCart());
         setForm({ name: "", phone: "", address: "" });
@@ -125,10 +142,12 @@ export default function CheckoutPage() {
         }, 4000);
       } else {
         alert("❌ Failed to place order");
+        setIsSubmitting(false);
       }
     } catch (err) {
       console.error("Order submission error:", err);
       alert("❌ Something went wrong.");
+      setIsSubmitting(false);
     }
   };
 
@@ -194,9 +213,17 @@ export default function CheckoutPage() {
           <button
             aria-label="Submit Button"
             type="submit"
-            className="bg-primary text-background font-semibold px-6 py-2 rounded hover:bg-secondary hover:text-foreground transition w-full"
+            disabled={isSubmitting}
+            className="bg-primary text-background font-semibold px-6 py-2 rounded hover:bg-secondary hover:text-foreground transition w-full disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Confirm Order
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              "Confirm Order"
+            )}
           </button>
         </form>
       </div>
