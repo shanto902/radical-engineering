@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     const WAHA_API_URL = process.env.WAHA_API_URL; // e.g. http://localhost:3000/api/sendText
     const WAHA_SESSION = process.env.WAHA_SESSION || "default";
     const WAHA_API_KEY = process.env.WAHA_API_KEY; // The API key from your WAHA setup
-    const ADMIN_PHONE = "8801725468800"; // Usually WAHA requires format like 8801725468800@c.us
+    const ADMIN_PHONES = ["8801787224460", "8801760195100"];
 
     if (!WAHA_API_URL) {
       console.warn("WAHA_API_URL missing in .env, skipping notification.");
@@ -29,20 +29,26 @@ export async function POST(req: NextRequest) {
       headers["x-api-key"] = WAHA_API_KEY;
     }
 
-    const response = await fetch(WAHA_API_URL, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        chatId: `${ADMIN_PHONE}@c.us`,
-        text: whatsappMessage,
-        session: WAHA_SESSION,
-      }),
+    const notifications = ADMIN_PHONES.map(async (phone) => {
+      const response = await fetch(WAHA_API_URL, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          chatId: `${phone.trim()}@c.us`,
+          text: whatsappMessage,
+          session: WAHA_SESSION,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`WAHA Error for ${phone}: ${errorText}`);
+        throw new Error(`WAHA Error for ${phone}: ${errorText}`);
+      }
+      return phone;
     });
 
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`WAHA Error: ${errorText}`);
-    }
+    await Promise.allSettled(notifications);
 
     return NextResponse.json({ success: true, message: "Sent via WAHA" });
   } catch (error) {
