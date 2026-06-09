@@ -153,14 +153,13 @@ export default function IPSBuilder() {
               <input
                 type="number"
                 value={load.watt || ""}
-                disabled={load.type !== "Custom"}
                 onChange={(e) => {
                   const val = e.target.value;
                   if (/^\d*$/.test(val)) {
                     updateLoad(i, "watt", val === "" ? 0 : parseInt(val));
                   }
                 }}
-                className="w-full border rounded px-2 py-2 text-center bg-background text-foreground disabled:bg-gray-300 disabled:text-black"
+                className="w-full border rounded px-2 py-2 text-center bg-background text-foreground"
               />
             </div>
 

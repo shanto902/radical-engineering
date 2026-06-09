@@ -212,11 +212,13 @@ export default function SolarSystemBuilder() {
               <input
                 type="number"
                 value={load.watt}
-                disabled={load.type !== "Custom"}
-                className="w-full border rounded px-2 py-2 disabled:bg-gray-300 disabled:text-black text-center bg-background"
-                onChange={(e) =>
-                  updateLoad(i, "watt", parseFloat(e.target.value))
-                }
+                className="w-full border rounded px-2 py-2 text-center bg-background"
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (/^\d*$/.test(val)) {
+                    updateLoad(i, "watt", val === "" ? 0 : parseFloat(val));
+                  }
+                }}
               />
             </div>
 
