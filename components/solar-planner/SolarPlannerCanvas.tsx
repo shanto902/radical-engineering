@@ -256,7 +256,7 @@ const SolarPlannerCanvas = forwardRef<
           // Temporarily reset position & zoom to fit the exact floor area with padding
           stageRef.current.scale({ x: 1, y: 1 });
           stageRef.current.position({ x: 0, y: 0 });
-          stageRef.current.batchDraw();
+          stageRef.current.draw();
 
           // Calculate custom bounds for polygon
           let minX = 0, minY = 0, maxX = roofPixelWidth, maxY = roofPixelHeight;
@@ -267,11 +267,24 @@ const SolarPlannerCanvas = forwardRef<
             maxY = Math.max(...roofPoints.map((p) => p.y));
           }
 
+          // Encompass panels and obstacles too in case they extend beyond roof bounds
+          if (panels.length > 0) {
+            const panelMinX = Math.min(...panels.map((p) => p.x - p.width / 2));
+            const panelMinY = Math.min(...panels.map((p) => p.y - p.height / 2));
+            const panelMaxX = Math.max(...panels.map((p) => p.x + p.width / 2));
+            const panelMaxY = Math.max(...panels.map((p) => p.y + p.height / 2));
+
+            minX = Math.min(minX, panelMinX);
+            minY = Math.min(minY, panelMinY);
+            maxX = Math.max(maxX, panelMaxX);
+            maxY = Math.max(maxY, panelMaxY);
+          }
+
           const width = maxX - minX;
           const height = maxY - minY;
 
           // Capture data URL matching current editable roof area
-          const padding = 30;
+          const padding = 50;
           const dataURL = stageRef.current.toDataURL({
             x: minX - padding,
             y: minY - padding,
@@ -283,7 +296,7 @@ const SolarPlannerCanvas = forwardRef<
           // Restore user view state
           stageRef.current.scale({ x: currentScaleX, y: currentScaleY });
           stageRef.current.position({ x: currentX, y: currentY });
-          stageRef.current.batchDraw();
+          stageRef.current.draw();
 
           // Download trigger
           const link = document.createElement("a");
