@@ -24,16 +24,23 @@ const TopBar = ({ settings }: { settings: TSettings }) => {
                 ))}
             </span>
           </p>
-          <div className="space-x-2">
+          <div className="flex items-center gap-4">
             <Link
               href={"/order-tracker"}
-              className="w-fit  px-4  hover:underline underline-offset-4 text-xs font-bold py-2 rounded-lg transition"
+              className="text-foreground/80 hover:text-primary text-xs font-semibold transition-colors"
             >
               Track Order
             </Link>
+            <span className="h-3.5 w-px bg-foreground/10" />
+            <Link
+              href={"/solar-roof-planer"}
+              className="bg-primary hover:bg-primary/95 text-background px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm"
+            >
+              Solar Roof Planner
+            </Link>
             <Link
               href={"/builder"}
-              className="w-fit  bg-primary hover:bg-secondary px-4  text-background hover:text-foreground text-xs font-bold py-2 rounded-lg transition"
+              className="bg-primary hover:bg-primary/95 text-background px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm"
             >
               Solar IPS / IPS Builder
             </Link>

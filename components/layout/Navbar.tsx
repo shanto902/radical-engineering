@@ -10,6 +10,7 @@ import {
   Heart,
   ArrowRightCircle,
   Cog,
+  Sun,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -572,6 +573,13 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
               >
                 Track Order
               </Link>
+              <Link
+                href={"/solar-roof-planer"}
+                className="block py-2 text-base text-foreground hover:text-primary"
+                onClick={() => dispatch(closeMenu())}
+              >
+                Solar Roof Planner
+              </Link>
               <div className="flex flex-wrap items-center  gap-4 w-full mb-20">
                 <Link
                   href="/wishlist"
@@ -589,6 +597,15 @@ left-3 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-c
                   className=" text-center mt-3  bg-primary text-background relative py-3 w-fit px-4 rounded-full flex items-center gap-2  font-semibold hover:shadow-lg transition"
                 >
                   <Cog /> System Builder
+                </Link>
+
+                <Link
+                  href="/solar-roof-planer"
+                  aria-label={`Go to Solar Roof Planner Page`}
+                  onClick={() => dispatch(closeMenu())}
+                  className=" text-center mt-3  bg-primary text-background relative py-3 w-fit px-4 rounded-full flex items-center gap-2  font-semibold hover:shadow-lg transition"
+                >
+                  <Sun className="w-5 h-5" /> Solar Roof Planner
                 </Link>
               </div>
             </div>
