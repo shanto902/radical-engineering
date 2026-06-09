@@ -7,11 +7,12 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { Stage, Layer, Rect, Line, Text, Group } from "react-konva";
+import { Stage, Layer, Rect, Line, Text, Group, Circle } from "react-konva";
 import Konva from "konva";
 
 // Constants
-const GRID_SIZE = 25; // 25px grid spacing (0.5m per grid unit)
+const GRID_SIZE = 25; // 25px grid spacing (20 inches per grid unit)
+const SCALE_FACTOR = 1.25; // 1.25 pixels per inch
 
 export interface PanelData {
   id: string;
@@ -34,6 +35,15 @@ interface SolarPlannerCanvasProps {
   roofWidth: number; // in meters (e.g. 8.0)
   roofHeight: number; // in meters (e.g. 6.0)
   theme: "light" | "dark";
+
+  // Custom Polygon Roof Props
+  roofType: "rectangle" | "polygon";
+  roofPoints: { x: number; y: number }[];
+  onUpdateRoofPoints: (points: { x: number; y: number }[]) => void;
+  isDrawingRoof: boolean;
+  onAddRoofPoint?: (point: { x: number; y: number }) => void;
+  selectedVertexIndex: number | null;
+  onSelectVertex: (index: number | null) => void;
 }
 
 export interface SolarPlannerCanvasRef {
@@ -54,6 +64,13 @@ const SolarPlannerCanvas = forwardRef<
       roofWidth,
       roofHeight,
       theme,
+      roofType,
+      roofPoints,
+      onUpdateRoofPoints,
+      isDrawingRoof,
+      onAddRoofPoint,
+      selectedVertexIndex,
+      onSelectVertex,
     },
     ref,
   ) => {
@@ -64,8 +81,21 @@ const SolarPlannerCanvas = forwardRef<
     const [scale, setScale] = useState(1);
     const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
 
-    const roofPixelWidth = roofWidth * 50; // 50 pixels per meter
-    const roofPixelHeight = roofHeight * 50;
+    const [drawingCursorPos, setDrawingCursorPos] = useState<{
+      x: number;
+      y: number;
+    } | null>(null);
+    const [hoveredVertex, setHoveredVertex] = useState<number | null>(null);
+    const [isExporting, setIsExporting] = useState(false);
+    const exportStateRef = useRef<{
+      currentScaleX: number;
+      currentScaleY: number;
+      currentX: number;
+      currentY: number;
+    } | null>(null);
+
+    const roofPixelWidth = roofWidth * SCALE_FACTOR; // SCALE_FACTOR pixels per inch
+    const roofPixelHeight = roofHeight * SCALE_FACTOR;
 
     // Theme color palettes mapped exactly to site variables
     const palette = {
@@ -137,8 +167,17 @@ const SolarPlannerCanvas = forwardRef<
     // Center the floor area inside the viewport whenever its dimensions or container size change
     useEffect(() => {
       const { width, height } = dimensions;
-      const initialX = (width - roofPixelWidth) / 2;
-      const initialY = (height - roofPixelHeight) / 2;
+      let minX = 0, minY = 0, maxX = roofPixelWidth, maxY = roofPixelHeight;
+      if (roofType === "polygon" && roofPoints.length > 0) {
+        minX = Math.min(...roofPoints.map((p) => p.x));
+        minY = Math.min(...roofPoints.map((p) => p.y));
+        maxX = Math.max(...roofPoints.map((p) => p.x));
+        maxY = Math.max(...roofPoints.map((p) => p.y));
+      }
+      const designWidth = maxX - minX;
+      const designHeight = maxY - minY;
+      const initialX = (width - designWidth) / 2 - minX;
+      const initialY = (height - designHeight) / 2 - minY;
       setStagePos({ x: initialX, y: initialY });
     }, [
       dimensions.width,
@@ -147,15 +186,17 @@ const SolarPlannerCanvas = forwardRef<
       roofHeight,
       roofPixelWidth,
       roofPixelHeight,
+      roofType,
+      roofPoints.length,
     ]);
 
     // Snap position to closest grid line (anchored to top-left edge of the element to support arbitrary sizes)
     const snapPosition = (rawX: number, rawY: number, w: number, h: number) => {
       const topLeftX = rawX - w / 2;
       const topLeftY = rawY - h / 2;
-      // Snap to 5px (0.1m) instead of GRID_SIZE (25px) for 0.1m precision placement
-      const snappedTLX = Math.round(topLeftX / 5) * 5;
-      const snappedTLY = Math.round(topLeftY / 5) * 5;
+      // Snap to GRID_SIZE for grid-aligned precision placement
+      const snappedTLX = Math.round(topLeftX / GRID_SIZE) * GRID_SIZE;
+      const snappedTLY = Math.round(topLeftY / GRID_SIZE) * GRID_SIZE;
       return {
         x: snappedTLX + w / 2,
         y: snappedTLY + h / 2,
@@ -170,9 +211,18 @@ const SolarPlannerCanvas = forwardRef<
     const resetView = () => {
       setScale(1);
       const { width, height } = dimensions;
+      let minX = 0, minY = 0, maxX = roofPixelWidth, maxY = roofPixelHeight;
+      if (roofType === "polygon" && roofPoints.length > 0) {
+        minX = Math.min(...roofPoints.map((p) => p.x));
+        minY = Math.min(...roofPoints.map((p) => p.y));
+        maxX = Math.max(...roofPoints.map((p) => p.x));
+        maxY = Math.max(...roofPoints.map((p) => p.y));
+      }
+      const designWidth = maxX - minX;
+      const designHeight = maxY - minY;
       setStagePos({
-        x: (width - roofPixelWidth) / 2,
-        y: (height - roofPixelHeight) / 2,
+        x: (width - designWidth) / 2 - minX,
+        y: (height - designHeight) / 2 - minY,
       });
     };
 
@@ -180,44 +230,76 @@ const SolarPlannerCanvas = forwardRef<
     useImperativeHandle(ref, () => ({
       exportLayout() {
         if (!stageRef.current) return;
-
-        // Temporarily reset position & zoom to fit the exact floor area with padding
-        const currentScaleX = stageRef.current.scaleX();
-        const currentScaleY = stageRef.current.scaleY();
-        const currentX = stageRef.current.x();
-        const currentY = stageRef.current.y();
-
-        stageRef.current.scale({ x: 1, y: 1 });
-        stageRef.current.position({ x: 0, y: 0 });
-
-        // Deselect panels temporarily for a clean layout shot
-        onSelectPanel(null);
-        stageRef.current.batchDraw();
-
-        // Capture data URL matching current editable roof area
-        const padding = 20;
-        const dataURL = stageRef.current.toDataURL({
-          x: -padding,
-          y: -padding,
-          width: roofPixelWidth + padding * 2,
-          height: roofPixelHeight + padding * 2,
-          pixelRatio: 3,
-        });
-
-        // Restore user view state
-        stageRef.current.scale({ x: currentScaleX, y: currentScaleY });
-        stageRef.current.position({ x: currentX, y: currentY });
-        stageRef.current.batchDraw();
-
-        // Download trigger
-        const link = document.createElement("a");
-        link.download = `solar-roof-layout-${Date.now()}.png`;
-        link.href = dataURL;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Save current view state
+        exportStateRef.current = {
+          currentScaleX: stageRef.current.scaleX(),
+          currentScaleY: stageRef.current.scaleY(),
+          currentX: stageRef.current.x(),
+          currentY: stageRef.current.y(),
+        };
+        // Trigger export state, which will hide selection indicators and re-render
+        setIsExporting(true);
       },
     }));
+
+    useEffect(() => {
+      if (isExporting && exportStateRef.current) {
+        // Wait for React to render the canvas without selection outlines
+        const timer = setTimeout(() => {
+          if (!stageRef.current || !exportStateRef.current) {
+            setIsExporting(false);
+            return;
+          }
+
+          const { currentScaleX, currentScaleY, currentX, currentY } = exportStateRef.current;
+
+          // Temporarily reset position & zoom to fit the exact floor area with padding
+          stageRef.current.scale({ x: 1, y: 1 });
+          stageRef.current.position({ x: 0, y: 0 });
+          stageRef.current.batchDraw();
+
+          // Calculate custom bounds for polygon
+          let minX = 0, minY = 0, maxX = roofPixelWidth, maxY = roofPixelHeight;
+          if (roofType === "polygon" && roofPoints.length > 0) {
+            minX = Math.min(...roofPoints.map((p) => p.x));
+            minY = Math.min(...roofPoints.map((p) => p.y));
+            maxX = Math.max(...roofPoints.map((p) => p.x));
+            maxY = Math.max(...roofPoints.map((p) => p.y));
+          }
+
+          const width = maxX - minX;
+          const height = maxY - minY;
+
+          // Capture data URL matching current editable roof area
+          const padding = 30;
+          const dataURL = stageRef.current.toDataURL({
+            x: minX - padding,
+            y: minY - padding,
+            width: width + padding * 2,
+            height: height + padding * 2,
+            pixelRatio: 3,
+          });
+
+          // Restore user view state
+          stageRef.current.scale({ x: currentScaleX, y: currentScaleY });
+          stageRef.current.position({ x: currentX, y: currentY });
+          stageRef.current.batchDraw();
+
+          // Download trigger
+          const link = document.createElement("a");
+          link.download = `solar-roof-layout-${Date.now()}.png`;
+          link.href = dataURL;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // Reset exporting state to restore selection outlines
+          setIsExporting(false);
+          exportStateRef.current = null;
+        }, 80);
+        return () => clearTimeout(timer);
+      }
+    }, [isExporting, roofType, roofPoints, roofPixelWidth, roofPixelHeight]);
 
     // Grid lines generation
     const renderGrid = () => {
@@ -253,6 +335,69 @@ const SolarPlannerCanvas = forwardRef<
       }
 
       return lines;
+    };
+
+    const renderSegmentLabels = () => {
+      if (roofType !== "polygon" || roofPoints.length === 0) return null;
+
+      const labels = [];
+      const numPoints = roofPoints.length;
+      const limit = isDrawingRoof ? numPoints - 1 : numPoints;
+
+      for (let i = 0; i < limit; i++) {
+        const p1 = roofPoints[i];
+        const p2 = roofPoints[(i + 1) % numPoints];
+
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const distancePx = Math.sqrt(dx * dx + dy * dy);
+        const distanceInches = distancePx / SCALE_FACTOR;
+
+        if (distanceInches < 2) continue;
+
+        const mx = p1.x + dx / 2;
+        const my = p1.y + dy / 2;
+
+        const len = distancePx || 1;
+        const px = -dy / len;
+        const py = dx / len;
+        const offsetX = px * 12;
+        const offsetY = py * 12;
+
+        const textStr = `${distanceInches.toFixed(0)}in`;
+
+        labels.push(
+          <Group key={`segment-label-${i}`} x={mx + offsetX} y={my + offsetY}>
+            <Rect
+              x={-16}
+              y={-7}
+              width={32}
+              height={14}
+              fill={theme === "dark" ? "#1e1e1e" : "#ffffff"}
+              stroke={palette.roofStroke}
+              strokeWidth={0.5}
+              cornerRadius={4}
+              shadowColor="black"
+              shadowBlur={2}
+              shadowOpacity={0.15}
+              shadowOffset={{ x: 0, y: 1 }}
+            />
+            <Text
+              x={-16}
+              y={-5}
+              width={32}
+              text={textStr}
+              fontSize={8.5}
+              fontFamily="monospace"
+              fontStyle="bold"
+              fill={theme === "dark" ? "#ffffff" : "#000000"}
+              align="center"
+            />
+          </Group>
+        );
+      }
+
+      return labels;
     };
 
     return (
@@ -311,12 +456,29 @@ const SolarPlannerCanvas = forwardRef<
           }}
         >
           <span style={{ color: palette.roofStroke }}>
-            Scale: 1 Unit = 0.5m (25px)
+            Scale: 1 Unit = 20" (25px)
           </span>
-          <span>
-            Floor Size: {roofWidth.toFixed(1)}m × {roofHeight.toFixed(1)}m
-          </span>
+          {roofType === "rectangle" ? (
+            <span>
+              Floor Size: {roofWidth.toFixed(0)}" × {roofHeight.toFixed(0)}"
+            </span>
+          ) : (
+            <span>Polygon Roof (Vertices: {roofPoints.length})</span>
+          )}
         </div>
+
+        {/* Instructions overlay for drawing roof */}
+        {roofType === "polygon" && isDrawingRoof && (
+          <div className="absolute top-4 left-4 z-10 pointer-events-none select-none px-4 py-2.5 rounded-xl border border-primary/20 bg-background/90 backdrop-blur-md text-xs flex flex-col gap-1 shadow-md max-w-xs animate-in fade-in duration-200">
+            <span className="font-bold flex items-center gap-1.5 text-primary">
+              <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping inline-block" />
+              Drawing Custom Roof Area
+            </span>
+            <span className="text-foreground/75 leading-relaxed text-[11px]">
+              Click on the grid to place vertices. Click the first point (green circle) or use the footer controls to close the polygon and finish.
+            </span>
+          </div>
+        )}
 
         <Stage
           ref={stageRef}
@@ -332,22 +494,88 @@ const SolarPlannerCanvas = forwardRef<
               setStagePos({ x: e.target.x(), y: e.target.y() });
             }
           }}
-          onClick={(e) => {
-            if (
-              e.target === stageRef.current ||
-              e.target.name() === "roof-bg" ||
-              e.target.name() === "grid-bg"
-            ) {
-              onSelectPanel(null);
+          onMouseMove={(e) => {
+            if (isDrawingRoof) {
+              const stage = stageRef.current;
+              if (!stage) return;
+              const pointer = stage.getPointerPosition();
+              if (pointer) {
+                const stageX = stage.x();
+                const stageY = stage.y();
+                const stageScale = stage.scaleX();
+                const relativeX = (pointer.x - stageX) / stageScale;
+                const relativeY = (pointer.y - stageY) / stageScale;
+                const snappedX = Math.round(relativeX / 5) * 5;
+                const snappedY = Math.round(relativeY / 5) * 5;
+                setDrawingCursorPos({ x: snappedX, y: snappedY });
+              }
+            } else if (drawingCursorPos) {
+              setDrawingCursorPos(null);
             }
           }}
-          onTouchStart={(e) => {
+          onMouseLeave={() => {
+            setDrawingCursorPos(null);
+          }}
+          onClick={(e) => {
+            const stage = stageRef.current;
+            if (!stage) return;
+
+            if (isDrawingRoof) {
+              const pointer = stage.getPointerPosition();
+              if (pointer) {
+                const stageX = stage.x();
+                const stageY = stage.y();
+                const stageScale = stage.scaleX();
+                const relativeX = (pointer.x - stageX) / stageScale;
+                const relativeY = (pointer.y - stageY) / stageScale;
+                const snappedX = Math.round(relativeX / 5) * 5;
+                const snappedY = Math.round(relativeY / 5) * 5;
+                if (onAddRoofPoint) {
+                  onAddRoofPoint({ x: snappedX, y: snappedY });
+                }
+              }
+              return;
+            }
+
             if (
               e.target === stageRef.current ||
               e.target.name() === "roof-bg" ||
-              e.target.name() === "grid-bg"
+              e.target.name() === "grid-bg" ||
+              e.target.name() === "roof-polygon"
             ) {
               onSelectPanel(null);
+              onSelectVertex(null);
+            }
+          }}
+          onTouchEnd={(e) => {
+            const stage = stageRef.current;
+            if (!stage) return;
+
+            if (isDrawingRoof) {
+              const pointer = stage.getPointerPosition();
+              if (pointer) {
+                const stageX = stage.x();
+                const stageY = stage.y();
+                const stageScale = stage.scaleX();
+                const relativeX = (pointer.x - stageX) / stageScale;
+                const relativeY = (pointer.y - stageY) / stageScale;
+                const snappedX = Math.round(relativeX / 5) * 5;
+                const snappedY = Math.round(relativeY / 5) * 5;
+                if (onAddRoofPoint) {
+                  onAddRoofPoint({ x: snappedX, y: snappedY });
+                }
+              }
+              return;
+            }
+
+            if (
+              e.target === stageRef.current ||
+              e.target.name() === "roof-bg" ||
+              e.target.name() === "grid-bg" ||
+              e.target.name() === "roof-polygon"
+            ) {
+              onSelectPanel(null);
+              onSelectVertex(null);
             }
           }}
         >
@@ -355,53 +583,271 @@ const SolarPlannerCanvas = forwardRef<
             {/* Virtual Grid backdrop */}
             {renderGrid()}
 
-            {/* Roof design boundary box */}
-            <Group name="roof-bg">
-              <Rect
-                x={0}
-                y={0}
-                width={roofPixelWidth}
-                height={roofPixelHeight}
-                fill={palette.roofBg}
-                stroke={palette.roofStroke}
-                strokeWidth={2.5}
-                cornerRadius={8}
-                shadowColor="#000"
-                shadowBlur={16}
-                shadowOpacity={theme === "dark" ? 0.5 : 0.15}
-                shadowOffset={{ x: 3, y: 3 }}
-              />
-              <Text
-                x={12}
-                y={12}
-                text={`DESIGNATED ROOF AREA (${roofWidth.toFixed(
-                  1,
-                )}m × ${roofHeight.toFixed(1)}m)`}
-                fontSize={9}
-                fontFamily="monospace"
-                fontStyle="bold"
-                fill={palette.roofText}
-                letterSpacing={1.2}
-              />
-              {/* Subtle Layout Watermark */}
-              <Text
-                x={roofPixelWidth - 210}
-                y={roofPixelHeight - 26}
-                width={200}
-                text="RADICAL ENGINEERING https://radicalengineering.com.bd"
-                fontSize={7.5}
-                fontFamily="monospace"
-                fontStyle="bold"
-                fill={palette.roofText}
-                align="right"
-                letterSpacing={1}
-                opacity={0.45}
-              />
-            </Group>
+            {/* Rectangle Roof design boundary box */}
+            {roofType === "rectangle" && (
+              <Group name="roof-bg">
+                <Rect
+                  x={0}
+                  y={0}
+                  width={roofPixelWidth}
+                  height={roofPixelHeight}
+                  fill={palette.roofBg}
+                  stroke={palette.roofStroke}
+                  strokeWidth={2.5}
+                  cornerRadius={8}
+                  shadowColor="#000"
+                  shadowBlur={16}
+                  shadowOpacity={theme === "dark" ? 0.5 : 0.15}
+                  shadowOffset={{ x: 3, y: 3 }}
+                />
+                <Text
+                  x={12}
+                  y={12}
+                  text={`DESIGNATED ROOF AREA (${roofWidth.toFixed(
+                    0,
+                  )}" × ${roofHeight.toFixed(0)}")`}
+                  fontSize={9}
+                  fontFamily="monospace"
+                  fontStyle="bold"
+                  fill={palette.roofText}
+                  letterSpacing={1.2}
+                />
+                {/* Subtle Layout Watermark */}
+                <Text
+                  x={roofPixelWidth - 210}
+                  y={roofPixelHeight - 26}
+                  width={200}
+                  text="RADICAL ENGINEERING https://radicalengineering.com.bd"
+                  fontSize={7.5}
+                  fontFamily="monospace"
+                  fontStyle="bold"
+                  fill={palette.roofText}
+                  align="right"
+                  letterSpacing={1}
+                  opacity={0.45}
+                />
+              </Group>
+            )}
+
+            {/* Custom Polygon Roof */}
+            {roofType === "polygon" && roofPoints.length > 0 && (
+              <Group name="roof-polygon-group">
+                {/* Main Filled & Outlined Polygon */}
+                <Line
+                  points={roofPoints.flatMap((p) => [p.x, p.y])}
+                  fill={palette.roofBg}
+                  stroke={palette.roofStroke}
+                  strokeWidth={2.5}
+                  closed={!isDrawingRoof}
+                  dash={isDrawingRoof ? [5, 5] : undefined}
+                  name="roof-polygon"
+                  shadowColor="#000"
+                  shadowBlur={16}
+                  shadowOpacity={theme === "dark" ? 0.5 : 0.15}
+                  shadowOffset={{ x: 3, y: 3 }}
+                  onDblClick={(e) => {
+                    if (isDrawingRoof) return;
+                    const stage = e.target.getStage();
+                    if (!stage) return;
+                    const pointer = stage.getPointerPosition();
+                    if (pointer) {
+                      const stageX = stage.x();
+                      const stageY = stage.y();
+                      const stageScale = stage.scaleX();
+                      const clickX = (pointer.x - stageX) / stageScale;
+                      const clickY = (pointer.y - stageY) / stageScale;
+
+                      // Vector math to find the closest segment and insert a vertex
+                      let minDistance = Infinity;
+                      let insertIndex = -1;
+                      let bestPoint = { x: clickX, y: clickY };
+
+                      for (let i = 0; i < roofPoints.length; i++) {
+                        const p1 = roofPoints[i];
+                        const p2 = roofPoints[(i + 1) % roofPoints.length];
+
+                        const dx = p2.x - p1.x;
+                        const dy = p2.y - p1.y;
+                        const lenSq = dx * dx + dy * dy;
+                        if (lenSq === 0) continue;
+
+                        const t = Math.max(
+                          0,
+                          Math.min(
+                            1,
+                            ((clickX - p1.x) * dx + (clickY - p1.y) * dy) /
+                              lenSq,
+                          ),
+                        );
+                        const projX = p1.x + t * dx;
+                        const projY = p1.y + t * dy;
+
+                        const distX = clickX - projX;
+                        const distY = clickY - projY;
+                        const distSq = distX * distX + distY * distY;
+
+                        if (distSq < minDistance) {
+                          minDistance = distSq;
+                          insertIndex = i + 1;
+                          bestPoint = { x: projX, y: projY };
+                        }
+                      }
+
+                      if (insertIndex !== -1) {
+                        const snappedPoint = {
+                          x: Math.round(bestPoint.x / 5) * 5,
+                          y: Math.round(bestPoint.y / 5) * 5,
+                        };
+                        const newPoints = [...roofPoints];
+                        newPoints.splice(insertIndex, 0, snappedPoint);
+                        onUpdateRoofPoints(newPoints);
+                        onSelectVertex(insertIndex);
+                        onSelectPanel(null);
+                      }
+                    }
+                  }}
+                />
+
+                {/* Designation Text */}
+                {roofPoints.length >= 3 && !isDrawingRoof && (() => {
+                  const cx = roofPoints.reduce((sum, p) => sum + p.x, 0) / roofPoints.length;
+                  const cy = roofPoints.reduce((sum, p) => sum + p.y, 0) / roofPoints.length;
+                  return (
+                    <Text
+                      x={cx - 100}
+                      y={cy - 5}
+                      width={200}
+                      align="center"
+                      text={`DESIGNATED CUSTOM ROOF AREA`}
+                      fontSize={8}
+                      fontFamily="monospace"
+                      fontStyle="bold"
+                      fill={palette.roofText}
+                      letterSpacing={1.2}
+                      opacity={0.65}
+                    />
+                  );
+                })()}
+
+                {/* Segment Labels */}
+                {renderSegmentLabels()}
+
+                {/* Vertex Draggable Handles (Only when NOT drawing) */}
+                {!isDrawingRoof && !isExporting &&
+                  roofPoints.map((p, idx) => {
+                    const isSelected = selectedVertexIndex === idx;
+                    const isHovered = hoveredVertex === idx;
+                    return (
+                      <Circle
+                        key={`vertex-handle-${idx}`}
+                        x={p.x}
+                        y={p.y}
+                        radius={isHovered ? 8 : 5.5}
+                        fill={
+                          isSelected
+                            ? palette.roofStroke
+                            : theme === "dark"
+                            ? "#1e1e1e"
+                            : "#ffffff"
+                        }
+                        stroke={palette.roofStroke}
+                        strokeWidth={isSelected ? 3 : 1.5}
+                        draggable
+                        onDragMove={(e) => {
+                          const snappedX = Math.round(e.target.x() / 5) * 5;
+                          const snappedY = Math.round(e.target.y() / 5) * 5;
+                          const boundedX = Math.max(
+                            -500,
+                            Math.min(1500, snappedX),
+                          );
+                          const boundedY = Math.max(
+                            -500,
+                            Math.min(1500, snappedY),
+                          );
+
+                          const newPoints = [...roofPoints];
+                          newPoints[idx] = { x: boundedX, y: boundedY };
+                          onUpdateRoofPoints(newPoints);
+
+                          e.target.x(boundedX);
+                          e.target.y(boundedY);
+                        }}
+                        onMouseEnter={(e) => {
+                          const stage = e.target.getStage();
+                          if (stage) stage.container().style.cursor = "pointer";
+                          setHoveredVertex(idx);
+                        }}
+                        onMouseLeave={(e) => {
+                          const stage = e.target.getStage();
+                          if (stage) stage.container().style.cursor = "default";
+                          setHoveredVertex(null);
+                        }}
+                        onClick={(e) => {
+                          e.cancelBubble = true;
+                          onSelectVertex(idx);
+                          onSelectPanel(null);
+                        }}
+                        onTouchEnd={(e) => {
+                          e.cancelBubble = true;
+                          onSelectVertex(idx);
+                          onSelectPanel(null);
+                        }}
+                      />
+                    );
+                  })}
+
+                {/* Vertex handles during drawing */}
+                {isDrawingRoof &&
+                  roofPoints.map((p, idx) => (
+                    <Circle
+                      key={`vertex-drawing-${idx}`}
+                      x={p.x}
+                      y={p.y}
+                      radius={idx === 0 ? 6 : 4.5}
+                      fill={idx === 0 ? "#22c55e" : palette.roofStroke}
+                      stroke={palette.roofStroke}
+                      strokeWidth={1}
+                      onClick={(e) => {
+                        e.cancelBubble = true;
+                        if (idx === 0 && roofPoints.length >= 3) {
+                          if (onAddRoofPoint) {
+                            onAddRoofPoint(p);
+                          }
+                        }
+                      }}
+                    />
+                  ))}
+
+                {/* Target cursor snap indicator when drawing */}
+                {isDrawingRoof && drawingCursorPos && (
+                  <Group>
+                    <Circle
+                      x={drawingCursorPos.x}
+                      y={drawingCursorPos.y}
+                      radius={6}
+                      stroke={palette.roofStroke}
+                      strokeWidth={1}
+                      dash={[2, 2]}
+                      opacity={0.8}
+                    />
+                    <Text
+                      x={drawingCursorPos.x + 8}
+                      y={drawingCursorPos.y - 12}
+                      text={`(${(drawingCursorPos.x / SCALE_FACTOR).toFixed(0)}in, ${(
+                        drawingCursorPos.y / SCALE_FACTOR
+                      ).toFixed(0)}in)`}
+                      fontSize={7.5}
+                      fontFamily="monospace"
+                      fill={palette.roofStroke}
+                    />
+                  </Group>
+                )}
+              </Group>
+            )}
 
             {/* Render Panels and Obstacles */}
             {panels.map((panel, idx) => {
-              const isSelected = selectedId === panel.id;
+              const isSelected = selectedId === panel.id && !isExporting;
               const { width, type } = panel;
 
               // Calculate top-down projected height based on tilt angle (cos(theta))
@@ -409,21 +855,26 @@ const SolarPlannerCanvas = forwardRef<
               const tiltRad = (tiltAngle * Math.PI) / 180;
               const height = panel.height * Math.cos(tiltRad);
 
+              // 1 inch = 1 * SCALE_FACTOR visual gap between panels
+              const gapPx = type === "panel" ? 1 * SCALE_FACTOR : 0;
+              const visualWidth = Math.max(1, width - gapPx);
+              const visualHeight = Math.max(1, height - gapPx);
+
               // Generate cell divisions dynamically for panels
               const gridLines = [];
               if (type === "panel") {
                 const cols = Math.max(1, Math.round(width / 8.3));
                 const rows = Math.max(1, Math.round(height / 10));
-                const cellWidth = width / cols;
-                const cellHeight = height / rows;
+                const cellWidth = visualWidth / cols;
+                const cellHeight = visualHeight / rows;
 
                 // Vertical lines
                 for (let c = 1; c < cols; c++) {
-                  const lineX = -width / 2 + c * cellWidth;
+                  const lineX = -visualWidth / 2 + c * cellWidth;
                   gridLines.push(
                     <Line
                       key={`pv-${panel.id}-${c}`}
-                      points={[lineX, -height / 2, lineX, height / 2]}
+                      points={[lineX, -visualHeight / 2, lineX, visualHeight / 2]}
                       stroke={palette.panelGrid}
                       strokeWidth={0.5}
                     />,
@@ -431,11 +882,11 @@ const SolarPlannerCanvas = forwardRef<
                 }
                 // Horizontal lines
                 for (let r = 1; r < rows; r++) {
-                  const lineY = -height / 2 + r * cellHeight;
+                  const lineY = -visualHeight / 2 + r * cellHeight;
                   gridLines.push(
                     <Line
                       key={`ph-${panel.id}-${r}`}
-                      points={[-width / 2, lineY, width / 2, lineY]}
+                      points={[-visualWidth / 2, lineY, visualWidth / 2, lineY]}
                       stroke={palette.panelGrid}
                       strokeWidth={0.5}
                     />,
@@ -490,10 +941,10 @@ const SolarPlannerCanvas = forwardRef<
                   {/* Selection glow border */}
                   {isSelected && (
                     <Rect
-                      x={-width / 2 - 4}
-                      y={-height / 2 - 4}
-                      width={width + 8}
-                      height={height + 8}
+                      x={-visualWidth / 2 - 4}
+                      y={-visualHeight / 2 - 4}
+                      width={visualWidth + 8}
+                      height={visualHeight + 8}
                       stroke={
                         type === "obstacle"
                           ? "#ef4444"
@@ -516,10 +967,10 @@ const SolarPlannerCanvas = forwardRef<
                     // Obstacle Render
                     <>
                       <Rect
-                        x={-width / 2}
-                        y={-height / 2}
-                        width={width}
-                        height={height}
+                        x={-visualWidth / 2}
+                        y={-visualHeight / 2}
+                        width={visualWidth}
+                        height={visualHeight}
                         fill={theme === "dark" ? "#ef444415" : "#ef444408"}
                         stroke="#ef4444"
                         strokeWidth={1.5}
@@ -529,10 +980,10 @@ const SolarPlannerCanvas = forwardRef<
                       {/* Warning diagonals inside obstacle */}
                       <Line
                         points={[
-                          -width / 2,
-                          -height / 2,
-                          width / 2,
-                          height / 2,
+                          -visualWidth / 2,
+                          -visualHeight / 2,
+                          visualWidth / 2,
+                          visualHeight / 2,
                         ]}
                         stroke="#ef4444"
                         strokeWidth={1.5}
@@ -540,10 +991,10 @@ const SolarPlannerCanvas = forwardRef<
                       />
                       <Line
                         points={[
-                          width / 2,
-                          -height / 2,
-                          -width / 2,
-                          height / 2,
+                          visualWidth / 2,
+                          -visualHeight / 2,
+                          -visualWidth / 2,
+                          visualHeight / 2,
                         ]}
                         stroke="#ef4444"
                         strokeWidth={1.5}
@@ -554,17 +1005,17 @@ const SolarPlannerCanvas = forwardRef<
                     // Solar Panel Render
                     <>
                       <Rect
-                        x={-width / 2}
-                        y={-height / 2}
-                        width={width}
-                        height={height}
+                        x={-visualWidth / 2}
+                        y={-visualHeight / 2}
+                        width={visualWidth}
+                        height={visualHeight}
                         fillLinearGradientStartPoint={{
-                          x: -width / 2,
-                          y: -height / 2,
+                          x: -visualWidth / 2,
+                          y: -visualHeight / 2,
                         }}
                         fillLinearGradientEndPoint={{
-                          x: width / 2,
-                          y: height / 2,
+                          x: visualWidth / 2,
+                          y: visualHeight / 2,
                         }}
                         fillLinearGradientColorStops={[
                           0,
@@ -591,10 +1042,10 @@ const SolarPlannerCanvas = forwardRef<
                       {/* Anti-reflective glare */}
                       <Line
                         points={[
-                          -width / 2 + 5,
-                          -height / 2 + 5,
-                          width / 2 - 5,
-                          height / 2 - 5,
+                          -visualWidth / 2 + 5,
+                          -visualHeight / 2 + 5,
+                          visualWidth / 2 - 5,
+                          visualHeight / 2 - 5,
                         ]}
                         stroke="#ffffff"
                         strokeWidth={1}
@@ -606,9 +1057,9 @@ const SolarPlannerCanvas = forwardRef<
                   {/* Element Labels */}
                   {type === "obstacle" ? (
                     <Text
-                      x={-width / 2}
+                      x={-visualWidth / 2}
                       y={-4}
-                      width={width}
+                      width={visualWidth}
                       text="OBSTACLE"
                       fontSize={7.5}
                       fontFamily="monospace"
@@ -619,18 +1070,18 @@ const SolarPlannerCanvas = forwardRef<
                   ) : (
                     <>
                       <Text
-                        x={-width / 2 + 4}
-                        y={-height / 2 + 6}
+                        x={-visualWidth / 2 + 4}
+                        y={-visualHeight / 2 + 6}
                         text={`P${idx + 1}`}
                         fontSize={8}
                         fontFamily="monospace"
                         fontStyle="bold"
                         fill={palette.panelLabel}
                       />
-                      {height >= 40 && (
+                      {visualHeight >= 40 && (
                         <Text
-                          x={-width / 2 + 4}
-                          y={height / 2 - 12}
+                          x={-visualWidth / 2 + 4}
+                          y={visualHeight / 2 - 12}
                           text={`${panel.power || 400}W`}
                           fontSize={7}
                           fontFamily="monospace"
