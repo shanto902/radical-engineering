@@ -476,17 +476,13 @@ const SolarPlannerCanvas = forwardRef<
                   }}
                   onClick={(e) => {
                     e.cancelBubble = true;
-                    if (selectedId === panel.id) {
-                      onRotatePanel(panel.id);
-                    } else {
+                    if (selectedId !== panel.id) {
                       onSelectPanel(panel.id);
                     }
                   }}
                   onTouchEnd={(e) => {
                     e.cancelBubble = true;
-                    if (selectedId === panel.id) {
-                      onRotatePanel(panel.id);
-                    } else {
+                    if (selectedId !== panel.id) {
                       onSelectPanel(panel.id);
                     }
                   }}
