@@ -35,6 +35,14 @@ const SolarPlannerCanvas = dynamic(
   { ssr: false },
 );
 
+function formatInches(inches: number): string {
+  const ft = Math.floor(inches / 12);
+  const rIn = Math.round(inches % 12);
+  if (ft === 0) return `${rIn}"`;
+  if (rIn === 0) return `${ft}'`;
+  return `${ft}' ${rIn}"`;
+}
+
 export default function SolarPlannerPage() {
   const mode = useSelector((state: RootState) => state.theme.mode);
   const [hasMounted, setHasMounted] = useState(false);
@@ -633,11 +641,11 @@ export default function SolarPlannerPage() {
                 Area
               </span>
               <span className="text-[8px] text-foreground/40 font-mono mt-0.5">
-                in²
+                sq ft
               </span>
             </div>
             <span className="text-base font-black text-foreground leading-none">
-              {estimatedArea.toFixed(0)}
+              {(estimatedArea / 144).toFixed(0)}
             </span>
           </div>
         </div>
@@ -759,9 +767,14 @@ export default function SolarPlannerPage() {
                   <div className="grid grid-cols-2 gap-2">
                     {/* Element Width */}
                     <div className="flex items-center justify-between bg-background border border-primary/10 px-2 py-1 rounded-xl">
-                      <span className="text-[10px] text-foreground/50 font-mono">
-                        W:
-                      </span>
+                      <div className="flex flex-col leading-none">
+                        <span className="text-[10px] text-foreground/50 font-mono">
+                          W:
+                        </span>
+                        <span className="text-[8px] text-primary/70 font-mono font-bold mt-0.5 select-none">
+                          ({formatInches(selectedElement.width / SCALE_FACTOR)})
+                        </span>
+                      </div>
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => {
@@ -829,9 +842,14 @@ export default function SolarPlannerPage() {
 
                     {/* Element Height */}
                     <div className="flex items-center justify-between bg-background border border-primary/10 px-2 py-1 rounded-xl">
-                      <span className="text-[10px] text-foreground/50 font-mono">
-                        H:
-                      </span>
+                      <div className="flex flex-col leading-none">
+                        <span className="text-[10px] text-foreground/50 font-mono">
+                          H:
+                        </span>
+                        <span className="text-[8px] text-primary/70 font-mono font-bold mt-0.5 select-none">
+                          ({formatInches(selectedElement.height / SCALE_FACTOR)})
+                        </span>
+                      </div>
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => {
@@ -888,15 +906,13 @@ export default function SolarPlannerPage() {
                             selectedElement.tilt !== undefined &&
                             selectedElement.tilt > 0 && (
                               <span className="text-[8px] text-foreground/45 font-normal tracking-tight mt-0.5 leading-none select-none">
-                                (
-                                {(
+                                (Proj: {formatInches(
                                   (selectedElement.height *
                                     Math.cos(
                                       (selectedElement.tilt * Math.PI) / 180,
                                     )) /
                                   SCALE_FACTOR
-                                ).toFixed(1)}
-                                in)
+                                )})
                               </span>
                             )}
                         </div>
@@ -1367,9 +1383,14 @@ export default function SolarPlannerPage() {
                     <div className="grid grid-cols-2 gap-2">
                       {/* Width Stepper */}
                       <div className="flex items-center justify-between bg-background border border-primary/10 px-2 py-1 rounded-xl">
-                        <span className="text-[10px] text-foreground/50 font-mono">
-                          W (in):
-                        </span>
+                        <div className="flex flex-col leading-none">
+                          <span className="text-[10px] text-foreground/50 font-mono">
+                            W (in):
+                          </span>
+                          <span className="text-[8px] text-primary/70 font-mono font-bold mt-0.5 select-none">
+                            ({formatInches(roofWidth)})
+                          </span>
+                        </div>
                         <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => {
@@ -1428,9 +1449,14 @@ export default function SolarPlannerPage() {
 
                       {/* Height Stepper */}
                       <div className="flex items-center justify-between bg-background border border-primary/10 px-2 py-1 rounded-xl">
-                        <span className="text-[10px] text-foreground/50 font-mono">
-                          H (in):
-                        </span>
+                        <div className="flex flex-col leading-none">
+                          <span className="text-[10px] text-foreground/50 font-mono">
+                            H (in):
+                          </span>
+                          <span className="text-[8px] text-primary/70 font-mono font-bold mt-0.5 select-none">
+                            ({formatInches(roofHeight)})
+                          </span>
+                        </div>
                         <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => {
@@ -1504,7 +1530,7 @@ export default function SolarPlannerPage() {
                                 onClick={handleStartDrawingMeasurementCenter}
                                 className="w-full py-1.5 rounded-lg bg-primary text-background font-bold text-xs active:scale-[0.98] transition-all"
                               >
-                                Set First Vertex at Center (X: {(roofWidth / 2).toFixed(0)}in, Y: {(roofHeight / 2).toFixed(0)}in)
+                                Set First Vertex at Center (X: {formatInches(roofWidth / 2)}, Y: {formatInches(roofHeight / 2)})
                               </button>
                             ) : (
                               <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
@@ -1578,7 +1604,7 @@ export default function SolarPlannerPage() {
                                     key={`breadcrumb-${idx}`}
                                     className="text-[8px] font-mono px-1.5 py-0.5 rounded border border-primary/5 bg-primary/5 shrink-0"
                                   >
-                                    P{idx+1}: ({(pt.x / SCALE_FACTOR).toFixed(0)}in, {(pt.y / SCALE_FACTOR).toFixed(0)}in)
+                                    P{idx+1}: ({formatInches(pt.x / SCALE_FACTOR)}, {formatInches(pt.y / SCALE_FACTOR)})
                                   </span>
                                 ))}
                               </div>

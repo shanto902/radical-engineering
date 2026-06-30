@@ -14,6 +14,14 @@ import Konva from "konva";
 const GRID_SIZE = 25; // 25px grid spacing (20 inches per grid unit)
 const SCALE_FACTOR = 1.25; // 1.25 pixels per inch
 
+function formatInches(inches: number): string {
+  const ft = Math.floor(inches / 12);
+  const rIn = Math.round(inches % 12);
+  if (ft === 0) return `${rIn}"`;
+  if (rIn === 0) return `${ft}'`;
+  return `${ft}' ${rIn}"`;
+}
+
 export interface PanelData {
   id: string;
   x: number; // center X coordinate
@@ -377,14 +385,15 @@ const SolarPlannerCanvas = forwardRef<
         const offsetX = px * 12;
         const offsetY = py * 12;
 
-        const textStr = `${distanceInches.toFixed(0)}in`;
+        const textStr = formatInches(distanceInches);
+        const labelWidth = Math.max(32, textStr.length * 6 + 6);
 
         labels.push(
           <Group key={`segment-label-${i}`} x={mx + offsetX} y={my + offsetY}>
             <Rect
-              x={-16}
+              x={-labelWidth / 2}
               y={-7}
-              width={32}
+              width={labelWidth}
               height={14}
               fill={theme === "dark" ? "#1e1e1e" : "#ffffff"}
               stroke={palette.roofStroke}
@@ -396,9 +405,9 @@ const SolarPlannerCanvas = forwardRef<
               shadowOffset={{ x: 0, y: 1 }}
             />
             <Text
-              x={-16}
+              x={-labelWidth / 2}
               y={-5}
-              width={32}
+              width={labelWidth}
               text={textStr}
               fontSize={8.5}
               fontFamily="monospace"
@@ -469,11 +478,11 @@ const SolarPlannerCanvas = forwardRef<
           }}
         >
           <span style={{ color: palette.roofStroke }}>
-            Scale: 1 Unit = 20" (25px)
+            Scale: 1 Unit = 1' 8" (25px)
           </span>
           {roofType === "rectangle" ? (
             <span>
-              Floor Size: {roofWidth.toFixed(0)}" × {roofHeight.toFixed(0)}"
+              Floor Size: {formatInches(roofWidth)} × {formatInches(roofHeight)}
             </span>
           ) : (
             <span>Polygon Roof (Vertices: {roofPoints.length})</span>
@@ -616,9 +625,7 @@ const SolarPlannerCanvas = forwardRef<
                 <Text
                   x={12}
                   y={12}
-                  text={`DESIGNATED ROOF AREA (${roofWidth.toFixed(
-                    0,
-                  )}" × ${roofHeight.toFixed(0)}")`}
+                  text={`DESIGNATED ROOF AREA (${formatInches(roofWidth)} × ${formatInches(roofHeight)})`}
                   fontSize={9}
                   fontFamily="monospace"
                   fontStyle="bold"
