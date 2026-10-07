@@ -2,9 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { App as CapacitorApp } from "@capacitor/app";
 import { toast } from "react-hot-toast";
-import { isNativeApp } from "@/components/common/isNativeApp";
 
 export function useRevalidateChecker() {
   const router = useRouter();
@@ -47,12 +45,7 @@ export function useRevalidateChecker() {
 
           console.log("%c[Revalidate] ✅ Refreshing...", "color: orange;");
           toast("Refreshing data...", { icon: "🔄" });
-
-          if (isNativeApp()) {
-            location.reload(); // fallback for Capacitor
-          } else {
-            router.refresh(); // Next.js SSR
-          }
+          router.refresh(); // Next.js SSR
         } else {
           console.log(
             "%c[Revalidate] No refresh needed. Server:",
@@ -70,16 +63,6 @@ export function useRevalidateChecker() {
     };
 
     checkRevalidate();
-
-    // Recheck when app resumes
-    const resumeHandler = CapacitorApp.addListener("resume", () => {
-      console.log("[Revalidate] App resumed — checking...");
-      checkRevalidate();
-    });
-
-    return () => {
-      resumeHandler.then((handle) => handle.remove());
-    };
   }, [router]);
 
   return { isChecking };

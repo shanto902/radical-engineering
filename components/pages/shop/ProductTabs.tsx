@@ -1,7 +1,6 @@
 "use client";
 
 import { Body } from "@/components/common/Body";
-import { isNativeApp } from "@/components/common/isNativeApp";
 import { getImageUrl } from "@/utils/image-url";
 import { useEffect, useState } from "react";
 import { Download, ExternalLink, FileText } from "lucide-react";
@@ -88,9 +87,9 @@ const ProductTabs = ({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Detect mobile by screen size or native app
+    // Detect mobile by screen size
     const checkMobile = () => {
-      if (isNativeApp() || window.innerWidth <= 768) {
+      if (window.innerWidth <= 768) {
         setIsMobile(true);
       } else {
         setIsMobile(false);

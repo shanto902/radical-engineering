@@ -5,12 +5,9 @@ import { useDispatch } from "react-redux";
 import { fetchProducts } from "@/store/productSlice";
 import { AppDispatch } from "@/store";
 import { useRouter } from "next/navigation";
-import { App as CapacitorApp } from "@capacitor/app";
-import { SplashScreen } from "@capacitor/splash-screen";
 import { showCustomToast } from "@/lib/showCustomToast";
 import { RefreshCcw } from "lucide-react";
 import FontFaceObserver from "fontfaceobserver";
-import { isNativeApp } from "./common/isNativeApp";
 import Image from "next/image";
 import logo from "@/assets/logo-square.svg";
 import {
@@ -74,16 +71,12 @@ export default function AppInit() {
             String(lastRevalidateTime)
           );
 
-          if (!isNativeApp()) {
-            await showCustomToast({
-              id: "refresh-toast",
-              icon: RefreshCcw,
-              message: "Refreshing data...",
-            });
-            router.refresh();
-          } else {
-            location.reload();
-          }
+          await showCustomToast({
+            id: "refresh-toast",
+            icon: RefreshCcw,
+            message: "Refreshing data...",
+          });
+          router.refresh();
         }
       } catch (err) {
         console.error("❌ Revalidate error:", err);
@@ -106,16 +99,7 @@ export default function AppInit() {
     };
 
     const initApp = async () => {
-      // Trigger splash hide fast
-      if (isNativeApp()) {
-        setTimeout(() => {
-          SplashScreen.hide().then(() =>
-            console.log("✅ Splash screen hidden")
-          );
-        }, 300);
-      }
-
-      // Load everything else in background
+      // Load everything in background
       Promise.allSettled([
         dispatch(fetchProducts("all")),
         checkRevalidate(),
@@ -128,27 +112,13 @@ export default function AppInit() {
     if (hydrated) {
       initApp();
     }
-
-    // Resume handler for revalidate
-    let removeResumeListener: () => void;
-    CapacitorApp.addListener("resume", () => {
-      console.log("[Resume] Checking again...");
-      initApp();
-    }).then((handler) => {
-      removeResumeListener = handler.remove;
-    });
-
-    return () => {
-      if (removeResumeListener) removeResumeListener();
-    };
   }, [hydrated, dispatch, router]);
 
   // Optional: basic screen blocker before hydration
   if (!hydrated) {
     return (
-      <div className="fixed inset-0  bg-[#3c1100] z-[9999] flex flex-col gap-5 items-center justify-center">
-        <Image src={logo} alt="Logo" className=" object-contain w-fit h-28" />
-
+      <div className="fixed inset-0 bg-[#3c1100] z-[9999] flex flex-col gap-5 items-center justify-center">
+        <Image src={logo} alt="Logo" className="object-contain w-fit h-28" />
         <span className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></span>
       </div>
     );

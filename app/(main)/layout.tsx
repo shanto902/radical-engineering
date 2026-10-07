@@ -1,7 +1,7 @@
 import BackButtonHandler from "@/components/BackButtonHandler";
 import OfflineBanner from "@/components/common/OfflineBanner";
 import Footer from "@/components/layout/Footer";
-import PlatformNavbar from "@/components/layout/PlatformNavbar";
+import Navbar from "@/components/layout/Navbar";
 import SafeAreaWrapper from "@/components/layout/SafeAreaWrapper";
 import MobileCartSidebar from "@/components/pages/cart/MobileCartSidebar";
 import React from "react";
@@ -16,7 +16,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <SafeAreaWrapper>
-      {<PlatformNavbar settings={settings} />}
+      <Navbar settings={settings} />
       <main
         id="scrollable-content"
         className="relative md:min-h-screen mb-10 md:mb-0"

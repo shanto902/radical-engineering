@@ -13,9 +13,8 @@ Radical Engineering is a full-featured eCommerce platform built with modern web 
 - 🌞 **Solar System Builder (Smart Calculator)**
 - 💬 **Featurable Review Carousel using Keen Slider**
 - 🔒 **Secure API proxying to protect external keys**
-- 📱 **Fully responsive and optimized for mobile (Capacitor App supported)**
+- 📱 **Fully responsive and optimized for mobile and desktop**
 - 🌙 **Dark/Light theme toggle**
-- 🔔 **Mobile push notification support (FCM ready)**
 
 ---
 

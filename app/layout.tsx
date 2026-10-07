@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import "keen-slider/keen-slider.min.css";
-import Footer from "@/components/layout/Footer";
 import { readSingleton } from "@directus/sdk";
 import directus from "@/lib/directus";
 import { TSettings } from "@/interfaces";
@@ -12,17 +11,10 @@ import { Toaster } from "react-hot-toast";
 import ReduxProvider from "@/components/ReduxProvider";
 import ThemeWrapper from "@/components/layout/ThemeWrapper";
 import FaviconSwitcher from "@/components/layout/FaviconSwitcher";
-import MobileCartSidebar from "@/components/pages/cart/MobileCartSidebar";
-import StatusBarControl from "@/components/common/StatusBarControl";
-import BackButtonHandler from "@/components/BackButtonHandler";
 import TopLoader from "@/components/layout/TopLoader";
-import PlatformNavbar from "@/components/layout/PlatformNavbar";
 import AppInit from "@/components/AppInt";
-import OfflineBanner from "@/components/common/OfflineBanner";
 import Script from "next/script";
 import CookieBanner from "@/components/common/CookieBanner";
-import { headers } from "next/headers";
-import SafeAreaWrapper from "@/components/layout/SafeAreaWrapper";
 import { Figtree } from "next/font/google";
 
 export const metadata: Metadata = {
@@ -47,13 +39,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = (await directus.request(
-    readSingleton("settings"),
-  )) as TSettings;
+  await directus.request(readSingleton("settings"));
 
-  const headersList = await headers();
-  const userAgent = headersList.get("user-agent") || "";
-  const isNativeApp = /android|iphone|ipad|capacitor/i.test(userAgent);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -87,11 +74,8 @@ export default async function RootLayout({
             __html: `
               (function () {
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const isNative = /android|iphone|ipad/.test(navigator.userAgent.toLowerCase());
                 const storedTheme = localStorage.getItem('theme');
-                const theme = isNative
-                  ? (prefersDark ? 'dark' : 'light')
-                  : (storedTheme || (prefersDark ? 'dark' : 'light'));
+                const theme = storedTheme || (prefersDark ? 'dark' : 'light');
                 document.documentElement.classList.add(theme);
               })();
             `,
@@ -113,29 +97,27 @@ export default async function RootLayout({
           }}
         />
 
-        {/* Consent mode (optional) */}
-        {!isNativeApp && (
-          <Script
-            id="gtag-consent-mode"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('consent', 'default', {
-          ad_storage: 'denied',
-          analytics_storage: 'denied',
-        });
-      `,
-            }}
-          />
-        )}
+        {/* Consent mode */}
+        <Script
+          id="gtag-consent-mode"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                ad_storage: 'denied',
+                analytics_storage: 'denied',
+              });
+            `,
+          }}
+        />
 
         {/* Google Analytics 4 gtag.js */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-FG05LZW031"
           strategy="afterInteractive"
-        ></Script>
+        />
 
         <Script
           id="gtag-init"
@@ -154,17 +136,17 @@ export default async function RootLayout({
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '1255308732866949');
-      fbq('track', 'PageView');
-    `,
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '1255308732866949');
+              fbq('track', 'PageView');
+            `,
           }}
         />
         <meta
@@ -175,7 +157,6 @@ export default async function RootLayout({
 
       <body className={`${figtree.className} antialiased`}>
         {/* GTM noscript fallback */}
-
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-52BGCSCX"
@@ -197,7 +178,6 @@ export default async function RootLayout({
           <AppInit />
           <FaviconSwitcher />
           <ThemeWrapper>
-            <StatusBarControl />
             <TopLoader />
             <Toaster position="bottom-center" />
             {children}

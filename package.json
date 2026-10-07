@@ -9,18 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@capacitor/android": "^7.0.0",
-    "@capacitor/app": "^7.0.0",
-    "@capacitor/cli": "^7.0.0",
-    "@capacitor/core": "^7.0.0",
-    "@capacitor/haptics": "^7.0.0",
-    "@capacitor/ios": "^7.0.0",
-    "@capacitor/network": "^7.0.0",
-    "@capacitor/preferences": "^7.0.0",
-    "@capacitor/push-notifications": "^7.0.0",
-    "@capacitor/splash-screen": "^7.0.0",
-    "@capacitor/status-bar": "^7.0.0",
-    "@capacitor/toast": "^7.0.0",
     "@directus/sdk": "^19.1.0",
     "@reduxjs/toolkit": "^2.8.2",
     "@types/bcryptjs": "^2.4.6",
@@ -58,7 +46,6 @@
     "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
-    "@capacitor/assets": "^3.0.5",
     "@eslint/eslintrc": "^3",
     "@types/canvas-confetti": "^1.9.0",
     "@types/fontfaceobserver": "^2.1.3",

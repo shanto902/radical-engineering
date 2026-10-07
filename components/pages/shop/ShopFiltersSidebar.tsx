@@ -5,7 +5,6 @@ import { Range, getTrackBackground } from "react-range";
 import { TCategory } from "@/interfaces";
 import { FilterIcon, X } from "lucide-react";
 import { useEffect } from "react";
-import { isNativeApp } from "@/components/common/isNativeApp";
 
 interface Props {
   subcategories: string[];
@@ -35,28 +34,11 @@ export default function FilterSidebar({
   maxPrice,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isNative, setIsNative] = useState(false);
-
-  useEffect(() => {
-    setIsNative(isNativeApp());
-  }, []);
 
   return (
     <>
-      {/* 🟡 Mobile Filter Button */}
-
-      {isNative && (
-        <div className="fixed z-40 top-14 left-0 right-0 bg-primary text-background py-3 px-4 md:hidden shadow-md">
-          <button
-            onClick={() => setIsOpen(true)}
-            className="w-full text-center font-bold !text-sm flex gap-2 items-center  justify-center"
-          >
-            <FilterIcon /> Filter Products
-          </button>
-        </div>
-      )}
-
-      <div className="fixed md:hidden z-40 top-16 left-0 right-0 bg-primary text-background py-2 px-4  shadow-md">
+      {/* Mobile Filter Button */}
+      <div className="fixed md:hidden z-40 top-16 left-0 right-0 bg-primary text-background py-2 px-4 shadow-md">
         <button
           onClick={() => setIsOpen(true)}
           className="w-full text-center font-bold text-lg flex gap-2 items-center justify-center"

@@ -9,7 +9,6 @@ import PaddingContainer from "@/components/common/PaddingContainer";
 import FilterSidebar from "./ShopFiltersSidebar";
 import CategoryTabs from "./ShopCategoryTabs";
 import ProductGrid from "./ShopProductGrid";
-import { isNativeApp } from "@/components/common/isNativeApp";
 import useScrollRestore from "@/hooks/useScrollRestore";
 
 const PRODUCTS_PER_PAGE = 10;
@@ -127,9 +126,7 @@ export default function ShopPage({
     );
   }
 
-  const productsToRender = isNativeApp()
-    ? filteredProducts
-    : filteredProducts.slice(0, visibleCount);
+  const productsToRender = filteredProducts.slice(0, visibleCount);
 
   return (
     <PaddingContainer>
@@ -158,7 +155,7 @@ export default function ShopPage({
             totalProducts={filteredProducts.length}
           />
 
-          {!isNativeApp() && visibleCount < filteredProducts.length && (
+          {visibleCount < filteredProducts.length && (
             <div
               ref={ref}
               className="text-center my-8 text-muted-foreground text-sm"

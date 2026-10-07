@@ -1,37 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Network } from "@capacitor/network";
 
 export default function OfflineBanner() {
   const [offline, setOffline] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
-      const status = await Network.getStatus();
-      setOffline(!status.connected);
+    const handleOnline = () => setOffline(false);
+    const handleOffline = () => setOffline(true);
 
-      const listener = await Network.addListener(
-        "networkStatusChange",
-        (status) => {
-          setOffline(!status.connected);
-        }
-      );
+    if (typeof window !== "undefined") {
+      setOffline(!navigator.onLine);
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
+    }
 
-      // Clean up on unmount
-      return () => {
-        listener.remove(); // ✅ Now this will work
-      };
-    };
-
-    // Immediately invoke async function in useEffect
-    const cleanupPromise = init();
-
-    // Optional: to avoid TS warning
     return () => {
-      cleanupPromise.then((cleanup) => {
-        if (typeof cleanup === "function") cleanup();
-      });
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 

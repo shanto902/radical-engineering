@@ -9,21 +9,13 @@ import { TSettings } from "@/interfaces";
 import { SocialIconLink } from "../common/SocialLinks";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { isNativeApp } from "../common/isNativeApp";
+
 export default function Footer({ settings }: { settings: TSettings }) {
   const theme = useSelector((state: RootState) => state.theme.mode);
-  const [hideFooter, setHideFooter] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
   useEffect(() => {
     setHasMounted(true);
   }, []);
-  useEffect(() => {
-    if (isNativeApp()) {
-      setHideFooter(true);
-    }
-  }, []);
-
-  if (hideFooter) return null; // 🔒 Don’t render on native apps
 
   return (
     <footer className="bg-primary text-background pt-10 mt-10 pb-6">

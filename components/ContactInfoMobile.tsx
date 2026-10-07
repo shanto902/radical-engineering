@@ -1,20 +1,11 @@
 "use client";
 
-import { isNativeApp } from "@/components/common/isNativeApp";
 import { TSettings } from "@/interfaces";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const ContactInfoMobile = ({ settings }: { settings: TSettings }) => {
-  const [isMobileApp, setIsMobileApp] = useState(false);
-
-  useEffect(() => {
-    setIsMobileApp(isNativeApp());
-  }, []);
-
-  if (!isMobileApp) return null;
-
   return (
-    <div className="mx-4 mt-10 mb-6 rounded-xl  bg-background shadow-md px-2 text-sm">
+    <div className="mx-4 mt-10 mb-6 rounded-xl bg-background shadow-md px-2 text-sm md:hidden">
       <h2 className="text-2xl font-bold text-primary text-center mb-6">
         Contact Information
       </h2>

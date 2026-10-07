@@ -1,7 +1,6 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import { TCategory } from "@/interfaces";
-import { isNativeApp } from "@/components/common/isNativeApp"; // adjust path if needed
 import Image from "next/image";
 
 export default function CategoryTabs({
@@ -12,8 +11,6 @@ export default function CategoryTabs({
   const pathname = usePathname();
   const router = useRouter();
   const categorySlug = pathname?.split("/")[2] || "all";
-
-  if (isNativeApp()) return null;
 
   return (
     <>

@@ -20,7 +20,6 @@ import { useHasMounted } from "@/hooks/useHasMounted";
 import { useRouter } from "next/navigation";
 
 import { showCustomToast } from "@/lib/showCustomToast";
-import { isNativeApp } from "../common/isNativeApp";
 import CallForPriceModal from "../common/CallForPriceModal";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
@@ -120,12 +119,10 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           rel="canonical"
           href={`/categories/${product.category.slug}/${product.slug}`}
           onClick={() => {
-            if (isNativeApp()) {
-              sessionStorage.setItem(
-                "shop-scroll-y",
-                window.scrollY.toString()
-              );
-            }
+            sessionStorage.setItem(
+              "shop-scroll-y",
+              window.scrollY.toString()
+            );
           }}
           className="relative block aspect-square"
         >
@@ -169,12 +166,10 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           rel="canonical"
           href={`/categories/${product.category.slug}/${product.slug}`}
           onClick={() => {
-            if (isNativeApp()) {
-              sessionStorage.setItem(
-                "shop-scroll-y",
-                window.scrollY.toString()
-              );
-            }
+            sessionStorage.setItem(
+              "shop-scroll-y",
+              window.scrollY.toString()
+            );
           }}
         >
           <div className="px-4 pt-2">
