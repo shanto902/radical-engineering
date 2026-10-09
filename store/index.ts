@@ -13,7 +13,6 @@ import { loadFromLocalStorage, saveToLocalStorage } from "./persistConfig";
 import type { CartState } from "./cartSlice";
 import type { WishlistState } from "./wishlistSlice";
 import type { ThemeState } from "./themeSlice";
-import notificationReducer from "./notificationSlice";
 import authReducer from "./authSlice"; // ✅ Import authReducer
 import type { AuthState } from "./authSlice"; // ✅ Import AuthState type
 
@@ -39,7 +38,6 @@ export const store = configureStore({
     projects: projectReducer,
     categories: categoryReducer,
     ui: uiReducer,
-    notifications: notificationReducer,
     auth: authReducer, // ✅ Add auth reducer
   },
   preloadedState,

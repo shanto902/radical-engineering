@@ -121,14 +121,6 @@ export type TProduct = {
   sku: string;
 };
 
-export type TNotification = {
-  id: string;
-  title: string;
-  message: string;
-  date_created: string;
-  route: string;
-};
-
 export type TGlobalSettings = {
   last_revalidate_time: string;
 };
