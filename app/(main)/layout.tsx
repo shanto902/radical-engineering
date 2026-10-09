@@ -1,5 +1,6 @@
 import BackButtonHandler from "@/components/BackButtonHandler";
 import OfflineBanner from "@/components/common/OfflineBanner";
+import MobileAppPrompt from "@/components/common/MobileAppPrompt";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import SafeAreaWrapper from "@/components/layout/SafeAreaWrapper";
@@ -26,6 +27,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
 
       <MobileCartSidebar />
       <Footer settings={settings} />
+      <MobileAppPrompt />
       <OfflineBanner />
       <BackButtonHandler />
     </SafeAreaWrapper>

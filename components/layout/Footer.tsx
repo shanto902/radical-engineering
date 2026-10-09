@@ -9,6 +9,7 @@ import { TSettings } from "@/interfaces";
 import { SocialIconLink } from "../common/SocialLinks";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import GooglePlayBadge from "../common/GooglePlayBadge";
 
 export default function Footer({ settings }: { settings: TSettings }) {
   const theme = useSelector((state: RootState) => state.theme.mode);
@@ -76,13 +77,20 @@ export default function Footer({ settings }: { settings: TSettings }) {
           </ul>
         </div>
 
-        {/* Social Media */}
+        {/* Social Media & App Download */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
           <div className="flex gap-4 mt-2">
             {settings.social_links?.map((link, i) => (
               <SocialIconLink key={i} icon={link.icon} link={link.link} />
             ))}
+          </div>
+
+          <div className="mt-5">
+            <h4 className="text-sm font-semibold mb-2 text-background">
+              Get Our App
+            </h4>
+            <GooglePlayBadge size="sm" />
           </div>
         </div>
       </div>

@@ -107,19 +107,6 @@ export default function CheckoutPage() {
           }),
         });
 
-        // Send WhatsApp notification silently via backend
-        await fetch("/api/notify-whatsapp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: form.name,
-            phone: form.phone,
-            address: form.address,
-            items,
-            total,
-          }),
-        });
-
         // Clear cart and reset form
         dispatch(clearCart());
         setForm({ name: "", phone: "", address: "" });
