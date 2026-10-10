@@ -23,7 +23,15 @@ function getBangladeshTimeISO() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, phone, address, total, items } = body;
+    const {
+      name,
+      phone,
+      address,
+      total,
+      items,
+      delivery_charge,
+      extra_charges,
+    } = body;
 
     // ✅ Validate fields
     if (
@@ -71,6 +79,9 @@ export async function POST(req: NextRequest) {
         phone,
         address,
         total,
+        delivery_charge:
+          typeof delivery_charge === "number" ? delivery_charge : 0,
+        extra_charges: Array.isArray(extra_charges) ? extra_charges : [],
         status: "pending",
         placed_at: getBangladeshTimeISO(),
       })

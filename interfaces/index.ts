@@ -173,6 +173,7 @@ export type TSettings = {
   phone_numbers?: {
     number: string;
   }[];
+  delivery_charge?: number;
   last_revalidate_time: string;
 };
 
